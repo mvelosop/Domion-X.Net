@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Demo.Budget.Lib.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class CreateMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,6 +27,13 @@ namespace Demo.Budget.Lib.Migrations
                 {
                     table.PrimaryKey("PK_BudgetClasses", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BudgetClasses_Name",
+                schema: "Budget",
+                table: "BudgetClasses",
+                column: "Name",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

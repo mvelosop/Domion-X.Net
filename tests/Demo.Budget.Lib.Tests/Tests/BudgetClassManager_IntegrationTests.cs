@@ -1,10 +1,14 @@
 using Demo.Budget.Core.Model;
+using Demo.Budget.Lib.Services;
 using Demo.Budget.Lib.Tests.Helpers;
 using FluentAssertions;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Demo.Budget.Lib.Tests
 {
+    [Trait("Type", "Integration")]
     public class BudgetClassManager_IntegrationTests
     {
         public BudgetClassManager_IntegrationTests()
@@ -15,21 +19,73 @@ namespace Demo.Budget.Lib.Tests
         public BudgetDbSetup DbSetup { get; set; }
 
         [Fact]
+        public void TryDelete_DeletesRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
+
+            var data = new BudgetClassData("Delete test - Inserted");
+
+            DbSetup.AssertEntitiesDoNotExist(data);
+
+            DbSetup.AssertInsert(data.CreateEntity());
+
+            var entity = DbSetup.GetEntity(data);
+
+            // Act -------------------------------
+
+            var errors = DbSetup.TryDelete(entity);
+
+            // Assert ----------------------------
+
+            errors.Should().BeEmpty();
+
+            BudgetClass saved = DbSetup.GetEntity(data);
+
+            saved.Should().BeNull();
+        }
+
+        [Fact]
+        public void TryInsert_Fails_WhenDuplicateData()
+        {
+            // Arrange ---------------------------
+
+            var data = new BudgetClassData("Insert test - Duplicated");
+
+            DbSetup.AssertEntitiesDoNotExist(data);
+
+            DbSetup.AssertInsert(data.CreateEntity());
+
+            // Act -------------------------------
+
+            var entity = data.CreateEntity();
+
+            var errors = DbSetup.TryInsert(entity);
+
+            // Assert ----------------------------
+
+            var errorMessage = BudgetClassManager.duplicateByNameError.Split('{')[0];
+
+            errors.Where(e => e.ErrorMessage.StartsWith(errorMessage)).Any().Should().BeTrue();
+        }
+
+        [Fact]
         public void TryInsert_InsertsRecord_WhenValidData()
         {
             // Arrange ---------------------------
 
             var data = new BudgetClassData("Insert test - Inserted");
 
-            DbSetup.AssertEntitiesDoesNotExist(data);
+            DbSetup.AssertEntitiesDoNotExist(data);
 
             // Act -------------------------------
 
             var entity = data.CreateEntity();
 
-            DbSetup.TryInsert(entity);
+            var errors = DbSetup.TryInsert(entity);
 
             // Assert ----------------------------
+
+            errors.Should().BeEmpty();
 
             BudgetClass saved = DbSetup.GetEntity(data);
 
@@ -44,9 +100,9 @@ namespace Demo.Budget.Lib.Tests
             var data = new BudgetClassData("Update test - Inserted");
             var update = new BudgetClassData("Update test - UPDATED");
 
-            DbSetup.AssertEntitiesDoesNotExist(data, update);
+            DbSetup.AssertEntitiesDoNotExist(data, update);
 
-            DbSetup.TryInsert(data.CreateEntity());
+            DbSetup.AssertInsert(data.CreateEntity());
 
             var entity = DbSetup.GetEntity(data);
 
@@ -54,37 +110,15 @@ namespace Demo.Budget.Lib.Tests
 
             entity.Name = update.Name;
 
-            DbSetup.TryUpdate(entity);
+            var errors = DbSetup.TryUpdate(entity);
 
             // Assert ----------------------------
+
+            errors.Should().BeEmpty();
 
             BudgetClass saved = DbSetup.GetEntity(update);
 
             saved.ShouldBeEquivalentTo(update, options => options.ExcludingMissingMembers());
-        }
-
-        [Fact]
-        public void TryDelete_DeletesRecord_WhenValidData()
-        {
-            // Arrange ---------------------------
-
-            var data = new BudgetClassData("Delete test - Inserted");
-
-            DbSetup.AssertEntitiesDoesNotExist(data);
-
-            DbSetup.TryInsert(data.CreateEntity());
-
-            var entity = DbSetup.GetEntity(data);
-
-            // Act -------------------------------
-
-            DbSetup.TryDelete(entity);
-
-            // Assert ----------------------------
-
-            BudgetClass saved = DbSetup.GetEntity(data);
-
-            saved.Should().BeNull();
         }
     }
 }

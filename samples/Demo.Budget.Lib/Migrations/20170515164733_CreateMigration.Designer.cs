@@ -9,8 +9,8 @@ using Demo.Budget.Core.Model;
 namespace Demo.Budget.Lib.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20170515120815_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20170515164733_CreateMigration")]
+    partial class CreateMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,6 +34,9 @@ namespace Demo.Budget.Lib.Migrations
                     b.Property<int>("TransactionType");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("BudgetClasses","Budget");
                 });

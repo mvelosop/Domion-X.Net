@@ -13,16 +13,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Demo.Budget.Lib.Data
 {
-	public class BudgetClassConfiguration : EntityTypeConfiguration<BudgetClass>
-	{
-		public override void Map(EntityTypeBuilder<BudgetClass> builder)
-		{
-			builder.ToTable("BudgetClasses", schema: "Budget");
+    public class BudgetClassConfiguration : EntityTypeConfiguration<BudgetClass>
+    {
+        public override void Map(EntityTypeBuilder<BudgetClass> builder)
+        {
+            builder.ToTable("BudgetClasses", schema: "Budget");
 
-			builder.HasKey(bc => bc.Id);
+            builder.HasKey(bc => bc.Id);
 
-			builder.Property(bc => bc.RowVersion)
-				.IsRowVersion();
-		}
-	}
+            builder.Property(bc => bc.RowVersion)
+                .IsRowVersion();
+
+            builder.HasIndex(bc => bc.Name)
+                .IsUnique();
+        }
+    }
 }

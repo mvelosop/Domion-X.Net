@@ -3,6 +3,9 @@ using Demo.Budget.Lib.Data;
 using Demo.Budget.Lib.Services;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
@@ -30,21 +33,59 @@ namespace Demo.Budget.Lib.Tests.Helpers
             return new BudgetDbContext(_options);
         }
 
-        public void AssertEntitiesDoesNotExist(params BudgetClassData[] dataArray)
+        public void AssertDelete(BudgetClass entity)
         {
-            foreach (var data in dataArray)
+            var errors = TryDelete(entity);
+
+            errors.Should().BeEmpty();
+        }
+
+        public void AssertEntitiesDoNotExist(params BudgetClassData[] dataArray)
+        {
+            using (var dbContext = GetDbContext())
             {
-                var entity = GetEntity(data);
+                var manager = new BudgetClassManager(dbContext);
 
-                if (entity != null)
+                foreach (var data in dataArray)
                 {
-                    TryDelete(entity);
+                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
 
-                    entity = GetEntity(data);
+                    foreach (var entity in entities)
+                    {
+                        var errors = manager.TryDelete(entity);
 
-                    entity.Should().BeNull();
+                        errors.Should().BeEmpty();
+                    }
+                }
+
+                manager.SaveChanges();
+            }
+
+            using (var dbContext = GetDbContext())
+            {
+                var manager = new BudgetClassManager(dbContext);
+
+                foreach (var data in dataArray)
+                {
+                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
+
+                    entities.Should().BeEmpty();
                 }
             }
+        }
+
+        public void AssertInsert(BudgetClass entity)
+        {
+            var errors = TryInsert(entity);
+
+            errors.Should().BeEmpty();
+        }
+
+        public void AssertUpdate(BudgetClass entity)
+        {
+            var errors = TryUpdate(entity);
+
+            errors.Should().BeEmpty();
         }
 
         public BudgetClass GetEntity(BudgetClassData data)
@@ -57,7 +98,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
-        public void TryDelete(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
         {
             using (var dbContext = GetDbContext())
             {
@@ -65,37 +106,46 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
                 var errors = manager.TryDelete(entity);
 
-                errors.Should().BeEmpty();
+                if (!errors.Any())
+                {
+                    manager.SaveChanges();
+                }
 
-                manager.SaveChanges();
+                return errors.ToList();
             }
         }
 
-        public void TryInsert(BudgetClass item)
+        public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
         {
             using (var dbContext = GetDbContext())
             {
                 var manager = new BudgetClassManager(dbContext);
 
-                var errors = manager.TryInsert(item);
+                var errors = manager.TryInsert(entity);
 
-                errors.Should().BeEmpty();
+                if (!errors.Any())
+                {
+                    manager.SaveChanges();
+                }
 
-                manager.SaveChanges();
+                return errors.ToList();
             }
         }
 
-        public void TryUpdate(BudgetClass item)
+        public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
         {
             using (var dbContext = GetDbContext())
             {
                 var manager = new BudgetClassManager(dbContext);
 
-                var errors = manager.TryUpdate(item);
+                var errors = manager.TryUpdate(entity);
 
-                errors.Should().BeEmpty();
+                if (!errors.Any())
+                {
+                    manager.SaveChanges();
+                }
 
-                manager.SaveChanges();
+                return errors.ToList();
             }
         }
 

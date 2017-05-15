@@ -34,6 +34,9 @@ namespace Demo.Budget.Lib.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("BudgetClasses","Budget");
                 });
         }
