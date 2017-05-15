@@ -1,0 +1,14 @@
+[*]
+end_of_line = crlf
+
+[*.cs]
+indent_style = space
+
+[*.json]
+indent_style = space
+
+[*.csproj]
+indent_style = space
+
+[*.config]
+indent_style = space
