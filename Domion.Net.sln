@@ -24,6 +24,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Core", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Lib", "samples\Demo.Transactions.Lib\Demo.Transactions.Lib.csproj", "{F2126BEE-0366-4999-9472-495F40ED33A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Budget.Lib.Tests", "tests\Demo.Budget.Lib.Tests\Demo.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Cli", "samples\Demo.Cli\Demo.Cli.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{33794F96-A61B-4BAF-8971-49654079BCE5}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\add-migration.cmd = scripts\add-migration.cmd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +65,14 @@ Global
 		{F2126BEE-0366-4999-9472-495F40ED33A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2126BEE-0366-4999-9472-495F40ED33A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2126BEE-0366-4999-9472-495F40ED33A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66186C10-45E2-4227-8F8B-CA69650072C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66186C10-45E2-4227-8F8B-CA69650072C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66186C10-45E2-4227-8F8B-CA69650072C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66186C10-45E2-4227-8F8B-CA69650072C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +84,7 @@ Global
 		{ED29DD25-9E6D-441A-94DC-3081F79C85A9} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{08B52E17-7362-4114-B0F1-C67C98EF30E4} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{F2126BEE-0366-4999-9472-495F40ED33A8} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
+		{66186C10-45E2-4227-8F8B-CA69650072C1} = {F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}
+		{02A45136-7161-4A89-B6B2-8DC84B54750C} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 	EndGlobalSection
 EndGlobal
