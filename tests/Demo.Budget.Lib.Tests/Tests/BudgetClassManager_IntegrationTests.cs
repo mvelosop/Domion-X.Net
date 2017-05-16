@@ -1,9 +1,8 @@
 using Demo.Budget.Core.Model;
 using Demo.Budget.Lib.Services;
 using Demo.Budget.Lib.Tests.Helpers;
+using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Xunit;
 
 namespace Demo.Budget.Lib.Tests
@@ -49,7 +48,7 @@ namespace Demo.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Insert test - Duplicated");
+            var data = new BudgetClassData("Duplicate Insert test - Inserted");
 
             DbSetup.AssertEntitiesDoNotExist(data);
 
@@ -63,9 +62,7 @@ namespace Demo.Budget.Lib.Tests
 
             // Assert ----------------------------
 
-            var errorMessage = BudgetClassManager.duplicateByNameError.Split('{')[0];
-
-            errors.Where(e => e.ErrorMessage.StartsWith(errorMessage)).Any().Should().BeTrue();
+            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
         }
 
         [Fact]
@@ -90,6 +87,32 @@ namespace Demo.Budget.Lib.Tests
             BudgetClass saved = DbSetup.GetEntity(data);
 
             saved.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void TryUpdate_Fails_WhenDuplicateData()
+        {
+            // Arrange ---------------------------
+
+            var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first");
+            var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second");
+
+            DbSetup.AssertEntitiesDoNotExist(dataFirst, dataSecond);
+
+            DbSetup.AssertInsert(dataFirst.CreateEntity());
+            DbSetup.AssertInsert(dataSecond.CreateEntity());
+
+            // Act -------------------------------
+
+            var entity = DbSetup.GetEntity(dataFirst);
+
+            entity.Name = dataSecond.Name;
+
+            var errors = DbSetup.TryUpdate(entity);
+
+            // Assert ----------------------------
+
+            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
         }
 
         [Fact]
