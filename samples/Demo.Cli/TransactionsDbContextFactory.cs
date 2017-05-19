@@ -1,4 +1,5 @@
 ﻿using Demo.Budget.Lib.Data;
+using Demo.Budget.Lib.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
@@ -11,7 +12,9 @@ namespace Demo.Cli
     {
         public BudgetDbContext Create(DbContextFactoryOptions options)
         {
-            return Budget.Lib.Tests.Helpers.BudgetDbSetup.GetDbContext();
+            var dbSetup = new BudgetDbSetup();
+
+            return dbSetup.GetDbContext();
         }
     }
 }

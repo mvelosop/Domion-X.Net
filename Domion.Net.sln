@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{3379
 		scripts\add-migration.cmd = scripts\add-migration.cmd
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02A45136-7161-4A89-B6B2-8DC84B54750C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,5 +92,6 @@ Global
 		{F2126BEE-0366-4999-9472-495F40ED33A8} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{66186C10-45E2-4227-8F8B-CA69650072C1} = {F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}
 		{02A45136-7161-4A89-B6B2-8DC84B54750C} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
+		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C} = {2FFA9BA2-0992-4935-86A1-E982B93D0432}
 	EndGlobalSection
 EndGlobal

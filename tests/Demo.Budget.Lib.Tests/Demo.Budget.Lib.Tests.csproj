@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\samples\Demo.Budget.Lib\Demo.Budget.Lib.csproj" />
+    <ProjectReference Include="..\..\src\Domion.FluentAssertions\Domion.FluentAssertions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
