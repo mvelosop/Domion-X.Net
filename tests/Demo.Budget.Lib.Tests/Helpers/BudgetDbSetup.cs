@@ -1,15 +1,10 @@
-﻿using Demo.Budget.Core.Model;
-using Demo.Budget.Lib.Data;
-using Demo.Budget.Lib.Services;
-using FluentAssertions;
+﻿using Demo.Budget.Lib.Data;
+using Domion.FluentAssertions.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
-    public class BudgetDbSetup
+    public class BudgetDbSetup : BaseDbSetup<BudgetDbContext>
     {
         private static string _connectionString = "Data Source=localhost;Initial Catalog=Demo.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
         private static DbContextOptions<BudgetDbContext> _options;
@@ -25,20 +20,13 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
         public BudgetDbSetup()
         {
-            DatabaseSetup();
+            SetupDatabase();
         }
 
-        public BudgetDbContext GetDbContext()
+        public override BudgetDbContext GetDbContext()
         {
             return new BudgetDbContext(_options);
         }
 
-        private void DatabaseSetup()
-        {
-            using (var dbContext = GetDbContext())
-            {
-                dbContext.Database.Migrate();
-            }
-        }
     }
 }

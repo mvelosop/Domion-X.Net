@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{3379
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Lib.Tests", "tests\Demo.Transactions.Lib.Tests\Demo.Transactions.Lib.Tests.csproj", "{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,5 +99,6 @@ Global
 		{66186C10-45E2-4227-8F8B-CA69650072C1} = {F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}
 		{02A45136-7161-4A89-B6B2-8DC84B54750C} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C} = {2FFA9BA2-0992-4935-86A1-E982B93D0432}
+		{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86} = {F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}
 	EndGlobalSection
 EndGlobal

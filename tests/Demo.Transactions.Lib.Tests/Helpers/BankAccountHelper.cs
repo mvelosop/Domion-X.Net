@@ -1,5 +1,5 @@
-﻿using Demo.Budget.Core.Model;
-using Demo.Budget.Lib.Services;
+﻿using Demo.Transactions.Core.Model;
+using Demo.Transactions.Lib.Services;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -7,33 +7,33 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
-namespace Demo.Budget.Lib.Tests.Helpers
+namespace Demo.Transactions.Lib.Tests.Helpers
 {
-    public class BudgetHelper
+    public class BankAccountHelper
     {
-        public BudgetHelper(BudgetDbSetup dbSetup)
+        public BankAccountHelper(TransactionsDbSetup dbSetup)
         {
             DbSetup = dbSetup;
         }
 
-        public BudgetDbSetup DbSetup { get; set; }
+        public TransactionsDbSetup DbSetup { get; set; }
 
-        public void AssertDelete(BudgetClass entity)
+        public void AssertDelete(BankAccount entity)
         {
             var errors = TryDelete(entity);
 
             errors.Should().BeEmpty();
         }
 
-        public void AssertEntitiesDoNotExist(params BudgetClassData[] dataArray)
+        public void AssertEntitiesDoNotExist(params BankAccountData[] dataArray)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
                 foreach (var data in dataArray)
                 {
-                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
+                    var entities = manager.Query(ci => ci.AccountNumber == data.AccountNumber).ToList();
 
                     foreach (var entity in entities)
                     {
@@ -48,46 +48,46 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
                 foreach (var data in dataArray)
                 {
-                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
+                    var entities = manager.Query(ci => ci.AccountNumber == data.AccountNumber).ToList();
 
                     entities.Should().BeEmpty();
                 }
             }
         }
 
-        public void AssertInsert(BudgetClass entity)
+        public void AssertInsert(BankAccount entity)
         {
             var errors = TryInsert(entity);
 
             errors.Should().BeEmpty();
         }
 
-        public void AssertUpdate(BudgetClass entity)
+        public void AssertUpdate(BankAccount entity)
         {
             var errors = TryUpdate(entity);
 
             errors.Should().BeEmpty();
         }
 
-        public BudgetClass GetEntity(BudgetClassData data)
+        public BankAccount GetEntity(BankAccountData data)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
-                return manager.SingleOrDefault(ci => ci.Name == data.Name);
+                return manager.SingleOrDefault(ci => ci.AccountNumber == data.AccountNumber);
             }
         }
 
-        public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryDelete(BankAccount entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
                 var errors = manager.TryDelete(entity);
 
@@ -100,11 +100,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
-        public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryInsert(BankAccount entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
                 var errors = manager.TryInsert(entity);
 
@@ -117,11 +117,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
-        public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryUpdate(BankAccount entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BankAccountManager(dbContext);
 
                 var errors = manager.TryUpdate(entity);
 
