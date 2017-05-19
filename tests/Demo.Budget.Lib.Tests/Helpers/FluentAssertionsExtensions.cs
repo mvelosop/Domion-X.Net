@@ -14,7 +14,7 @@ namespace Domion.FluentAssertions.Extensions
         /// i.e. up to the first substitution placeholder ("{.*}"), if any.
         /// </summary>
         /// <param name="assertion"></param>
-        /// <param name="errorMessage"></param>
+        /// <param name="errorMessage">Error message text, will be trimmed up to the first substitution placeholder ("{.*}")</param>
         public static void ContainErrorMessage(this GenericCollectionAssertions<ValidationResult> assertion, string errorMessage)
         {
             var errorMessageStart = errorMessage.Split('{')[0];
