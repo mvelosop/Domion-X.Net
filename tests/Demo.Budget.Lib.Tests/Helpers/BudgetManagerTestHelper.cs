@@ -9,15 +9,29 @@ using System.Text;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
-    public class BudgetHelper
+    /// <summary>
+    /// Test helper class for BudgetClassManager
+    /// 
+    /// Takes a BudgetDbSetup to execute CRUD methods and dispose properly the DbContext.
+    /// Manages entity class BudgetClass using data class BudgetClassData as input
+    /// </summary>
+    public class BudgetManagerTestHelper
     {
-        public BudgetHelper(BudgetDbSetup dbSetup)
+        /// <summary>
+        /// Creates the test helper for BudgetManager
+        /// </summary>
+        /// <param name="dbSetup"></param>
+        public BudgetManagerTestHelper(BudgetDbSetup dbSetup)
         {
             DbSetup = dbSetup;
         }
 
         public BudgetDbSetup DbSetup { get; set; }
 
+        /// <summary>
+        /// Asserts that TryDelete method does not return any error message
+        /// </summary>
+        /// <param name="entity"></param>
         public void AssertDelete(BudgetClass entity)
         {
             var errors = TryDelete(entity);
@@ -25,6 +39,10 @@ namespace Demo.Budget.Lib.Tests.Helpers
             errors.Should().BeEmpty();
         }
 
+        /// <summary>
+        /// Asserts that the entities do not exist in the database or are succesfully removed
+        /// </summary>
+        /// <param name="dataArray">Data for the entities to be searched and removed</param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataArray)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -59,6 +77,10 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
+        /// <summary>
+        /// Asserts that TryInsert method does not return any error message
+        /// </summary>
+        /// <param name="entity"></param>
         public void AssertInsert(BudgetClass entity)
         {
             var errors = TryInsert(entity);
@@ -66,6 +88,10 @@ namespace Demo.Budget.Lib.Tests.Helpers
             errors.Should().BeEmpty();
         }
 
+        /// <summary>
+        /// Asserts that TryUpdate method does not return any error message
+        /// </summary>
+        /// <param name="entity"></param>
         public void AssertUpdate(BudgetClass entity)
         {
             var errors = TryUpdate(entity);
@@ -73,6 +99,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             errors.Should().BeEmpty();
         }
 
+        /// <summary>
+        /// Gets the entity using the KeyDataExpression from the Data class
+        /// </summary>
+        /// <param name="data">Data for the entity to be searched</param>
+        /// <returns></returns>
         public BudgetClass GetEntity(BudgetClassData data)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -83,6 +114,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
+        /// <summary>
+        /// Executes the TryDelete method and returns the validation results or saves the changes if ok.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -100,6 +136,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
+        /// <summary>
+        /// Executes the TryInsert method and returns the validation results or saves the changes if ok.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -117,6 +158,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
             }
         }
 
+        /// <summary>
+        /// Executes the TryUpdate method and returns the validation results or saves the changes if ok.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())

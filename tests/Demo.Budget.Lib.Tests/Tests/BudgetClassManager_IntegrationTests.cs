@@ -14,10 +14,10 @@ namespace Demo.Budget.Lib.Tests
         {
             var dbSetup = new BudgetDbSetup();
 
-            Helper = new BudgetHelper(dbSetup);
+            Helper = new BudgetManagerTestHelper(dbSetup);
         }
 
-        public BudgetHelper Helper { get; set; }
+        public BudgetManagerTestHelper Helper { get; set; }
 
         [Fact]
         public void TryDelete_DeletesRecord_WhenValidData()
