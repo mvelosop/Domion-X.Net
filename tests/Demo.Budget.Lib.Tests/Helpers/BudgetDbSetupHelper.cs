@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
-    public class BudgetDbSetup
+    public class BudgetDbSetupHelper
     {
         private static string _connectionString = "Data Source=localhost;Initial Catalog=Demo.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
         private static DbContextOptions<BudgetDbContext> _options;
 
-        static BudgetDbSetup()
+        static BudgetDbSetupHelper()
         {
             var optionBuilder = new DbContextOptionsBuilder<BudgetDbContext>();
 
@@ -17,7 +17,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
             _options = optionBuilder.Options;
         }
 
-        public BudgetDbSetup()
+        public BudgetDbSetupHelper()
         {
             SetupDatabase();
         }

@@ -12,7 +12,7 @@ namespace Demo.Budget.Lib.Tests
     {
         public BudgetClassManager_IntegrationTests()
         {
-            var dbSetup = new BudgetDbSetup();
+            var dbSetup = new BudgetDbSetupHelper();
 
             Helper = new BudgetManagerTestHelper(dbSetup);
         }

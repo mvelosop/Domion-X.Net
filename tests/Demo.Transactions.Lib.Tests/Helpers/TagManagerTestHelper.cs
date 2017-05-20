@@ -1,5 +1,6 @@
 ﻿using Demo.Budget.Core.Model;
-using Demo.Budget.Lib.Services;
+using Demo.Transactions.Core.Model;
+using Demo.Transactions.Lib.Services;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -7,32 +8,32 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
-namespace Demo.Budget.Lib.Tests.Helpers
+namespace Demo.Transactions.Lib.Tests.Helpers
 {
     /// <summary>
-    /// Test helper class for BudgetClassManager
+    /// Test helper class for TagManager
     /// 
-    /// Takes a BudgetDbSetup to execute CRUD methods and dispose properly the DbContext.
-    /// Manages entity class BudgetClass using data class BudgetClassData as input
+    /// Takes a TransactionsDbSetup to execute CRUD methods and dispose properly the DbContext.
+    /// Manages entity class Tag using data class TagData as input
     /// </summary>
-    public class BudgetManagerTestHelper
+    public class TagManagerTestHelper
     {
         /// <summary>
-        /// Creates the test helper for BudgetManager
+        /// Creates the test helper for TagManager
         /// </summary>
         /// <param name="dbSetup"></param>
-        public BudgetManagerTestHelper(BudgetDbSetupHelper dbSetup)
+        public TagManagerTestHelper(TransactionsDbSetupHelper dbSetup)
         {
             DbSetup = dbSetup;
         }
 
-        public BudgetDbSetupHelper DbSetup { get; set; }
+        public TransactionsDbSetupHelper DbSetup { get; set; }
 
         /// <summary>
-        /// Asserts that TryDelete method does not return any error message
+        /// Asserts that TryDelete method did not return any error message
         /// </summary>
         /// <param name="entity"></param>
-        public void AssertDelete(BudgetClass entity)
+        public void AssertDelete(Tag entity)
         {
             var errors = TryDelete(entity);
 
@@ -43,11 +44,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Asserts that the entities do not exist in the database or are succesfully removed
         /// </summary>
         /// <param name="dataArray">Data for the entities to be searched and removed</param>
-        public void AssertEntitiesDoNotExist(params BudgetClassData[] dataArray)
+        public void AssertEntitiesDoNotExist(params TagData[] dataArray)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 foreach (var data in dataArray)
                 {
@@ -66,7 +67,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 foreach (var data in dataArray)
                 {
@@ -81,7 +82,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Asserts that TryInsert method does not return any error message
         /// </summary>
         /// <param name="entity"></param>
-        public void AssertInsert(BudgetClass entity)
+        public void AssertInsert(Tag entity)
         {
             var errors = TryInsert(entity);
 
@@ -92,7 +93,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Asserts that TryUpdate method does not return any error message
         /// </summary>
         /// <param name="entity"></param>
-        public void AssertUpdate(BudgetClass entity)
+        public void AssertUpdate(Tag entity)
         {
             var errors = TryUpdate(entity);
 
@@ -104,11 +105,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// </summary>
         /// <param name="data">Data for the entity to be searched</param>
         /// <returns>Entity</returns>
-        public BudgetClass GetEntity(BudgetClassData data)
+        public Tag GetEntity(TagData data)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 return manager.SingleOrDefault(data.KeyExpression);
             }
@@ -119,11 +120,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryDelete(Tag entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 var errors = manager.TryDelete(entity);
 
@@ -141,11 +142,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryInsert(Tag entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 var errors = manager.TryInsert(entity);
 
@@ -163,11 +164,11 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// </summary>
         /// <param name="entity"></param>
         /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
+        public IEnumerable<ValidationResult> TryUpdate(Tag entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new TagManager(dbContext);
 
                 var errors = manager.TryUpdate(entity);
 
@@ -181,4 +182,5 @@ namespace Demo.Budget.Lib.Tests.Helpers
         }
 
     }
+
 }

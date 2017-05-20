@@ -12,7 +12,7 @@ namespace Demo.Cli
     {
         public BudgetDbContext Create(DbContextFactoryOptions options)
         {
-            var dbSetup = new BudgetDbSetup();
+            var dbSetup = new BudgetDbSetupHelper();
 
             return dbSetup.GetDbContext();
         }

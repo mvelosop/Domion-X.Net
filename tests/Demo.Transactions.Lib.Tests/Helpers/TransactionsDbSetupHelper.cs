@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.Transactions.Lib.Tests.Helpers
 {
-    public class TransactionsDbSetup
+    public class TransactionsDbSetupHelper
     {
         private static string _connectionString = "Data Source=localhost;Initial Catalog=Demo.Transactions.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
         private static DbContextOptions<TransactionsDbContext> _options;
 
-        static TransactionsDbSetup()
+        static TransactionsDbSetupHelper()
         {
             var optionBuilder = new DbContextOptionsBuilder<TransactionsDbContext>();
 
@@ -17,7 +17,7 @@ namespace Demo.Transactions.Lib.Tests.Helpers
             _options = optionBuilder.Options;
         }
 
-        public TransactionsDbSetup()
+        public TransactionsDbSetupHelper()
         {
             DatabaseSetup();
         }

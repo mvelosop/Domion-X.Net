@@ -11,12 +11,12 @@ namespace Demo.Transactions.Lib.Tests.Helpers
 {
     public class BankAccountHelper
     {
-        public BankAccountHelper(TransactionsDbSetup dbSetup)
+        public BankAccountHelper(TransactionsDbSetupHelper dbSetup)
         {
             DbSetup = dbSetup;
         }
 
-        public TransactionsDbSetup DbSetup { get; set; }
+        public TransactionsDbSetupHelper DbSetup { get; set; }
 
         public void AssertDelete(BankAccount entity)
         {
