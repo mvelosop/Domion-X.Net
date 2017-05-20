@@ -1,4 +1,6 @@
 ﻿using Demo.Budget.Core.Model;
+using System;
+using System.Linq.Expressions;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
@@ -12,6 +14,8 @@ namespace Demo.Budget.Lib.Tests.Helpers
         {
             Name = entity.Name;
         }
+
+        public Expression<Func<BudgetClass, bool>> KeyExpression => bc => bc.Name == Name;
 
         public BudgetClassData(string name)
         {

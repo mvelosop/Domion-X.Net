@@ -51,7 +51,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataArray)
                 {
-                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
+                    var entities = manager.Query(data.KeyExpression).ToList();
 
                     foreach (var entity in entities)
                     {
@@ -70,7 +70,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataArray)
                 {
-                    var entities = manager.Query(ci => ci.Name == data.Name).ToList();
+                    var entities = manager.Query(data.KeyExpression).ToList();
 
                     entities.Should().BeEmpty();
                 }
@@ -103,14 +103,14 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Gets the entity using the KeyDataExpression from the Data class
         /// </summary>
         /// <param name="data">Data for the entity to be searched</param>
-        /// <returns></returns>
+        /// <returns>Entity</returns>
         public BudgetClass GetEntity(BudgetClassData data)
         {
             using (var dbContext = DbSetup.GetDbContext())
             {
                 var manager = new BudgetClassManager(dbContext);
 
-                return manager.SingleOrDefault(ci => ci.Name == data.Name);
+                return manager.SingleOrDefault(data.KeyExpression);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Executes the TryDelete method and returns the validation results or saves the changes if ok.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>Validation Results</returns>
         public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -140,7 +140,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Executes the TryInsert method and returns the validation results or saves the changes if ok.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>Validation Results</returns>
         public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
@@ -162,7 +162,7 @@ namespace Demo.Budget.Lib.Tests.Helpers
         /// Executes the TryUpdate method and returns the validation results or saves the changes if ok.
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>Validation Results</returns>
         public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
         {
             using (var dbContext = DbSetup.GetDbContext())
