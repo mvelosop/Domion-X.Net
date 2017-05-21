@@ -40,7 +40,7 @@ namespace Demo.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            BudgetClass saved = ManagerHelper.GetEntity(data);
+            var saved = ManagerHelper.GetEntity(data);
 
             saved.Should().BeNull();
         }
@@ -141,7 +141,7 @@ namespace Demo.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            BudgetClass saved = ManagerHelper.GetEntity(update);
+            var saved = ManagerHelper.GetEntity(update);
 
             saved.ShouldBeEquivalentTo(update, options => options.ExcludingMissingMembers());
         }

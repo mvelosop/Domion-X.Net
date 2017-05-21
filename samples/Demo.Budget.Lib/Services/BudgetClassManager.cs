@@ -99,14 +99,12 @@ namespace Demo.Budget.Lib.Services
 
             if (entity.Id == 0)
             {
-                expression = bc => bc.Name == entity.Name;
+                return SingleOrDefault(bc => bc.Name == entity.Name);
             }
             else
             {
-                expression = bc => bc.Name == entity.Name && bc.Id != entity.Id;
+                return SingleOrDefault(bc => bc.Name == entity.Name && bc.Id != entity.Id);
             }
-
-            return SingleOrDefault(expression);
         }
     }
 }
