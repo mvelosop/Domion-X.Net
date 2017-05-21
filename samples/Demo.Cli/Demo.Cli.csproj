@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\tests\Demo.Budget.Lib.Tests\Demo.Budget.Lib.Tests.csproj" />
+		<ProjectReference Include="..\..\tests\Demo.Transactions.Lib.Tests\Demo.Transactions.Lib.Tests.csproj" />
 		<ProjectReference Include="..\Demo.Transactions.Lib\Demo.Transactions.Lib.csproj" />
 	</ItemGroup>
 

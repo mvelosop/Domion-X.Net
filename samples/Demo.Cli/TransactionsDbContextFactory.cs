@@ -1,18 +1,14 @@
-﻿using Demo.Budget.Lib.Data;
-using Demo.Budget.Lib.Tests.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Demo.Transactions.Lib.Data;
+using Demo.Transactions.Lib.Tests.Helpers;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Demo.Cli
 {
-    public class BudgetDbContextFactory : IDbContextFactory<BudgetDbContext>
+    public class TransactionsDbContextFactory : IDbContextFactory<TransactionsDbContext>
     {
-        public BudgetDbContext Create(DbContextFactoryOptions options)
+        public TransactionsDbContext Create(DbContextFactoryOptions options)
         {
-            var dbSetup = new BudgetDbSetupHelper();
+            var dbSetup = new TransactionsDbSetupHelper();
 
             return dbSetup.GetDbContext();
         }

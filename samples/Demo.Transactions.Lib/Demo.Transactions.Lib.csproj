@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Demo.Transactions.Core\Demo.Transactions.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

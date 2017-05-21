@@ -14,10 +14,10 @@ namespace Demo.Budget.Lib.Tests
         {
             var dbSetup = new BudgetDbSetupHelper();
 
-            Helper = new BudgetManagerTestHelper(dbSetup);
+            ManagerHelper = new BudgetManagerTestHelper(dbSetup);
         }
 
-        public BudgetManagerTestHelper Helper { get; set; }
+        public BudgetManagerTestHelper ManagerHelper { get; private set; }
 
         [Fact]
         public void TryDelete_DeletesRecord_WhenValidData()
@@ -26,21 +26,21 @@ namespace Demo.Budget.Lib.Tests
 
             var data = new BudgetClassData("Delete test - Inserted");
 
-            Helper.AssertEntitiesDoNotExist(data);
+            ManagerHelper.AssertEntitiesDoNotExist(data);
 
-            Helper.AssertInsert(data.CreateEntity());
+            ManagerHelper.AssertInsert(data.CreateEntity());
 
-            var entity = Helper.GetEntity(data);
+            var entity = ManagerHelper.GetEntity(data);
 
             // Act -------------------------------
 
-            var errors = Helper.TryDelete(entity);
+            var errors = ManagerHelper.TryDelete(entity);
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            BudgetClass saved = Helper.GetEntity(data);
+            BudgetClass saved = ManagerHelper.GetEntity(data);
 
             saved.Should().BeNull();
         }
@@ -52,15 +52,15 @@ namespace Demo.Budget.Lib.Tests
 
             var data = new BudgetClassData("Duplicate Insert test - Inserted");
 
-            Helper.AssertEntitiesDoNotExist(data);
+            ManagerHelper.AssertEntitiesDoNotExist(data);
 
-            Helper.AssertInsert(data.CreateEntity());
+            ManagerHelper.AssertInsert(data.CreateEntity());
 
             // Act -------------------------------
 
             var entity = data.CreateEntity();
 
-            var errors = Helper.TryInsert(entity);
+            var errors = ManagerHelper.TryInsert(entity);
 
             // Assert ----------------------------
 
@@ -74,21 +74,21 @@ namespace Demo.Budget.Lib.Tests
 
             var data = new BudgetClassData("Insert test - Inserted");
 
-            Helper.AssertEntitiesDoNotExist(data);
+            ManagerHelper.AssertEntitiesDoNotExist(data);
 
             // Act -------------------------------
 
             var entity = data.CreateEntity();
 
-            var errors = Helper.TryInsert(entity);
+            var errors = ManagerHelper.TryInsert(entity);
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            BudgetClass saved = Helper.GetEntity(data);
+            var saved = ManagerHelper.GetEntity(data);
 
-            saved.Should().NotBeNull();
+            saved.Should().ShouldBeEquivalentTo(data, options => options.ExcludingMissingMembers());
         }
 
         [Fact]
@@ -99,18 +99,18 @@ namespace Demo.Budget.Lib.Tests
             var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first");
             var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second");
 
-            Helper.AssertEntitiesDoNotExist(dataFirst, dataSecond);
+            ManagerHelper.AssertEntitiesDoNotExist(dataFirst, dataSecond);
 
-            Helper.AssertInsert(dataFirst.CreateEntity());
-            Helper.AssertInsert(dataSecond.CreateEntity());
+            ManagerHelper.AssertInsert(dataFirst.CreateEntity());
+            ManagerHelper.AssertInsert(dataSecond.CreateEntity());
 
             // Act -------------------------------
 
-            var entity = Helper.GetEntity(dataFirst);
+            var entity = ManagerHelper.GetEntity(dataFirst);
 
             entity.Name = dataSecond.Name;
 
-            var errors = Helper.TryUpdate(entity);
+            var errors = ManagerHelper.TryUpdate(entity);
 
             // Assert ----------------------------
 
@@ -125,23 +125,23 @@ namespace Demo.Budget.Lib.Tests
             var data = new BudgetClassData("Update test - Inserted");
             var update = new BudgetClassData("Update test - UPDATED");
 
-            Helper.AssertEntitiesDoNotExist(data, update);
+            ManagerHelper.AssertEntitiesDoNotExist(data, update);
 
-            Helper.AssertInsert(data.CreateEntity());
+            ManagerHelper.AssertInsert(data.CreateEntity());
 
-            var entity = Helper.GetEntity(data);
+            var entity = ManagerHelper.GetEntity(data);
 
             // Act -------------------------------
 
             entity.Name = update.Name;
 
-            var errors = Helper.TryUpdate(entity);
+            var errors = ManagerHelper.TryUpdate(entity);
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            BudgetClass saved = Helper.GetEntity(update);
+            BudgetClass saved = ManagerHelper.GetEntity(update);
 
             saved.ShouldBeEquivalentTo(update, options => options.ExcludingMissingMembers());
         }

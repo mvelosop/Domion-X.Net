@@ -9,8 +9,8 @@ using Demo.Budget.Core.Model;
 namespace Demo.Budget.Lib.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20170515164733_CreateMigration")]
-    partial class CreateMigration
+    [Migration("20170521112955_CreateMigration_BudgetDbContext")]
+    partial class CreateMigration_BudgetDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -13,11 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tests\" />
+    <ProjectReference Include="..\..\samples\Demo.Transactions.Lib\Demo.Transactions.Lib.csproj" />
+    <ProjectReference Include="..\Demo.Budget.Lib.Tests\Demo.Budget.Lib.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\samples\Demo.Transactions.Lib\Demo.Transactions.Lib.csproj" />
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
 </Project>

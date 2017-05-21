@@ -8,6 +8,7 @@ namespace Demo.Transactions.Lib.Tests.Helpers
     {
         public TagData(string name)
         {
+            Name = name;
         }
 
         public TagData(Tag entity)

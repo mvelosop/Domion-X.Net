@@ -80,6 +80,7 @@ namespace Demo.Transactions.Lib.Data
 			modelBuilder.AddConfiguration(new BankTransactionConfiguration());
 			modelBuilder.AddConfiguration(new CashTransactionConfiguration());
 			modelBuilder.AddConfiguration(new TagConfiguration());
+			modelBuilder.AddConfiguration(new TransactionTagConfiguration());
 		}
 	}
 }

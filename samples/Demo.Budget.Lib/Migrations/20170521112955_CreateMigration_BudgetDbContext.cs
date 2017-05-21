@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Demo.Budget.Lib.Migrations
 {
-    public partial class CreateMigration : Migration
+    public partial class CreateMigration_BudgetDbContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -1,9 +1,26 @@
 @echo off
-set /p project= "Project name...: "
-set /p name= "Migration name.: "
+echo/
+echo //--------------------------------------------------------------------------
+echo // CREATE MIGRATIONS SCRIPT
+echo //
+echo // Needed input:
+echo // ------------
+echo // Project name   : The project that contains the DbContext
+echo // DbContext name : The DbContext with the required model configuration
+echo // Migration name : This script will add the "Migration" suffix to the name
+echo //--------------------------------------------------------------------------
+echo/
+set /p project="Project name   : "
+set /p dbContext="DbContext name : "
+set /p name="Migration name : "
 
-@echo cd ..\samples\Demo.cli
-cd "..\samples\Demo.cli"
+set scriptsDir=%cd%
+set cliProjectDir="..\samples\Demo.cli"
 
-@echo dotnet ef migrations add %name% -p ..\%project%
-dotnet ef migrations add %name% -p ..\%project%
+@echo cd %cliProjectDir%
+cd %cliProjectDir%
+
+@echo dotnet ef migrations add %name%Migration_%dbContext% -p ..\%project% -c %dbContext%
+dotnet ef migrations add %name%Migration_%dbContext% -p ..\%project% -c %dbContext%
+
+cd %scriptsDir%
