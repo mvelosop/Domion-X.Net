@@ -33,6 +33,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{33794F96-A61B-4BAF-8971-49654079BCE5}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\add-migration.cmd = scripts\add-migration.cmd
+		scripts\remove-migration.cmd = scripts\remove-migration.cmd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"

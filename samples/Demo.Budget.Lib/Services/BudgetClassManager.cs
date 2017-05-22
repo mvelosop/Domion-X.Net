@@ -2,7 +2,7 @@
 // BudgetClassManager.cs
 //
 // Implementation of: BudgetClassManager (Class) <<entity-manager>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Budget.Core.Model;
@@ -95,8 +95,6 @@ namespace Demo.Budget.Lib.Services
 
         private BudgetClass FindDuplicateByName(BudgetClass entity)
         {
-            Expression<Func<BudgetClass, bool>> expression = null;
-
             if (entity.Id == 0)
             {
                 return SingleOrDefault(bc => bc.Name == entity.Name);

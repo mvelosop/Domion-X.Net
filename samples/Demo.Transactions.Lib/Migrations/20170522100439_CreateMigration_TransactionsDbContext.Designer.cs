@@ -9,7 +9,7 @@ using Demo.Budget.Core.Model;
 namespace Demo.Transactions.Lib.Migrations
 {
     [DbContext(typeof(TransactionsDbContext))]
-    [Migration("20170521112700_CreateMigration_TransactionsDbContext")]
+    [Migration("20170522100439_CreateMigration_TransactionsDbContext")]
     partial class CreateMigration_TransactionsDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,9 +58,11 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.Property<decimal>("InitialBalance");
 
-                    b.Property<decimal>("InitialBalanceDate");
+                    b.Property<DateTime?>("InitialBalanceDate");
 
-                    b.Property<DateTime>("LastTransactionDate");
+                    b.Property<DateTime?>("LastTransactionDate");
+
+                    b.Property<int>("LastTransactionNumber");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -87,7 +89,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.Property<string>("Currency")
                         .IsRequired()
-                        .HasMaxLength(250);
+                        .HasMaxLength(3);
 
                     b.Property<decimal>("CurrentBalance");
 
@@ -102,7 +104,7 @@ namespace Demo.Transactions.Lib.Migrations
                     b.Property<string>("Notes")
                         .HasMaxLength(1000);
 
-                    b.Property<int>("Order");
+                    b.Property<int>("Number");
 
                     b.Property<string>("Reference")
                         .IsRequired()

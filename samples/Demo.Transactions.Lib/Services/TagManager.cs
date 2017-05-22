@@ -2,7 +2,7 @@
 // TagManager.cs
 //
 // Implementation of: TagManager (Class) <<entity-manager>>
-// Generated with Domion-MDA - www.coderepo.blog/domion
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Transactions.Core.Model;
@@ -95,8 +95,6 @@ namespace Demo.Transactions.Lib.Services
 
         private Tag FindDuplicateByName(Tag entity)
         {
-            Expression<Func<Tag, bool>> expression = null;
-
             if (entity.Id == 0)
             {
                 return SingleOrDefault(bc => bc.Name == entity.Name);

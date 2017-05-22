@@ -18,72 +18,92 @@ using System.Linq.Expressions;
 
 namespace Demo.Transactions.Lib.Services
 {
-	public class BankAccountManager : BaseRepository<BankAccount, int>, IEntityManager<BankAccount, int>, IBankAccountManager
-	{
-		public BankAccountManager(TransactionsDbContext dbContext)
-			: base(dbContext)
-		{
-		}
+    public class BankAccountManager : BaseRepository<BankAccount, int>, IEntityManager<BankAccount, int>, IBankAccountManager
+    {
+        public static string duplicateByAccountNumberError = @"Ya existe una cuenta con código ""{0}"", no se puede duplicar";
 
-		public override IQueryable<BankAccount> Query(Expression<Func<BankAccount, bool>> where)
-		{
-			return base.Query(where);
-		}
+        public BankAccountManager(TransactionsDbContext dbContext)
+            : base(dbContext)
+        {
+        }
 
-		public virtual BankAccount Refresh(BankAccount entity)
-		{
-			base.Detach(entity);
+        public override IQueryable<BankAccount> Query(Expression<Func<BankAccount, bool>> where)
+        {
+            return base.Query(where);
+        }
 
-			return Find(entity.Id);
-		}
+        public virtual BankAccount Refresh(BankAccount entity)
+        {
+            base.Detach(entity);
 
-		public new virtual IEnumerable<ValidationResult> TryDelete(BankAccount entity)
-		{
-			return base.TryDelete(entity);
-		}
+            return Find(entity.Id);
+        }
 
-		public new virtual IEnumerable<ValidationResult> TryInsert(BankAccount entity)
-		{
-			if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
+        public new virtual IEnumerable<ValidationResult> TryDelete(BankAccount entity)
+        {
+            return base.TryDelete(entity);
+        }
 
-			CommonSaveOperations(entity);
+        public new virtual IEnumerable<ValidationResult> TryInsert(BankAccount entity)
+        {
+            if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
-			return base.TryInsert(entity);
-		}
+            CommonSaveOperations(entity);
 
-		public new virtual IEnumerable<ValidationResult> TryUpdate(BankAccount entity)
-		{
-			if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
+            return base.TryInsert(entity);
+        }
 
-			CommonSaveOperations(entity);
+        public new virtual IEnumerable<ValidationResult> TryUpdate(BankAccount entity)
+        {
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
 
-			return base.TryUpdate(entity);
-		}
+            CommonSaveOperations(entity);
 
-		public virtual IEnumerable<ValidationResult> TryUpsert(BankAccount entity)
-		{
-			if (entity.Id == 0)
-			{
-				return TryInsert(entity);
-			}
-			else
-			{
-				return TryUpdate(entity);
-			}
-		}
+            return base.TryUpdate(entity);
+        }
 
-		public override IEnumerable<ValidationResult> ValidateDelete(BankAccount entity)
-		{
-			return Enumerable.Empty<ValidationResult>();
-		}
+        public virtual IEnumerable<ValidationResult> TryUpsert(BankAccount entity)
+        {
+            if (entity.Id == 0)
+            {
+                return TryInsert(entity);
+            }
+            else
+            {
+                return TryUpdate(entity);
+            }
+        }
 
-		public override IEnumerable<ValidationResult> ValidateSave(BankAccount entity)
-		{
-			return Enumerable.Empty<ValidationResult>();
-		}
+        public override IEnumerable<ValidationResult> ValidateDelete(BankAccount entity)
+        {
+            return Enumerable.Empty<ValidationResult>();
+        }
 
-		internal virtual void CommonSaveOperations(BankAccount entity)
-		{
-		}
-	}
+        public override IEnumerable<ValidationResult> ValidateSave(BankAccount entity)
+        {
+            BankAccount duplicate = FindDuplicate(entity);
+
+            if (duplicate != null)
+            {
+                yield return new ValidationResult(String.Format(duplicateByAccountNumberError, duplicate.AccountNumber),
+                    new[] { nameof(BankAccount.AccountNumber) });
+            }
+        }
+
+        internal virtual void CommonSaveOperations(BankAccount entity)
+        {
+        }
+
+        private BankAccount FindDuplicate(BankAccount entity)
+        {
+            if (entity.Id == 0)
+            {
+                return SingleOrDefault(ba => ba.AccountNumber == entity.AccountNumber);
+            }
+            else
+            {
+                return SingleOrDefault(ba => ba.AccountNumber == entity.AccountNumber && ba.Id != entity.Id);
+            }
+        }
+    }
 }

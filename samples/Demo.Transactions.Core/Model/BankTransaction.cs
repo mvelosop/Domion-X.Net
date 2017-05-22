@@ -19,30 +19,30 @@ namespace Demo.Transactions.Core.Model
 			Tags = new HashSet<TransactionTag>();
 		}
 
-		public virtual decimal Amount { get; private set; }
+		public virtual decimal Amount { get; set; }
 
 		public virtual BankAccount BankAccount { get; set; }
 
 		public virtual int BankAccount_Id { get; set; }
 
 		[MaxLength(250)]
-		public virtual string BankNotes { get; private set; }
+		public virtual string BankNotes { get; set; }
 
 		public virtual BudgetClass BudgetClass { get; set; }
 
 		public virtual int? BudgetClass_Id { get; set; }
 
 		[Required]
-		[MaxLength(250)] // Default string length
-		public virtual string Currency { get; private set; }
+		[MaxLength(3)]
+		public virtual string Currency { get; set; }
 
 		public virtual decimal CurrentBalance { get; private set; }
 
-		public virtual DateTime Date { get; private set; }
+		public virtual DateTime Date { get; set; }
 
 		[Required]
 		[MaxLength(250)] // Default string length
-		public virtual string Description { get; private set; }
+		public virtual string Description { get; set; }
 
 		public int Id { get; set; }
 
@@ -51,11 +51,11 @@ namespace Demo.Transactions.Core.Model
 		[MaxLength(1000)]
 		public virtual string Notes { get; set; }
 
-		public virtual int Order { get; private set; }
+		public virtual int Number { get; private set; }
 
 		[Required]
 		[MaxLength(50)]
-		public virtual string Reference { get; private set; }
+		public virtual string Reference { get; set; }
 
 		public virtual Byte[] RowVersion { get; set; }
 
@@ -63,8 +63,8 @@ namespace Demo.Transactions.Core.Model
 
 		[Required]
 		[MaxLength(50)]
-		public virtual string Type { get; private set; }
+		public virtual string Type { get; set; }
 
-		public virtual DateTime ValueDate { get; private set; }
+		public virtual DateTime ValueDate { get; set; }
 	}
 }
