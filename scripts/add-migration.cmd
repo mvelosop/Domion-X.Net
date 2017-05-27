@@ -1,12 +1,13 @@
 @echo off
+cls
 echo/
 echo //--------------------------------------------------------------------------------------
 echo // CREATE MIGRATIONS SCRIPT
 echo //
-echo // Needed input:
-echo // ------------
+echo // Required input:
+echo // --------------
 echo // Project name   : The project that contains the DbContext
-echo // DbContext name : The DbContext that will use the migration
+echo // DbContext name : The DbContext for the migration
 echo // Migration name : This script will add the "Migration_<dbContext>" suffix to the name
 echo //--------------------------------------------------------------------------------------
 echo/

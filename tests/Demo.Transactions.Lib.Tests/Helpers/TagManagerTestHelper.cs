@@ -30,7 +30,7 @@ namespace Demo.Transactions.Lib.Tests.Helpers
         public TransactionsDbSetupHelper DbSetup { get; set; }
 
         /// <summary>
-        /// Asserts that TryDelete method did not return any error message
+        /// Asserts that TryDelete method does not return any error message
         /// </summary>
         /// <param name="entity"></param>
         public void AssertDelete(Tag entity)

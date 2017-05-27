@@ -8,10 +8,13 @@ using System.Linq;
 namespace Demo.Transactions.Lib.Tests.Helpers
 {
     /// <summary>
-    /// Test helper class for BankAccountManager
-    ///
-    /// Takes a TransactionsDbSetupHelper to execute CRUD methods, disposing the DbContext.
-    /// Manages entity class BankAccount using data class BankAccountData as input
+    ///     <para>
+    ///         Test helper class for BankAccountManager.
+    ///     </para>
+    ///     <para>
+    ///         Takes a TransactionsDbSetupHelper to execute CRUD methods, disposing the DbContext.
+    ///         Manages entity class BankAccount using data class BankAccountData as input.
+    ///     </para>
     /// </summary>
     public class BankAccountManagerTestHelper
     {
