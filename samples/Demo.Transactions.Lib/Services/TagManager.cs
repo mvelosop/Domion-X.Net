@@ -104,6 +104,5 @@ namespace Demo.Transactions.Lib.Services
                 return SingleOrDefault(bc => bc.Name == entity.Name && bc.Id != entity.Id);
             }
         }
-
     }
 }

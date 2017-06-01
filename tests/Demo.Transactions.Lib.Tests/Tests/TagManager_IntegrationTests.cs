@@ -2,9 +2,6 @@
 using Demo.Transactions.Lib.Tests.Helpers;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Demo.Transactions.Lib.Tests.Tests

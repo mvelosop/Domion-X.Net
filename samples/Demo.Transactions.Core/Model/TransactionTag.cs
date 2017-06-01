@@ -2,7 +2,7 @@
 // TransactionTag.cs
 //
 // Implementation of: TransactionTag (Class) <<ef-entity>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using System;
@@ -11,22 +11,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Demo.Transactions.Core.Model
 {
-	public class TransactionTag
-	{
-		public TransactionTag()
-		{
-		}
+    public class TransactionTag
+    {
+        public TransactionTag()
+        {
+        }
 
-		public virtual BankTransaction BankTransaction { get; set; }
+        public virtual BankTransaction BankTransaction { get; set; }
 
-		public virtual int BankTransaction_Id { get; set; }
+        public virtual int BankTransaction_Id { get; set; }
 
-		public int Id { get; set; }
+        public int Id { get; set; }
 
-		public virtual Byte[] RowVersion { get; set; }
+        public virtual Byte[] RowVersion { get; set; }
 
-		public virtual Tag Tag { get; set; }
+        public virtual Tag Tag { get; set; }
 
-		public virtual int Tag_Id { get; set; }
-	}
+        public virtual int Tag_Id { get; set; }
+    }
 }

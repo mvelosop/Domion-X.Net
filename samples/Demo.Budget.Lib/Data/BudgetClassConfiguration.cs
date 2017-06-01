@@ -2,7 +2,7 @@
 // BudgetClassConfiguration.cs
 //
 // Implementation of: BudgetClassConfiguration (Class) <<entity-configuration>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Budget.Core.Model;

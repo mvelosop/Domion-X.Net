@@ -1,12 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Metadata;
+using System;
 
 namespace Demo.Transactions.Lib.Migrations
 {
     public partial class CreateMigration_TransactionsDbContext : Migration
     {
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "CashTransactions",
+                schema: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "TransactionTags",
+                schema: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "BankTransactions",
+                schema: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "Tags",
+                schema: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "BankAccounts",
+                schema: "Transactions");
+
+            //migrationBuilder.DropTable(
+            //    name: "BudgetClasses",
+            //    schema: "Budget");
+        }
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             //migrationBuilder.EnsureSchema(
@@ -202,33 +228,6 @@ namespace Demo.Transactions.Lib.Migrations
                 schema: "Transactions",
                 table: "TransactionTags",
                 column: "Tag_Id");
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "CashTransactions",
-                schema: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "TransactionTags",
-                schema: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "BankTransactions",
-                schema: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "Tags",
-                schema: "Transactions");
-
-            migrationBuilder.DropTable(
-                name: "BankAccounts",
-                schema: "Transactions");
-
-            //migrationBuilder.DropTable(
-            //    name: "BudgetClasses",
-            //    schema: "Budget");
         }
     }
 }

@@ -1,17 +1,15 @@
 ﻿using Demo.Budget.Core.Model;
 using Demo.Budget.Lib.Services;
 using FluentAssertions;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 namespace Demo.Budget.Lib.Tests.Helpers
 {
     /// <summary>
     /// Test helper class for BudgetClassManager
-    /// 
+    ///
     /// Takes a BudgetDbSetup to execute CRUD methods and dispose properly the DbContext.
     /// Manages entity class BudgetClass using data class BudgetClassData as input
     /// </summary>
@@ -179,6 +177,5 @@ namespace Demo.Budget.Lib.Tests.Helpers
                 return errors.ToList();
             }
         }
-
     }
 }

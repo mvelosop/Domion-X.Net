@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Demo.Budget.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Demo.Budget.Lib.Data;
-using Demo.Budget.Core.Model;
 
 namespace Demo.Budget.Lib.Migrations
 {
@@ -37,7 +34,7 @@ namespace Demo.Budget.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetClasses","Budget");
+                    b.ToTable("BudgetClasses", "Budget");
                 });
         }
     }

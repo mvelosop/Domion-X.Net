@@ -2,7 +2,7 @@
 // ICashTransactionManager.cs
 //
 // Implementation of: ICashTransactionManager (Interface) <<entity-manager>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Transactions.Core.Model;
@@ -15,22 +15,22 @@ using System.Linq.Expressions;
 
 namespace Demo.Transactions.Core.Services
 {
-	public interface ICashTransactionManager : IEntityManager<CashTransaction, int>
-	{
-		CashTransaction Refresh(CashTransaction entity);
+    public interface ICashTransactionManager : IEntityManager<CashTransaction, int>
+    {
+        CashTransaction Refresh(CashTransaction entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		IEnumerable<ValidationResult> TryDelete(CashTransaction entity);
+        IEnumerable<ValidationResult> TryDelete(CashTransaction entity);
 
-		IEnumerable<ValidationResult> TryInsert(CashTransaction entity);
+        IEnumerable<ValidationResult> TryInsert(CashTransaction entity);
 
-		IEnumerable<ValidationResult> TryUpdate(CashTransaction entity);
+        IEnumerable<ValidationResult> TryUpdate(CashTransaction entity);
 
-		IEnumerable<ValidationResult> TryUpsert(CashTransaction entity);
+        IEnumerable<ValidationResult> TryUpsert(CashTransaction entity);
 
-		IEnumerable<ValidationResult> ValidateDelete(CashTransaction entity);
+        IEnumerable<ValidationResult> ValidateDelete(CashTransaction entity);
 
-		IEnumerable<ValidationResult> ValidateSave(CashTransaction entity);
-	}
+        IEnumerable<ValidationResult> ValidateSave(CashTransaction entity);
+    }
 }

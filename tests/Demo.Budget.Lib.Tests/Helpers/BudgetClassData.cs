@@ -15,12 +15,12 @@ namespace Demo.Budget.Lib.Tests.Helpers
             Name = entity.Name;
         }
 
-        public Expression<Func<BudgetClass, bool>> KeyExpression => bc => bc.Name == Name;
-
         public BudgetClassData(string name)
         {
             Name = name;
         }
+
+        public Expression<Func<BudgetClass, bool>> KeyExpression => bc => bc.Name == Name;
 
         public string Name { get; set; }
 

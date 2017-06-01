@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Demo.Budget.Lib.Migrations
 {
     public partial class CreateMigration_BudgetDbContext : Migration
     {
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "BudgetClasses",
+                schema: "Budget");
+        }
+
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
@@ -34,13 +39,6 @@ namespace Demo.Budget.Lib.Migrations
                 table: "BudgetClasses",
                 column: "Name",
                 unique: true);
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "BudgetClasses",
-                schema: "Budget");
         }
     }
 }

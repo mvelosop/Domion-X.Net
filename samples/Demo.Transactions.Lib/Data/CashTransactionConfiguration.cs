@@ -2,7 +2,7 @@
 // CashTransactionConfiguration.cs
 //
 // Implementation of: CashTransactionConfiguration (Class) <<entity-configuration>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Budget.Core.Model;
@@ -15,23 +15,23 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Demo.Transactions.Lib.Data
 {
-	public class CashTransactionConfiguration : EntityTypeConfiguration<CashTransaction>
-	{
-		public override void Map(EntityTypeBuilder<CashTransaction> builder)
-		{
-			builder.ToTable("CashTransactions", schema: "Transactions");
+    public class CashTransactionConfiguration : EntityTypeConfiguration<CashTransaction>
+    {
+        public override void Map(EntityTypeBuilder<CashTransaction> builder)
+        {
+            builder.ToTable("CashTransactions", schema: "Transactions");
 
-			builder.HasKey(ct => ct.Id);
+            builder.HasKey(ct => ct.Id);
 
-			builder.Property(ct => ct.RowVersion)
-				.IsRowVersion();
+            builder.Property(ct => ct.RowVersion)
+                .IsRowVersion();
 
-			// External etities
+            // External etities
 
-			builder.HasOne<BudgetClass>(ct => ct.BudgetClass)
-				.WithMany()
-				.HasForeignKey(ct => ct.BudgetClass_Id)
-				.OnDelete(DeleteBehavior.Restrict);
-		}
-	}
+            builder.HasOne<BudgetClass>(ct => ct.BudgetClass)
+                .WithMany()
+                .HasForeignKey(ct => ct.BudgetClass_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

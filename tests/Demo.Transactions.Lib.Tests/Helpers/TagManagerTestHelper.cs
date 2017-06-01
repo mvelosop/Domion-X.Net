@@ -1,18 +1,15 @@
-﻿using Demo.Budget.Core.Model;
-using Demo.Transactions.Core.Model;
+﻿using Demo.Transactions.Core.Model;
 using Demo.Transactions.Lib.Services;
 using FluentAssertions;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 namespace Demo.Transactions.Lib.Tests.Helpers
 {
     /// <summary>
     /// Test helper class for TagManager
-    /// 
+    ///
     /// Takes a TransactionsDbSetup to execute CRUD methods and dispose properly the DbContext.
     /// Manages entity class Tag using data class TagData as input
     /// </summary>
@@ -180,7 +177,5 @@ namespace Demo.Transactions.Lib.Tests.Helpers
                 return errors.ToList();
             }
         }
-
     }
-
 }

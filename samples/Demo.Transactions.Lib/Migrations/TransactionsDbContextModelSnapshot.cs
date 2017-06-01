@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Demo.Transactions.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Demo.Transactions.Lib.Data;
-using Demo.Budget.Core.Model;
+using System;
 
 namespace Demo.Transactions.Lib.Migrations
 {
@@ -37,7 +35,7 @@ namespace Demo.Transactions.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetClasses","Budget");
+                    b.ToTable("BudgetClasses", "Budget");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.BankAccount", b =>
@@ -69,7 +67,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BankAccounts","Transactions");
+                    b.ToTable("BankAccounts", "Transactions");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.BankTransaction", b =>
@@ -125,7 +123,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.HasIndex("BudgetClass_Id");
 
-                    b.ToTable("BankTransactions","Transactions");
+                    b.ToTable("BankTransactions", "Transactions");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.CashTransaction", b =>
@@ -158,7 +156,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.HasIndex("BudgetClass_Id");
 
-                    b.ToTable("CashTransactions","Transactions");
+                    b.ToTable("CashTransactions", "Transactions");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.Tag", b =>
@@ -176,7 +174,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags","Transactions");
+                    b.ToTable("Tags", "Transactions");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.TransactionTag", b =>
@@ -198,7 +196,7 @@ namespace Demo.Transactions.Lib.Migrations
 
                     b.HasIndex("Tag_Id");
 
-                    b.ToTable("TransactionTags","Transactions");
+                    b.ToTable("TransactionTags", "Transactions");
                 });
 
             modelBuilder.Entity("Demo.Transactions.Core.Model.BankTransaction", b =>

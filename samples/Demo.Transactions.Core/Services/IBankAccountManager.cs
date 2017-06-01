@@ -2,7 +2,7 @@
 // IBankAccountManager.cs
 //
 // Implementation of: IBankAccountManager (Interface) <<entity-manager>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Transactions.Core.Model;
@@ -15,22 +15,22 @@ using System.Linq.Expressions;
 
 namespace Demo.Transactions.Core.Services
 {
-	public interface IBankAccountManager : IEntityManager<BankAccount, int>
-	{
-		BankAccount Refresh(BankAccount entity);
+    public interface IBankAccountManager : IEntityManager<BankAccount, int>
+    {
+        BankAccount Refresh(BankAccount entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		IEnumerable<ValidationResult> TryDelete(BankAccount entity);
+        IEnumerable<ValidationResult> TryDelete(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryInsert(BankAccount entity);
+        IEnumerable<ValidationResult> TryInsert(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryUpdate(BankAccount entity);
+        IEnumerable<ValidationResult> TryUpdate(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryUpsert(BankAccount entity);
+        IEnumerable<ValidationResult> TryUpsert(BankAccount entity);
 
-		IEnumerable<ValidationResult> ValidateDelete(BankAccount entity);
+        IEnumerable<ValidationResult> ValidateDelete(BankAccount entity);
 
-		IEnumerable<ValidationResult> ValidateSave(BankAccount entity);
-	}
+        IEnumerable<ValidationResult> ValidateSave(BankAccount entity);
+    }
 }

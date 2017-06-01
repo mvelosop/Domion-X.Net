@@ -2,23 +2,20 @@
 // BankAccount.cs
 //
 // Implementation of: BankAccount (Class) <<ef-entity>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Demo.Transactions.Core.Model
 {
     public class BankAccount
     {
-        private List<BankTransaction> _transactions = new List<BankTransaction>();
-
         public BankAccount()
         {
+            Transactions = new HashSet<BankTransaction>();
         }
 
         [Required]
@@ -43,7 +40,7 @@ namespace Demo.Transactions.Core.Model
 
         public virtual Byte[] RowVersion { get; set; }
 
-        public virtual IEnumerable<BankTransaction> Transactions => new ReadOnlyCollection<BankTransaction>(_transactions);
+        public virtual ICollection<BankTransaction> Transactions { get; set; }
 
         ///
         /// <param name="transaction"></param>

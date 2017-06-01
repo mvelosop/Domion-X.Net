@@ -2,7 +2,7 @@
 // IBudgetClassManager.cs
 //
 // Implementation of: IBudgetClassManager (Interface) <<entity-manager>>
-// Generated with Domion-MDA - www.coderepo.blog
+// Generated with Domion-MDA - http://www.coderepo.blog/domion
 //------------------------------------------------------------------------------
 
 using Demo.Budget.Core.Model;
@@ -15,22 +15,22 @@ using System.Linq.Expressions;
 
 namespace Demo.Budget.Core.Services
 {
-	public interface IBudgetClassManager : IEntityManager<BudgetClass, int>
-	{
-		BudgetClass Refresh(BudgetClass entity);
+    public interface IBudgetClassManager : IEntityManager<BudgetClass, int>
+    {
+        BudgetClass Refresh(BudgetClass entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		IEnumerable<ValidationResult> TryDelete(BudgetClass entity);
+        IEnumerable<ValidationResult> TryDelete(BudgetClass entity);
 
-		IEnumerable<ValidationResult> TryInsert(BudgetClass entity);
+        IEnumerable<ValidationResult> TryInsert(BudgetClass entity);
 
-		IEnumerable<ValidationResult> TryUpdate(BudgetClass entity);
+        IEnumerable<ValidationResult> TryUpdate(BudgetClass entity);
 
-		IEnumerable<ValidationResult> TryUpsert(BudgetClass entity);
+        IEnumerable<ValidationResult> TryUpsert(BudgetClass entity);
 
-		IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity);
+        IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity);
 
-		IEnumerable<ValidationResult> ValidateSave(BudgetClass entity);
-	}
+        IEnumerable<ValidationResult> ValidateSave(BudgetClass entity);
+    }
 }
