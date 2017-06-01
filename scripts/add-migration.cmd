@@ -16,7 +16,7 @@ set /p dbContext="DbContext name : "
 set /p name="Migration name : "
 
 set scriptsDir=%cd%
-set cliProjectDir="..\samples\Demo.cli"
+set cliProjectDir="..\samples\Demo.CLI"
 
 @echo cd %cliProjectDir%
 cd %cliProjectDir%

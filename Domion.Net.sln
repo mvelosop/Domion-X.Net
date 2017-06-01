@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2FFA9BA2-0992-4935-86A1-E982B93D0432}"
 EndProject
@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F5C5CBCC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Budget.Lib.Tests", "tests\Demo.Budget.Lib.Tests\Demo.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Cli", "samples\Demo.Cli\Demo.Cli.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.CLI", "samples\Demo.CLI\Demo.CLI.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{33794F96-A61B-4BAF-8971-49654079BCE5}"
 	ProjectSection(SolutionItems) = preProject

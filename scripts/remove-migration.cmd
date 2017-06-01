@@ -14,7 +14,7 @@ set /p project="Project name   : "
 set /p dbContext="DbContext name : "
 
 set scriptsDir=%cd%
-set cliProjectDir="..\samples\Demo.cli"
+set cliProjectDir="..\samples\Demo.CLI"
 
 @echo cd %cliProjectDir%
 cd %cliProjectDir%
