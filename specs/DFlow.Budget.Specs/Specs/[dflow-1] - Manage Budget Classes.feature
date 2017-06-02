@@ -1,9 +1,9 @@
-﻿Feature: [dflow-1] - Feature - Manage Budget Classes
+﻿Feature: (dflow-1) - Feature - Manage Budget Classes
 	In order to manage my personal budget
 	As the one responsible to do it
 	I want to manage a list of general budget classes
 
-Scenario: Add new budget classes
+Scenario: (dflow-1) - Scenario - Add new budget classes
 	
 	Given the following budget classes do not exist:
 		| Name                 | Type       |

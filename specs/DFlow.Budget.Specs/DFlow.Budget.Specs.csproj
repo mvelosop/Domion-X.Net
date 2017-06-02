@@ -82,7 +82,19 @@
       <LastGenOutput>[dflow-1] - Manage Budget Classes.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\DFlow.Budget.Core\DFlow.Budget.Core.csproj">
+      <Project>{8ffea04b-e551-47f5-bb84-ef8df86ff1a2}</Project>
+      <Name>DFlow.Budget.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
+      <Project>{66186c10-45e2-4227-8f8b-ca69650072c1}</Project>
+      <Name>DFlow.Budget.Lib.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
