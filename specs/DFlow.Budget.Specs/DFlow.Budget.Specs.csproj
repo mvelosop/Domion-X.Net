@@ -65,13 +65,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Bindings\BudgetHooks.cs" />
+    <Compile Include="Bindings\BudgetSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specs\[dflow-1] - Manage Budget Classes.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>[dflow-1] - Manage Budget Classes.feature</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Specs\[dflow-1] - Manage Budget Classes.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>[dflow-1] - Manage Budget Classes.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
