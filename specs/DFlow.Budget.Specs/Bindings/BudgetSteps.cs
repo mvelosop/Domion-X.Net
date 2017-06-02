@@ -45,7 +45,7 @@ namespace DFlow.Budget.Specs.Bindings
 
                 var errors = BudgetClassManager.TryInsert(entity);
 
-                errors.Should().BeEmpty(string.Join("\n", errors.Select(vr => vr.ErrorMessage)));
+                errors.Should().BeEmpty();
             }
 
             BudgetClassManager.SaveChanges();
