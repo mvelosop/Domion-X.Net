@@ -6,32 +6,32 @@
 Scenario: (dflow-1) - Scenario - Add new budget classes
 	
 	Given the following budget classes do not exist:
-		| Name                 | Type       |
-		| New - Income         | Income     |
-		| New - Housing        | Expense    |
-		| New - Transportation | Expense    |
-		| New - Savings        | Savings    |
-		| New - Investment     | Investment |
-		| New - Taxes          | Taxes      |
-		| New - Loans          | Loans      |
+		| Name                 | TransactionType |
+		| New - Income         | Income          |
+		| New - Housing        | Expense         |
+		| New - Transportation | Expense         |
+		| New - Savings        | Savings         |
+		| New - Investment     | Investment      |
+		| New - Taxes          | Tax             |
+		| New - Loans          | Loan            |
 
 	When I add the following budget classes:
-		| Name                 | Type       |
-		| New - Income         | Income     |
-		| New - Housing        | Expense    |
-		| New - Transportation | Expense    |
-		| New - Savings        | Savings    |
-		| New - Investment     | Investment |
-		| New - Taxes          | Taxes      |
-		| New - Loans          | Loans      |
+		| Name                 | TransactionType |
+		| New - Income         | Income          |
+		| New - Housing        | Expense         |
+		| New - Transportation | Expense         |
+		| New - Savings        | Savings         |
+		| New - Investment     | Investment      |
+		| New - Taxes          | Tax             |
+		| New - Loans          | Loan            |
 
 	Then I can find the following budget classes starting with "New - ":
-		| Name                 | Type       |
-		| New - Income         | Income     |
-		| New - Housing        | Expense    |
-		| New - Transportation | Expense    |
-		| New - Savings        | Savings    |
-		| New - Investment     | Investment |
-		| New - Taxes          | Taxes      |
-		| New - Loans          | Loans      |
+		| Name                 | TransactionType |
+		| New - Income         | Income          |
+		| New - Housing        | Expense         |
+		| New - Transportation | Expense         |
+		| New - Savings        | Savings         |
+		| New - Investment     | Investment      |
+		| New - Taxes          | Tax             |
+		| New - Loans          | Loan            |
 

@@ -25,7 +25,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Delete test - Inserted");
+            var data = new BudgetClassData("Delete test - Inserted", "Income");
 
             ManagerHelper.AssertEntitiesDoNotExist(data);
 
@@ -51,7 +51,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Duplicate Insert test - Inserted");
+            var data = new BudgetClassData("Duplicate Insert test - Inserted", "Income");
 
             ManagerHelper.AssertEntitiesDoNotExist(data);
 
@@ -73,7 +73,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Insert test - Inserted");
+            var data = new BudgetClassData("Insert test - Inserted", "Income");
 
             ManagerHelper.AssertEntitiesDoNotExist(data);
 
@@ -97,8 +97,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first");
-            var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second");
+            var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first", "Income");
+            var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second", "Income");
 
             ManagerHelper.AssertEntitiesDoNotExist(dataFirst, dataSecond);
 
@@ -123,8 +123,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Update test - Inserted");
-            var update = new BudgetClassData("Update test - UPDATED");
+            var data = new BudgetClassData("Update test - Inserted", "Income");
+            var update = new BudgetClassData("Update test - UPDATED", "Income");
 
             ManagerHelper.AssertEntitiesDoNotExist(data, update);
 

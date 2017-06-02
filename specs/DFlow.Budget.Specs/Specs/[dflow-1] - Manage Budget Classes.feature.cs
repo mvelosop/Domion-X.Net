@@ -83,7 +83,7 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
-                        "Type"});
+                        "TransactionType"});
             table1.AddRow(new string[] {
                         "New - Income",
                         "Income"});
@@ -101,16 +101,16 @@ this.ScenarioSetup(scenarioInfo);
                         "Investment"});
             table1.AddRow(new string[] {
                         "New - Taxes",
-                        "Taxes"});
+                        "Tax"});
             table1.AddRow(new string[] {
                         "New - Loans",
-                        "Loans"});
+                        "Loan"});
 #line 8
  testRunner.Given("the following budget classes do not exist:", ((string)(null)), table1, "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
-                        "Type"});
+                        "TransactionType"});
             table2.AddRow(new string[] {
                         "New - Income",
                         "Income"});
@@ -128,16 +128,16 @@ this.ScenarioSetup(scenarioInfo);
                         "Investment"});
             table2.AddRow(new string[] {
                         "New - Taxes",
-                        "Taxes"});
+                        "Tax"});
             table2.AddRow(new string[] {
                         "New - Loans",
-                        "Loans"});
+                        "Loan"});
 #line 18
  testRunner.When("I add the following budget classes:", ((string)(null)), table2, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
-                        "Type"});
+                        "TransactionType"});
             table3.AddRow(new string[] {
                         "New - Income",
                         "Income"});
@@ -155,10 +155,10 @@ this.ScenarioSetup(scenarioInfo);
                         "Investment"});
             table3.AddRow(new string[] {
                         "New - Taxes",
-                        "Taxes"});
+                        "Tax"});
             table3.AddRow(new string[] {
                         "New - Loans",
-                        "Loans"});
+                        "Loan"});
 #line 28
  testRunner.Then("I can find the following budget classes starting with \"New - \":", ((string)(null)), table3, "Then ");
 #line hidden

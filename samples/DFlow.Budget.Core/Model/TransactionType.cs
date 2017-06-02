@@ -19,6 +19,6 @@ namespace DFlow.Budget.Core.Model
 		Loan,
 		Savings,
 		Investment,
-		Taxes
+		Tax
 	}
 }
