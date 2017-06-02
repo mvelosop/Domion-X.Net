@@ -16,19 +16,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.Lib", "src\Domion.Li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Budget.Core", "samples\Demo.Budget.Core\Demo.Budget.Core.csproj", "{8FFEA04B-E551-47F5-BB84-EF8DF86FF1A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Core", "samples\DFlow.Budget.Core\DFlow.Budget.Core.csproj", "{8FFEA04B-E551-47F5-BB84-EF8DF86FF1A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Budget.Lib", "samples\Demo.Budget.Lib\Demo.Budget.Lib.csproj", "{ED29DD25-9E6D-441A-94DC-3081F79C85A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Lib", "samples\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj", "{ED29DD25-9E6D-441A-94DC-3081F79C85A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Core", "samples\Demo.Transactions.Core\Demo.Transactions.Core.csproj", "{08B52E17-7362-4114-B0F1-C67C98EF30E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Core", "samples\DFlow.Transactions.Core\DFlow.Transactions.Core.csproj", "{08B52E17-7362-4114-B0F1-C67C98EF30E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Lib", "samples\Demo.Transactions.Lib\Demo.Transactions.Lib.csproj", "{F2126BEE-0366-4999-9472-495F40ED33A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Lib", "samples\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj", "{F2126BEE-0366-4999-9472-495F40ED33A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Budget.Lib.Tests", "tests\Demo.Budget.Lib.Tests\Demo.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Lib.Tests", "tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.CLI", "samples\Demo.CLI\Demo.CLI.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.CLI", "samples\DFlow.CLI\DFlow.CLI.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{33794F96-A61B-4BAF-8971-49654079BCE5}"
 	ProjectSection(SolutionItems) = preProject
@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{3379
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Transactions.Lib.Tests", "tests\Demo.Transactions.Lib.Tests\Demo.Transactions.Lib.Tests.csproj", "{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Lib.Tests", "tests\DFlow.Transactions.Lib.Tests\DFlow.Transactions.Lib.Tests.csproj", "{D33DB3BB-93CF-42B9-B319-F4EE3FCFBB86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
