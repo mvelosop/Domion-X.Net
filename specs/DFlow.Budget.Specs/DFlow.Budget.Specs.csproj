@@ -95,6 +95,10 @@
       <Project>{ED29DD25-9E6D-441A-94DC-3081F79C85A9}</Project>
       <Name>DFlow.Budget.Lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj">
+      <Project>{5e8721d7-fd0b-4d28-a06d-0864202b0196}</Project>
+      <Name>DFlow.Budget.Setup</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj">
       <Project>{2d6cad25-12eb-4e34-b9eb-e66c894d40dd}</Project>
       <Name>Domion.Lib</Name>

@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using BoDi;
 using DFlow.Budget.Lib.Data;
-using DFlow.Budget.Lib.Tests.Helpers;
+using DFlow.Budget.Setup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,13 @@ namespace DFlow.Budget.Specs.Bindings
 
             _dbHelper.SetupDatabase();
 
-            SetupDependencyResolver();
+            var autofacHelper = new BudgetAutofacSetupHelper(_dbHelper);
+
+            var builder = new ContainerBuilder();
+
+            autofacHelper.SetupContainer(builder);
+
+            _testContainer = builder.Build();
         }
 
         [AfterScenario]
@@ -62,47 +68,6 @@ namespace DFlow.Budget.Specs.Bindings
             ScenarioContext.Current.Add(containerTag, scope);
         }
 
-        private static Assembly[] GetLoadedAssemblies()
-        {
-            AppDomain currentDomain = AppDomain.CurrentDomain;
 
-            Assembly[] appAssemblies = currentDomain.GetAssemblies().Where(a => a.GetName().Name.StartsWith("DFlow")).ToArray();
-
-            return appAssemblies;
-        }
-
-        private static void RegisterTypes(Assembly[] appAssemblies)
-        {
-            var builder = new ContainerBuilder();
-
-            builder.Register<BudgetDbContext>((c) => _dbHelper.GetDbContext())
-                .InstancePerLifetimeScope();
-
-            foreach (var asm in appAssemblies)
-            {
-                builder.RegisterAssemblyTypes(asm)
-                    .Where(t => t.Name.EndsWith("Manager"))
-                    .InstancePerLifetimeScope()
-                    .AsSelf()
-                    .AsImplementedInterfaces();
-
-                //builder.RegisterAssemblyTypes(asm)
-                //    .Where(t => t.Name.EndsWith("DbContext"))
-                //    .InstancePerLifetimeScope();
-
-                builder.RegisterAssemblyTypes(asm)
-                    .Where(t => t.Name.EndsWith("ManagerHelper"))
-                    .InstancePerLifetimeScope();
-            }
-
-            _testContainer = builder.Build();
-        }
-
-        private static void SetupDependencyResolver()
-        {
-            Assembly[] appAssemblies = GetLoadedAssemblies();
-
-            RegisterTypes(appAssemblies);
-        }
     }
 }

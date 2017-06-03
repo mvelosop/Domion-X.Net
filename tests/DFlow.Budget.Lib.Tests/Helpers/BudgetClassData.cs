@@ -24,7 +24,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             TransactionType = transactionType;
         }
 
-        public Expression<Func<BudgetClass, bool>> KeyExpression => bc => bc.Name == Name;
+        public Expression<Func<BudgetClass, bool>> KeyValueExpression => bc => bc.Name == Name;
 
         public string Name { get; set; }
 
