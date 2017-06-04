@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Domion.Lib.Data
 {
-    public class BaseRepository<T, TKey> : IEntityManager<T, TKey> where T : class
+    public class BaseRepository<T, TKey> : IEntityManager<T>, IEntityManager<T, TKey> where T : class
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<T> _dbSet;

@@ -7,7 +7,10 @@ namespace Domion.Core.Services
     public interface IEntityManager<T, TKey> where T : class
     {
         T Find(TKey key);
+    }
 
+    public interface IEntityManager<T> where T : class
+    {
         T First(Expression<Func<T, bool>> where);
 
         T FirstOrDefault(Expression<Func<T, bool>> where);
