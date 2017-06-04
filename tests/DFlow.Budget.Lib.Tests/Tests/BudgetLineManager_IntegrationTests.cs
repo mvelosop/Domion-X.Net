@@ -129,35 +129,35 @@ namespace DFlow.Budget.Lib.Tests
             AssertEntitiesExist(data);
         }
 
-        //[Fact]
-        //public void TryUpdate_Fails_WhenDuplicateKeyData()
-        //{
-        //    // Arrange ---------------------------
+        [Fact]
+        public void TryUpdate_Fails_WhenDuplicateKeyData()
+        {
+            // Arrange ---------------------------
 
-        //    var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first", "Income");
-        //    var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second", "Income");
+            var dataFirst = new BudgetLineData("Update-Error-Duplicate - Inserted first", "Data-BudgetClass");
+            var dataSecond = new BudgetLineData("Update-Error-Duplicate - Inserted second", "Data-BudgetClass");
 
-        //    EnsureEntitiesExist(dataFirst, dataSecond);
+            EnsureEntitiesExist(dataFirst, dataSecond);
 
-        //    // Act -------------------------------
+            // Act -------------------------------
 
-        //    IEnumerable<ValidationResult> errors = null;
+            IEnumerable<ValidationResult> errors = null;
 
-        //    using (var scope = GetLocalScope())
-        //    {
-        //        var manager = scope.Resolve<BudgetClassManager>();
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetLineManager>();
 
-        //        var entity = manager.GetByKeyDataValue(dataFirst.Name);
+                var entity = manager.GetByKeyDataValue(dataFirst.Name);
 
-        //        entity.Name = dataSecond.Name;
+                entity.Name = dataSecond.Name;
 
-        //        errors = manager.TryUpdate(entity).ToList();
-        //    }
+                errors = manager.TryUpdate(entity).ToList();
+            }
 
-        //    // Assert ----------------------------
+            // Assert ----------------------------
 
-        //    errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
-        //}
+            errors.Should().ContainErrorMessage(BudgetLineManager.duplicateByNameError);
+        }
 
         [Fact]
         public void TryUpdate_UpdatesRecord_WhenValidData()
