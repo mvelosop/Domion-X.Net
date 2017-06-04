@@ -17,6 +17,15 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             ClassName = className;
         }
 
+        public BudgetLineData(BudgetLine entity)
+        {
+            Name = entity.Name;
+
+            ClassName = entity.BudgetClass.Name;
+
+            BudgetClass_Id = entity.BudgetClass_Id;
+        }
+
         public int BudgetClass_Id { get; set; }
 
         public string ClassName { get; set; }
