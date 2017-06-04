@@ -26,8 +26,8 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             options => options
                 .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
 
+        private Lazy<BudgetLineDataHelper> _lazyBudgetLineDataHelper;
         private Lazy<BudgetLineManager> _lazyBudgetLineManager;
-
         private ILifetimeScope _scope;
 
         /// <summary>
@@ -36,12 +36,16 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="lazyBudgetLineManager"></param>
         public BudgetLineManagerHelper(
             ILifetimeScope scope,
+            Lazy<BudgetLineDataHelper> lazyBudgetLineDataHelper,
             Lazy<BudgetLineManager> lazyBudgetLineManager)
         {
             _scope = scope;
 
+            _lazyBudgetLineDataHelper = lazyBudgetLineDataHelper;
             _lazyBudgetLineManager = lazyBudgetLineManager;
         }
+
+        private BudgetLineDataHelper BudgetLineDataHelper { get { return _lazyBudgetLineDataHelper.Value; } }
 
         private BudgetLineManager BudgetLineManager { get { return _lazyBudgetLineManager.Value; } }
 
@@ -118,6 +122,8 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (var data in dataSet)
             {
+                BudgetLineDataHelper.SetReferences(data);
+
                 var entity = BudgetLineManager.SingleOrDefault(e => e.Name == data.Name);
 
                 if (entity == null)

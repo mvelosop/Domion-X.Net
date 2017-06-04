@@ -30,7 +30,7 @@ namespace DFlow.Budget.Lib.Tests
 
                 BudgetClassData[] dataSet = new BudgetClassData[]
                 {
-                    new BudgetClassData("Tests - Data", "Income"),
+                    new BudgetClassData("Data-BudgetClass", "Income"),
                 };
 
                 budgetClassHelper.EnsureEntitiesExist(dataSet);
@@ -100,7 +100,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetLineData("Tests - Insert-When-Valid - Inserted", "Tests - Data");
+            var data = new BudgetLineData("Insert-Success-Valid - Inserted", "Data-BudgetClass");
 
             EnsureEntitiesDoNotExist(data);
 
@@ -159,40 +159,40 @@ namespace DFlow.Budget.Lib.Tests
         //    errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
         //}
 
-        //[Fact]
-        //public void TryUpdate_UpdatesRecord_WhenValidData()
-        //{
-        //    // Arrange ---------------------------
+        [Fact]
+        public void TryUpdate_UpdatesRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
 
-        //    var data = new BudgetClassData("Update test - Inserted", "Income");
-        //    var update = new BudgetClassData("Update test - UPDATED", "Income");
+            var data = new BudgetLineData("Update-Success-Valid - Inserted", "Data-BudgetClass");
+            var update = new BudgetLineData("Update-Success-Valid - Updated", "Data-BudgetClass");
 
-        //    EnsureEntitiesExist(data);
-        //    EnsureEntitiesDoNotExist(update);
+            EnsureEntitiesExist(data);
+            EnsureEntitiesDoNotExist(update);
 
-        //    // Act -------------------------------
+            // Act -------------------------------
 
-        //    IEnumerable<ValidationResult> errors = null;
+            IEnumerable<ValidationResult> errors = null;
 
-        //    using (var scope = GetLocalScope())
-        //    {
-        //        var manager = scope.Resolve<BudgetClassManager>();
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetLineManager>();
 
-        //        var entity = manager.GetByKeyDataValue(data.Name);
+                var entity = manager.GetByKeyDataValue(data.Name);
 
-        //        entity.Name = update.Name;
+                entity.Name = update.Name;
 
-        //        errors = manager.TryUpdate(entity);
+                errors = manager.TryUpdate(entity);
 
-        //        manager.SaveChanges();
-        //    }
+                manager.SaveChanges();
+            }
 
-        //    // Assert ----------------------------
+            // Assert ----------------------------
 
-        //    errors.Should().BeEmpty();
+            errors.Should().BeEmpty();
 
-        //    AssertEntitiesExist(update);
-        //}
+            AssertEntitiesExist(update);
+        }
 
         private void AssertEntitiesDoNotExist(params BudgetLineData[] data)
         {

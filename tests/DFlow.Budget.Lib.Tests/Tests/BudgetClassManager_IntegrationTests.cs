@@ -30,7 +30,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Tests - Delete - Inserted", "Income");
+            var data = new BudgetClassData("Delete - Inserted", "Income");
 
             EnsureEntitiesExist(data);
 
@@ -61,7 +61,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Tests - Insert-Duplicate - Inserted", "Income");
+            var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", "Income");
 
             EnsureEntitiesExist(data);
 
@@ -88,7 +88,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Tests - Insert - Inserted", "Income");
+            var data = new BudgetClassData("Insert-Success-Valid - Inserted", "Income");
 
             EnsureEntitiesDoNotExist(data);
 
@@ -119,8 +119,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var dataFirst = new BudgetClassData("Tests - Update-Duplicate - Inserted first", "Income");
-            var dataSecond = new BudgetClassData("Tests - Update-Duplicate - Inserted second", "Income");
+            var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", "Income");
+            var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", "Income");
 
             EnsureEntitiesExist(dataFirst, dataSecond);
 
@@ -149,8 +149,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Tests - Update - Inserted", "Income");
-            var update = new BudgetClassData("Tests - Update - Updated", "Income");
+            var data = new BudgetClassData("Update-Success-Valid - Inserted", "Income");
+            var update = new BudgetClassData("Update-Success-Valid - Updated", "Income");
 
             EnsureEntitiesExist(data);
             EnsureEntitiesDoNotExist(update);
