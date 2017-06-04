@@ -56,6 +56,10 @@ namespace DFlow.Budget.Setup
             foreach (var asm in appAssemblies)
             {
                 builder.RegisterAssemblyTypes(asm)
+                    .Where(t => t.Name.EndsWith("DataHelper"))
+                    .InstancePerLifetimeScope();
+
+                builder.RegisterAssemblyTypes(asm)
                     .Where(t => t.Name.EndsWith("Manager"))
                     .InstancePerLifetimeScope()
                     .AsSelf()

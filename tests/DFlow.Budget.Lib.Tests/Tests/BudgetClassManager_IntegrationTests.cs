@@ -30,7 +30,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Delete test - Inserted", "Income");
+            var data = new BudgetClassData("Tests - Delete - Inserted", "Income");
 
             EnsureEntitiesExist(data);
 
@@ -61,7 +61,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Duplicate Insert test - Inserted", "Income");
+            var data = new BudgetClassData("Tests - Insert-Duplicate - Inserted", "Income");
 
             EnsureEntitiesExist(data);
 
@@ -88,7 +88,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Insert test - Inserted", "Income");
+            var data = new BudgetClassData("Tests - Insert - Inserted", "Income");
 
             EnsureEntitiesDoNotExist(data);
 
@@ -119,8 +119,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first", "Income");
-            var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second", "Income");
+            var dataFirst = new BudgetClassData("Tests - Update-Duplicate - Inserted first", "Income");
+            var dataSecond = new BudgetClassData("Tests - Update-Duplicate - Inserted second", "Income");
 
             EnsureEntitiesExist(dataFirst, dataSecond);
 
@@ -149,8 +149,8 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Update test - Inserted", "Income");
-            var update = new BudgetClassData("Update test - UPDATED", "Income");
+            var data = new BudgetClassData("Tests - Update - Inserted", "Income");
+            var update = new BudgetClassData("Tests - Update - Updated", "Income");
 
             EnsureEntitiesExist(data);
             EnsureEntitiesDoNotExist(update);

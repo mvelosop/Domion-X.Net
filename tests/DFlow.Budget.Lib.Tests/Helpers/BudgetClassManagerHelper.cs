@@ -27,7 +27,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         private ILifetimeScope _scope;
 
         /// <summary>
-        /// Creates the test helper for BudgetManager
+        /// Creates the test helper for BudgetClassManager
         /// </summary>
         /// <param name="lazyBudgetClassManager"></param>
         public BudgetClassManagerHelper(
@@ -42,7 +42,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         private BudgetClassManager BudgetClassManager { get { return _lazyBudgetClassManager.Value; } }
 
         /// <summary>
-        /// Asserts that entities equivalent to the supplied input data classes do not exist
+        /// Asserts that entities with the supplied key data values do not exist
         /// </summary>
         /// <param name="dataSet"></param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
@@ -53,7 +53,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataSet)
                 {
-                    var entity = manager.GetByKeyDataValue(data.Name);
+                    var entity = manager.SingleOrDefault(e => e.Name == data.Name);
 
                     entity.Should().BeNull(@"because BudgetClass ""{0}"" MUST NOT EXIST!", data.Name);
                 }
@@ -72,11 +72,11 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataSet)
                 {
-                    BudgetClass entity = manager.GetByKeyDataValue(data.Name);
+                    BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
+
+                    entity.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
 
                     var entityData = new BudgetClassData(entity);
-
-                    entityData.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
 
                     entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
                 }
@@ -91,7 +91,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (var data in dataSet)
             {
-                var entity = BudgetClassManager.GetByKeyDataValue(data.Name);
+                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
                 if (entity != null)
                 {
@@ -114,7 +114,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (var data in dataSet)
             {
-                var entity = BudgetClassManager.GetByKeyDataValue(data.Name);
+                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
                 if (entity == null)
                 {
