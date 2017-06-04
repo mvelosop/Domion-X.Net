@@ -11,24 +11,23 @@
 using DFlow.Transactions.Core.Model;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DFlow.Transactions.Lib.Data
 {
-	public class BankAccountConfiguration : EntityTypeConfiguration<BankAccount>
-	{
-		public override void Map(EntityTypeBuilder<BankAccount> builder)
-		{
-			builder.ToTable("BankAccounts", schema: "Transactions");
+    public class BankAccountConfiguration : EntityTypeConfiguration<BankAccount>
+    {
+        public override void Map(EntityTypeBuilder<BankAccount> builder)
+        {
+            builder.ToTable("BankAccounts", schema: "Transactions");
 
-			builder.HasKey(ba => ba.Id);
+            builder.HasKey(ba => ba.Id);
 
-			builder.Property(ba => ba.RowVersion)
-				.IsRowVersion();
+            builder.Property(ba => ba.RowVersion)
+                .IsRowVersion();
 
-			builder.HasIndex(ba => ba.AccountName)
-				.IsUnique();
-		}
-	}
+            builder.HasIndex(ba => ba.AccountName)
+                .IsUnique();
+        }
+    }
 }

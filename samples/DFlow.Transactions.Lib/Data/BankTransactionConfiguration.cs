@@ -9,7 +9,6 @@
 //------------------------------------------------------------------------------
 
 using DFlow.Budget.Core.Model;
-using DFlow.Budget.Lib.Data;
 using DFlow.Transactions.Core.Model;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
@@ -18,28 +17,28 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DFlow.Transactions.Lib.Data
 {
-	public class BankTransactionConfiguration : EntityTypeConfiguration<BankTransaction>
-	{
-		public override void Map(EntityTypeBuilder<BankTransaction> builder)
-		{
-			builder.ToTable("BankTransactions", schema: "Transactions");
+    public class BankTransactionConfiguration : EntityTypeConfiguration<BankTransaction>
+    {
+        public override void Map(EntityTypeBuilder<BankTransaction> builder)
+        {
+            builder.ToTable("BankTransactions", schema: "Transactions");
 
-			builder.HasKey(bt => bt.Id);
+            builder.HasKey(bt => bt.Id);
 
-			builder.Property(bt => bt.RowVersion)
-				.IsRowVersion();
+            builder.Property(bt => bt.RowVersion)
+                .IsRowVersion();
 
-			builder.HasOne<BankAccount>(bt => bt.BankAccount)
-				.WithMany(ba => ba.Transactions)
-				.HasForeignKey(bt => bt.BankAccount_Id)
-				.OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne<BankAccount>(bt => bt.BankAccount)
+                .WithMany(ba => ba.Transactions)
+                .HasForeignKey(bt => bt.BankAccount_Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
-			// External etities
+            // External etities
 
-			builder.HasOne<BudgetLine>(bt => bt.BudgetLine)
-				.WithMany()
-				.HasForeignKey(bt => bt.BudgetLine_Id)
-				.OnDelete(DeleteBehavior.Restrict);
-		}
-	}
+            builder.HasOne<BudgetLine>(bt => bt.BudgetLine)
+                .WithMany()
+                .HasForeignKey(bt => bt.BudgetLine_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

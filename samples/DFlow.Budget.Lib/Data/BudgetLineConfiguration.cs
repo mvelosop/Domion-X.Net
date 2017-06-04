@@ -16,24 +16,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DFlow.Budget.Lib.Data
 {
-	public class BudgetLineConfiguration : EntityTypeConfiguration<BudgetLine>
-	{
-		public override void Map(EntityTypeBuilder<BudgetLine> builder)
-		{
-			builder.ToTable("BudgetLines", schema: "Budget");
+    public class BudgetLineConfiguration : EntityTypeConfiguration<BudgetLine>
+    {
+        public override void Map(EntityTypeBuilder<BudgetLine> builder)
+        {
+            builder.ToTable("BudgetLines", schema: "Budget");
 
-			builder.HasKey(bl => bl.Id);
+            builder.HasKey(bl => bl.Id);
 
-			builder.Property(bl => bl.RowVersion)
-				.IsRowVersion();
+            builder.Property(bl => bl.RowVersion)
+                .IsRowVersion();
 
-			builder.HasOne<BudgetClass>(bl => bl.BudgetClass)
-				.WithMany()
-				.HasForeignKey(bl => bl.BudgetClass_Id)
-				.OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne<BudgetClass>(bl => bl.BudgetClass)
+                .WithMany()
+                .HasForeignKey(bl => bl.BudgetClass_Id)
+                .OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasIndex(bl => bl.Name)
-				.IsUnique();
-		}
-	}
+            builder.HasIndex(bl => bl.Name)
+                .IsUnique();
+        }
+    }
 }

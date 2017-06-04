@@ -2,10 +2,7 @@
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -25,13 +22,18 @@ namespace DFlow.Budget.Specs.Bindings
         {
             BudgetClassData[] dataSet = table.CreateSet<BudgetClassData>().ToArray();
 
-            //BudgetClassManagerHelper.AssertEntitiesDoNotExist(dataSet);
+            BudgetClassManagerHelper.EnsureEntitiesDoNotExist(dataSet);
         }
 
         [Then(@"I can find the following budget classes starting with ""(.*)"":")]
         public void ThenICanFindTheFollowingBudgetClassesStartingWith(string queryText, Table table)
         {
-            ScenarioContext.Current.Pending();
+            var dataSet = BudgetClassManager
+                .Query(bc => bc.Name.StartsWith(queryText))
+                .ToList()
+                .Select(bc => new BudgetClassData(bc));
+
+            table.CompareToSet(dataSet);
         }
 
         [When(@"I add the following budget classes:")]

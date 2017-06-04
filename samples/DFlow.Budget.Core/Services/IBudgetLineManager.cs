@@ -10,30 +10,23 @@
 
 using DFlow.Budget.Core.Model;
 using Domion.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace DFlow.Budget.Core.Services
 {
-	public interface IBudgetLineManager : IEntityManager<BudgetLine, int>
-	{
-		BudgetLine Refresh(BudgetLine entity);
+    public interface IBudgetLineManager : IEntityManager<BudgetLine, int>
+    {
+        BudgetLine Refresh(BudgetLine entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		IEnumerable<ValidationResult> TryDelete(BudgetLine entity);
+        IEnumerable<ValidationResult> TryDelete(BudgetLine entity);
 
-		IEnumerable<ValidationResult> TryInsert(BudgetLine entity);
+        IEnumerable<ValidationResult> TryInsert(BudgetLine entity);
 
-		IEnumerable<ValidationResult> TryUpdate(BudgetLine entity);
+        IEnumerable<ValidationResult> TryUpdate(BudgetLine entity);
 
-		IEnumerable<ValidationResult> TryUpsert(BudgetLine entity);
-
-		IEnumerable<ValidationResult> ValidateDelete(BudgetLine entity);
-
-		IEnumerable<ValidationResult> ValidateSave(BudgetLine entity);
-	}
+        IEnumerable<ValidationResult> TryUpsert(BudgetLine entity);
+    }
 }

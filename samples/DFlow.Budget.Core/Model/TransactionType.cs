@@ -8,17 +8,15 @@
 //  Original author: Miguel
 //------------------------------------------------------------------------------
 
-
-
 namespace DFlow.Budget.Core.Model
 {
-	public enum TransactionType
-	{
-		Income,
-		Expense,
-		Loan,
-		Savings,
-		Investment,
-		Tax
-	}
+    public enum TransactionType
+    {
+        Income,
+        Expense,
+        Loan,
+        Savings,
+        Investment,
+        Tax
+    }
 }

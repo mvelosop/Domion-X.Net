@@ -19,7 +19,7 @@ namespace Domion.Lib.Data
             _dbSet = _dbContext.Set<T>();
         }
 
-        public virtual DbContext DbContext => _dbContext;
+        protected virtual DbContext DbContext => _dbContext;
 
         public void Detach(T entity)
         {
@@ -85,16 +85,6 @@ namespace Domion.Lib.Data
             return Query(where).SingleOrDefault<T>();
         }
 
-        public virtual IEnumerable<ValidationResult> ValidateDelete(T model)
-        {
-            return Enumerable.Empty<ValidationResult>();
-        }
-
-        public virtual IEnumerable<ValidationResult> ValidateSave(T model)
-        {
-            return Enumerable.Empty<ValidationResult>();
-        }
-
         protected virtual IEnumerable<ValidationResult> TryDelete(T entity)
         {
             var deleteErrors = ValidateDelete(entity);
@@ -135,6 +125,16 @@ namespace Domion.Lib.Data
             _dbSet.Update(entity);
 
             return Enumerable.Empty<ValidationResult>();
+        }
+
+        protected virtual IEnumerable<ValidationResult> ValidateDelete(T model)
+        {
+            yield break;
+        }
+
+        protected virtual IEnumerable<ValidationResult> ValidateSave(T model)
+        {
+            yield break;
         }
     }
 }

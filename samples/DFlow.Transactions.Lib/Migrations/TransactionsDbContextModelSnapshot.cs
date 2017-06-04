@@ -1,10 +1,8 @@
-﻿using System;
+﻿using DFlow.Transactions.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using DFlow.Transactions.Lib.Data;
-using DFlow.Budget.Core.Model;
+using System;
 
 namespace DFlow.Transactions.Lib.Migrations
 {
@@ -63,7 +61,7 @@ namespace DFlow.Transactions.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetLines","Budget");
+                    b.ToTable("BudgetLines", "Budget");
                 });
 
             modelBuilder.Entity("DFlow.Transactions.Core.Model.BankAccount", b =>
@@ -101,7 +99,7 @@ namespace DFlow.Transactions.Lib.Migrations
                     b.HasIndex("AccountName")
                         .IsUnique();
 
-                    b.ToTable("BankAccounts","Transactions");
+                    b.ToTable("BankAccounts", "Transactions");
                 });
 
             modelBuilder.Entity("DFlow.Transactions.Core.Model.BankTransaction", b =>
@@ -157,7 +155,7 @@ namespace DFlow.Transactions.Lib.Migrations
 
                     b.HasIndex("BudgetLine_Id");
 
-                    b.ToTable("BankTransactions","Transactions");
+                    b.ToTable("BankTransactions", "Transactions");
                 });
 
             modelBuilder.Entity("DFlow.Transactions.Core.Model.CashTransaction", b =>
@@ -190,7 +188,7 @@ namespace DFlow.Transactions.Lib.Migrations
 
                     b.HasIndex("BudgetLine_Id");
 
-                    b.ToTable("CashTransactions","Transactions");
+                    b.ToTable("CashTransactions", "Transactions");
                 });
 
             modelBuilder.Entity("DFlow.Transactions.Core.Model.Tag", b =>
@@ -211,7 +209,7 @@ namespace DFlow.Transactions.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Tags","Transactions");
+                    b.ToTable("Tags", "Transactions");
                 });
 
             modelBuilder.Entity("DFlow.Transactions.Core.Model.TransactionTag", b =>
@@ -233,7 +231,7 @@ namespace DFlow.Transactions.Lib.Migrations
 
                     b.HasIndex("Tag_Id");
 
-                    b.ToTable("TransactionTags","Transactions");
+                    b.ToTable("TransactionTags", "Transactions");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>

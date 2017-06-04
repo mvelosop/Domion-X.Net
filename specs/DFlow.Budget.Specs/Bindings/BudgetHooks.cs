@@ -1,12 +1,5 @@
 ﻿using Autofac;
-using BoDi;
-using DFlow.Budget.Lib.Data;
 using DFlow.Budget.Setup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using TechTalk.SpecFlow;
 
 namespace DFlow.Budget.Specs.Bindings
@@ -18,9 +11,9 @@ namespace DFlow.Budget.Specs.Bindings
 
         public static string containerTag = "AutofacContainer";
 
+        private static BudgetDbSetupHelper _dbHelper;
         private static string _defaultConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Specs;Integrated Security=SSPI;MultipleActiveResultSets=true";
         private static IContainer _testContainer;
-        private static BudgetDbSetupHelper _dbHelper;
 
         [BeforeTestRun]
         public static void BeforeTestRun()
@@ -67,7 +60,5 @@ namespace DFlow.Budget.Specs.Bindings
 
             ScenarioContext.Current.Add(containerTag, scope);
         }
-
-
     }
 }

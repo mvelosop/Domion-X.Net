@@ -21,99 +21,99 @@ using System.Linq.Expressions;
 
 namespace DFlow.Budget.Lib.Services
 {
-	public class BudgetLineManager : BaseRepository<BudgetLine, int>, IEntityManager<BudgetLine, int>, IBudgetLineManager
-	{
-		public static string duplicateByNameError = @"There's another BudgetLine with Name ""{0}"", can't duplicate (Id={1})!";
+    public class BudgetLineManager : BaseRepository<BudgetLine, int>, IEntityManager<BudgetLine, int>, IBudgetLineManager
+    {
+        public static string duplicateByNameError = @"There's another BudgetLine with Name ""{0}"", can't duplicate (Id={1})!";
 
-		public BudgetLineManager(BudgetDbContext dbContext)
-			: base(dbContext)
-		{
-		}
+        public BudgetLineManager(BudgetDbContext dbContext)
+            : base(dbContext)
+        {
+        }
 
-		public BudgetLine FindDuplicateByName(BudgetLine entity)
-		{
-			if (entity.Id == 0)
-			{
-				return FirstOrDefault(bl => bl.Name == entity.Name.Trim());
-			}
-			else
-			{
-				return FirstOrDefault(bl => bl.Name == entity.Name.Trim() && bl.Id != entity.Id);
-			}
-		}
+        public BudgetLine FindDuplicateByName(BudgetLine entity)
+        {
+            if (entity.Id == 0)
+            {
+                return FirstOrDefault(bl => bl.Name == entity.Name.Trim());
+            }
+            else
+            {
+                return FirstOrDefault(bl => bl.Name == entity.Name.Trim() && bl.Id != entity.Id);
+            }
+        }
 
-		public override IQueryable<BudgetLine> Query(Expression<Func<BudgetLine, bool>> where)
-		{
-			return base.Query(where);
-		}
+        public override IQueryable<BudgetLine> Query(Expression<Func<BudgetLine, bool>> where)
+        {
+            return base.Query(where);
+        }
 
-		public virtual BudgetLine Refresh(BudgetLine entity)
-		{
-			base.Detach(entity);
+        public virtual BudgetLine Refresh(BudgetLine entity)
+        {
+            base.Detach(entity);
 
-			return Find(entity.Id);
-		}
+            return Find(entity.Id);
+        }
 
-		public new virtual IEnumerable<ValidationResult> TryDelete(BudgetLine entity)
-		{
-			return base.TryDelete(entity);
-		}
+        public new virtual IEnumerable<ValidationResult> TryDelete(BudgetLine entity)
+        {
+            return base.TryDelete(entity);
+        }
 
-		public new virtual IEnumerable<ValidationResult> TryInsert(BudgetLine entity)
-		{
-			if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
+        public new virtual IEnumerable<ValidationResult> TryInsert(BudgetLine entity)
+        {
+            if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
-			CommonSaveOperations(entity);
+            CommonSaveOperations(entity);
 
-			return base.TryInsert(entity);
-		}
+            return base.TryInsert(entity);
+        }
 
-		public new virtual IEnumerable<ValidationResult> TryUpdate(BudgetLine entity)
-		{
-			if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
+        public new virtual IEnumerable<ValidationResult> TryUpdate(BudgetLine entity)
+        {
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
 
-			CommonSaveOperations(entity);
+            CommonSaveOperations(entity);
 
-			return base.TryUpdate(entity);
-		}
+            return base.TryUpdate(entity);
+        }
 
-		public virtual IEnumerable<ValidationResult> TryUpsert(BudgetLine entity)
-		{
-			if (entity.Id == 0)
-			{
-				return TryInsert(entity);
-			}
-			else
-			{
-				return TryUpdate(entity);
-			}
-		}
+        public virtual IEnumerable<ValidationResult> TryUpsert(BudgetLine entity)
+        {
+            if (entity.Id == 0)
+            {
+                return TryInsert(entity);
+            }
+            else
+            {
+                return TryUpdate(entity);
+            }
+        }
 
-		public override IEnumerable<ValidationResult> ValidateDelete(BudgetLine entity)
-		{
-			return Enumerable.Empty<ValidationResult>();
-		}
+        internal virtual void CommonSaveOperations(BudgetLine entity)
+        {
+            TrimStrings(entity);
+        }
 
-		public override IEnumerable<ValidationResult> ValidateSave(BudgetLine entity)
-		{
-			BudgetLine duplicateByName = FindDuplicateByName(entity);
+        protected override IEnumerable<ValidationResult> ValidateDelete(BudgetLine entity)
+        {
+            yield break;
+        }
 
-			if (duplicateByName != null)
-			{
-				yield return new ValidationResult(string.Format(duplicateByNameError, duplicateByName.Name, duplicateByName.Id), new[] { "Name" });
-			}
+        protected override IEnumerable<ValidationResult> ValidateSave(BudgetLine entity)
+        {
+            BudgetLine duplicateByName = FindDuplicateByName(entity);
 
-			yield break;
-		}
+            if (duplicateByName != null)
+            {
+                yield return new ValidationResult(string.Format(duplicateByNameError, duplicateByName.Name, duplicateByName.Id), new[] { "Name" });
+            }
 
-		internal virtual void CommonSaveOperations(BudgetLine entity)
-		{
-			TrimStrings(entity);
-		}
+            yield break;
+        }
 
-		private void TrimStrings(BudgetLine entity)
-		{
-			if (entity.Name != null) entity.Name = entity.Name.Trim();
-		}
-	}
+        private void TrimStrings(BudgetLine entity)
+        {
+            if (entity.Name != null) entity.Name = entity.Name.Trim();
+        }
+    }
 }
