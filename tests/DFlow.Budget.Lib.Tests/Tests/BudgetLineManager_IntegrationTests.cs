@@ -37,63 +37,63 @@ namespace DFlow.Budget.Lib.Tests
             }
         }
 
-        //[Fact]
-        //public void TryDelete_DeletesRecord_WhenValidData()
-        //{
-        //    // Arrange ---------------------------
+        [Fact]
+        public void TryDelete_DeletesRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
 
-        //    var data = new BudgetLineData("Delete test - Inserted", "Income");
+            var data = new BudgetLineData("Delete-Success-Valid - Inserted", "Data-BudgetClass");
 
-        //    EnsureEntitiesExist(data);
+            EnsureEntitiesExist(data);
 
-        //    // Act -------------------------------
+            // Act -------------------------------
 
-        //    IEnumerable<ValidationResult> errors = null;
+            IEnumerable<ValidationResult> errors = null;
 
-        //    using (var scope = GetLocalScope())
-        //    {
-        //        var manager = scope.Resolve<BudgetClassManager>();
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetLineManager>();
 
-        //        var entity = manager.GetByKeyDataValue(data.Name);
+                var entity = manager.GetByKeyDataValue(data.Name);
 
-        //        errors = manager.TryDelete(entity);
+                errors = manager.TryDelete(entity);
 
-        //        manager.SaveChanges();
-        //    }
+                manager.SaveChanges();
+            }
 
-        //    // Assert ----------------------------
+            // Assert ----------------------------
 
-        //    errors.Should().BeEmpty();
+            errors.Should().BeEmpty();
 
-        //    AssertEntitiesDoNotExist(data);
-        //}
+            AssertEntitiesDoNotExist(data);
+        }
 
-        //[Fact]
-        //public void TryInsert_Fails_WhenDuplicateKeyData()
-        //{
-        //    // Arrange ---------------------------
+        [Fact]
+        public void TryInsert_Fails_WhenDuplicateKeyData()
+        {
+            // Arrange ---------------------------
 
-        //    var data = new BudgetClassData("Duplicate Insert test - Inserted", "Income");
+            var data = new BudgetLineData("Insert-Error-Duplicate - Inserted", "Data-BudgetClass");
 
-        //    EnsureEntitiesExist(data);
+            EnsureEntitiesExist(data);
 
-        //    // Act -------------------------------
+            // Act -------------------------------
 
-        //    IEnumerable<ValidationResult> errors = null;
+            IEnumerable<ValidationResult> errors = null;
 
-        //    using (var scope = GetLocalScope())
-        //    {
-        //        var manager = scope.Resolve<BudgetClassManager>();
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetLineManager>();
 
-        //        var entity = data.CreateEntity();
+                var entity = data.CreateEntity();
 
-        //        errors = manager.TryInsert(entity).ToList();
-        //    }
+                errors = manager.TryInsert(entity).ToList();
+            }
 
-        //    // Assert ----------------------------
+            // Assert ----------------------------
 
-        //    errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
-        //}
+            errors.Should().ContainErrorMessage(BudgetLineManager.duplicateByNameError);
+        }
 
         [Fact]
         public void TryInsert_InsertsRecord_WhenValidData()

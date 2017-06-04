@@ -30,7 +30,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Delete - Inserted", "Income");
+            var data = new BudgetClassData("Delete-Success-Valid - Inserted", "Income");
 
             EnsureEntitiesExist(data);
 
