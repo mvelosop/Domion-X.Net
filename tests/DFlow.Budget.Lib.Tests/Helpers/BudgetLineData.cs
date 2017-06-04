@@ -21,8 +21,6 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
         public string ClassName { get; set; }
 
-        public Expression<Func<BudgetLine, bool>> KeyExpression => bc => bc.Name == Name;
-
         public string Name { get; set; }
 
         public BudgetLine CreateEntity()

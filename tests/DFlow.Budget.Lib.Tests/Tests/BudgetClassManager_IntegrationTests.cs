@@ -42,7 +42,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetEntityByKeyValue(data.Name);
+                var entity = manager.GetByKeyDataValue(data.Name);
 
                 errors = manager.TryDelete(entity);
 
@@ -57,7 +57,7 @@ namespace DFlow.Budget.Lib.Tests
         }
 
         [Fact]
-        public void TryInsert_Fails_WhenDuplicateData()
+        public void TryInsert_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
 
@@ -115,7 +115,7 @@ namespace DFlow.Budget.Lib.Tests
         }
 
         [Fact]
-        public void TryUpdate_Fails_WhenDuplicateData()
+        public void TryUpdate_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
 
@@ -132,7 +132,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetEntityByKeyValue(dataFirst.Name);
+                var entity = manager.GetByKeyDataValue(dataFirst.Name);
 
                 entity.Name = dataSecond.Name;
 
@@ -163,7 +163,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetEntityByKeyValue(data.Name);
+                var entity = manager.GetByKeyDataValue(data.Name);
 
                 entity.Name = update.Name;
 

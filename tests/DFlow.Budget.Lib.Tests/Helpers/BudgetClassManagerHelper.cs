@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
@@ -7,10 +8,13 @@ using System;
 namespace DFlow.Budget.Lib.Tests.Helpers
 {
     /// <summary>
-    /// Test helper class for BudgetClassManager
+    ///     <para>
+    ///         Test helper class for BudgetClassManager.
+    ///     </para>
     ///
-    /// Takes a BudgetDbSetup to execute CRUD methods and dispose properly the DbContext.
-    /// Manages entity class BudgetClass using data class BudgetClassData as input
+    ///     <para>
+    ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "BudgetClass" using data class "BudgetClassData" as input
+    ///     </para>
     /// </summary>
     public class BudgetClassManagerHelper
     {
@@ -37,6 +41,10 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
         private BudgetClassManager BudgetClassManager { get { return _lazyBudgetClassManager.Value; } }
 
+        /// <summary>
+        /// Asserts that entities equivalent to the supplied input data classes do not exist
+        /// </summary>
+        /// <param name="dataSet"></param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
             using (var scope = GetLocalScope())
@@ -45,13 +53,17 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataSet)
                 {
-                    var entity = manager.GetEntityByKeyValue(data.Name);
+                    var entity = manager.GetByKeyDataValue(data.Name);
 
                     entity.Should().BeNull(@"because BudgetClass ""{0}"" MUST NOT EXIST!", data.Name);
                 }
             }
         }
 
+        /// <summary>
+        /// Asserts that entities equivalent to the supplied input data classes exist
+        /// </summary>
+        /// <param name="dataSet"></param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
             using (var scope = GetLocalScope())
@@ -60,24 +72,26 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                 foreach (var data in dataSet)
                 {
-                    var savedData = manager.GetDataByKeyValue(data.Name);
+                    BudgetClass entity = manager.GetByKeyDataValue(data.Name);
 
-                    savedData.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
+                    var entityData = new BudgetClassData(entity);
 
-                    savedData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
+                    entityData.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
+
+                    entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
                 }
             }
         }
 
         /// <summary>
-        /// Asserts that the entities do not exist in the database or are succesfully removed
+        /// Ensures that the entities do not exist in the database or are succesfully removed
         /// </summary>
         /// <param name="dataSet">Data for the entities to be searched and removed</param>
         public void EnsureEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
             foreach (var data in dataSet)
             {
-                var entity = BudgetClassManager.GetEntityByKeyValue(data.Name);
+                var entity = BudgetClassManager.GetByKeyDataValue(data.Name);
 
                 if (entity != null)
                 {
@@ -92,11 +106,15 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             AssertEntitiesDoNotExist(dataSet);
         }
 
+        /// <summary>
+        /// Ensures that the entities exist in the database or are succesfully added
+        /// </summary>
+        /// <param name="dataSet"></param>
         public void EnsureEntitiesExist(params BudgetClassData[] dataSet)
         {
             foreach (var data in dataSet)
             {
-                var entity = BudgetClassManager.GetEntityByKeyValue(data.Name);
+                var entity = BudgetClassManager.GetByKeyDataValue(data.Name);
 
                 if (entity == null)
                 {
