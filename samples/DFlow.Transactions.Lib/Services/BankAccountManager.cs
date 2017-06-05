@@ -34,11 +34,11 @@ namespace DFlow.Transactions.Lib.Services
         {
             if (entity.Id == 0)
             {
-                return FirstOrDefault(ba => ba.AccountName == entity.AccountName.Trim());
+                return Query(ba => ba.AccountName == entity.AccountName.Trim()).FirstOrDefault();
             }
             else
             {
-                return FirstOrDefault(ba => ba.AccountName == entity.AccountName.Trim() && ba.Id != entity.Id);
+                return Query(ba => ba.AccountName == entity.AccountName.Trim() && ba.Id != entity.Id).FirstOrDefault();
             }
         }
 

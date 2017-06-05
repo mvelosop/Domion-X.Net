@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
+using Domion.Lib.Extensions;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using System;

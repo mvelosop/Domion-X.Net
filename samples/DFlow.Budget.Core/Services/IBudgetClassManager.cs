@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Budget.Core.Services
 {
-    public interface IBudgetClassManager : IEntityManager<BudgetClass>, IEntityManager<BudgetClass, int>
+    public interface IBudgetClassManager : IQueryManager<BudgetClass>, IEntityManager<BudgetClass, int>
     {
         BudgetClass Refresh(BudgetClass entity);
 

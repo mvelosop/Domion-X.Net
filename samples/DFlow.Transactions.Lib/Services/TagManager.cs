@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Transactions.Lib.Services
 {
-    public class TagManager : BaseRepository<Tag, int>, IEntityManager<Tag, int>, ITagManager
+    public class TagManager : BaseRepository<Tag, int>, IQueryManager<Tag>, IEntityManager<Tag, int>, ITagManager
     {
         public static string duplicateByNameError = @"There's another Tag with Name ""{0}"", can't duplicate (Id={1})!";
 
@@ -34,11 +34,11 @@ namespace DFlow.Transactions.Lib.Services
         {
             if (entity.Id == 0)
             {
-                return FirstOrDefault(t => t.Name == entity.Name.Trim());
+                return Query(t => t.Name == entity.Name.Trim()).FirstOrDefault();
             }
             else
             {
-                return FirstOrDefault(t => t.Name == entity.Name.Trim() && t.Id != entity.Id);
+                return Query(t => t.Name == entity.Name.Trim() && t.Id != entity.Id).FirstOrDefault();
             }
         }
 

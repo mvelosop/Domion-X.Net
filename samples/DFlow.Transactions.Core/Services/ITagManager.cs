@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Transactions.Core.Services
 {
-    public interface ITagManager : IEntityManager<Tag, int>
+    public interface ITagManager : IQueryManager<Tag>, IEntityManager<Tag, int>
     {
         Tag Refresh(Tag entity);
 

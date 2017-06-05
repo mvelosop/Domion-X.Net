@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Budget.Lib.Services
 {
-    public class BudgetClassManager : BaseRepository<BudgetClass, int>, IEntityManager<BudgetClass>, IEntityManager<BudgetClass, int>, IBudgetClassManager
+    public class BudgetClassManager : BaseRepository<BudgetClass, int>, IQueryManager<BudgetClass>, IEntityManager<BudgetClass, int>, IBudgetClassManager
     {
         public static string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate (Id={1})!";
 
@@ -34,11 +34,11 @@ namespace DFlow.Budget.Lib.Services
         {
             if (entity.Id == 0)
             {
-                return FirstOrDefault(bc => bc.Name == entity.Name.Trim());
+                return Query(bc => bc.Name == entity.Name.Trim()).SingleOrDefault();
             }
             else
             {
-                return FirstOrDefault(bc => bc.Name == entity.Name.Trim() && bc.Id != entity.Id);
+                return Query(bc => bc.Name == entity.Name.Trim() && bc.Id != entity.Id).SingleOrDefault();
             }
         }
 

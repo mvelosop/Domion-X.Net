@@ -1,5 +1,6 @@
 ﻿using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
+using Domion.Lib.Extensions;
 using FluentAssertions;
 
 namespace DFlow.Budget.Lib.Tests.Helpers
