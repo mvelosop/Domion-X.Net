@@ -42,7 +42,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetByKeyDataValue(data.Name);
+                var entity = manager.AssertGetByKeyData(data.Name);
 
                 errors = manager.TryDelete(entity);
 
@@ -132,7 +132,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetByKeyDataValue(dataFirst.Name);
+                var entity = manager.AssertGetByKeyData(dataFirst.Name);
 
                 entity.Name = dataSecond.Name;
 
@@ -163,7 +163,7 @@ namespace DFlow.Budget.Lib.Tests
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                var entity = manager.GetByKeyDataValue(data.Name);
+                var entity = manager.AssertGetByKeyData(data.Name);
 
                 entity.Name = update.Name;
 

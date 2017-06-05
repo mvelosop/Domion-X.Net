@@ -17,7 +17,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
         public void SetReferences(BudgetLineData data)
         {
-            data.BudgetClass_Id = BudgetClassManager.GetByKeyDataValue(data.ClassName).Id;
+            data.BudgetClass_Id = BudgetClassManager.AssertGetByKeyData(data.ClassName).Id;
         }
     }
 }

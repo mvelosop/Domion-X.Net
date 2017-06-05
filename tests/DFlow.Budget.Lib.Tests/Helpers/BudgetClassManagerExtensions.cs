@@ -12,7 +12,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="manager"></param>
         /// <param name="name">Key data value</param>
         /// <returns>The entity</returns>
-        public static BudgetClass GetByKeyDataValue(this BudgetClassManager manager, string name)
+        public static BudgetClass AssertGetByKeyData(this BudgetClassManager manager, string name)
         {
             BudgetClass entity = manager.SingleOrDefault(c => c.Name == name);
 
