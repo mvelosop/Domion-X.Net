@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Transactions.Core.Services
 {
-    public interface IBankAccountManager : IEntityManager<BankAccount, int>
+    public interface IBankAccountManager : IQueryManager<BankAccount>, IEntityManager<BankAccount, int>
     {
         BankAccount Refresh(BankAccount entity);
 

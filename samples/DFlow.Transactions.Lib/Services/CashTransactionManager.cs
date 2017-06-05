@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Transactions.Lib.Services
 {
-    public class CashTransactionManager : BaseRepository<CashTransaction, int>, IEntityManager<CashTransaction, int>, ICashTransactionManager
+    public class CashTransactionManager : BaseRepository<CashTransaction, int>, IQueryManager<CashTransaction>, IEntityManager<CashTransaction, int>, ICashTransactionManager
     {
         public CashTransactionManager(TransactionsDbContext dbContext)
             : base(dbContext)

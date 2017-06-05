@@ -34,11 +34,11 @@ namespace DFlow.Budget.Lib.Services
         {
             if (entity.Id == 0)
             {
-                return Query(bl => bl.Name == entity.Name.Trim()).FirstOrDefault();
+                return Query(bl => bl.Name == entity.Name.Trim()).SingleOrDefault();
             }
             else
             {
-                return Query(bl => bl.Name == entity.Name.Trim() && bl.Id != entity.Id).FirstOrDefault();
+                return Query(bl => bl.Name == entity.Name.Trim() && bl.Id != entity.Id).SingleOrDefault();
             }
         }
 

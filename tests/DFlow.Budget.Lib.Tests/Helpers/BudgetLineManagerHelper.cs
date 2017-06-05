@@ -3,7 +3,6 @@
 using Autofac;
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
-using Domion.Lib.Data;
 using Domion.Lib.Extensions;
 using FluentAssertions;
 using FluentAssertions.Equivalency;

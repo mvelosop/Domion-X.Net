@@ -21,7 +21,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Transactions.Lib.Services
 {
-    public class BankAccountManager : BaseRepository<BankAccount, int>, IEntityManager<BankAccount, int>, IBankAccountManager
+    public class BankAccountManager : BaseRepository<BankAccount, int>, IQueryManager<BankAccount>, IEntityManager<BankAccount, int>, IBankAccountManager
     {
         public static string duplicateByAccountNameError = @"There's another BankAccount with AccountName ""{0}"", can't duplicate (Id={1})!";
 
@@ -34,11 +34,11 @@ namespace DFlow.Transactions.Lib.Services
         {
             if (entity.Id == 0)
             {
-                return Query(ba => ba.AccountName == entity.AccountName.Trim()).FirstOrDefault();
+                return Query(ba => ba.AccountName == entity.AccountName.Trim()).SingleOrDefault();
             }
             else
             {
-                return Query(ba => ba.AccountName == entity.AccountName.Trim() && ba.Id != entity.Id).FirstOrDefault();
+                return Query(ba => ba.AccountName == entity.AccountName.Trim() && ba.Id != entity.Id).SingleOrDefault();
             }
         }
 

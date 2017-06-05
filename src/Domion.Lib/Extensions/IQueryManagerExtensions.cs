@@ -9,12 +9,7 @@ namespace Domion.Lib.Extensions
 {
     public static class IQueryManagerExtensions
     {
-        public static IIncludableQueryable<T, TProperty> Include<T, TProperty>(this IQueryManager<T> manager, Expression<Func<T, TProperty>> includeExpression) where T : class
-        {
-            return manager.Query().Include(includeExpression);
-        }
-
-        public static T First<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where) where T: class
+        public static T First<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where) where T : class
         {
             return manager.Query(where).First();
         }
@@ -22,6 +17,11 @@ namespace Domion.Lib.Extensions
         public static T FirstOrDefault<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where) where T : class
         {
             return manager.Query(where).FirstOrDefault<T>();
+        }
+
+        public static IIncludableQueryable<T, TProperty> Include<T, TProperty>(this IQueryManager<T> manager, Expression<Func<T, TProperty>> includeExpression) where T : class
+        {
+            return manager.Query().Include(includeExpression);
         }
 
         public static T Single<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where) where T : class
@@ -33,7 +33,5 @@ namespace Domion.Lib.Extensions
         {
             return manager.Query(where).SingleOrDefault<T>();
         }
-
-
     }
 }

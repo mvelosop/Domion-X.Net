@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Transactions.Core.Services
 {
-    public interface ICashTransactionManager : IEntityManager<CashTransaction, int>
+    public interface ICashTransactionManager : IQueryManager<CashTransaction>, IEntityManager<CashTransaction, int>
     {
         CashTransaction Refresh(CashTransaction entity);
 
