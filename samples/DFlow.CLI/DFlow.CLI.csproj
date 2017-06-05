@@ -6,10 +6,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="TransactionsDbContextFactory.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.1" />
 	</ItemGroup>
 
@@ -20,7 +16,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj" />
+		<ProjectReference Include="..\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj" />
+		<ProjectReference Include="..\DFlow.Tennants.Setup\DFlow.Tennants.Setup.csproj" />
 		<ProjectReference Include="..\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj" />
+		<ProjectReference Include="..\DFlow.Transactions.Setup\DFlow.Transactions.Setup.csproj" />
 	</ItemGroup>
 
 </Project>
