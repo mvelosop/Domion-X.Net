@@ -44,6 +44,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Specs", "specs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Setup", "samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj", "{5E8721D7-FD0B-4D28-A06D-0864202B0196}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Transactions.Lib.Tests", "tests\DFlow.Transactions.Lib.Tests\DFlow.Transactions.Lib.Tests.csproj", "{B52828BB-B433-4BE4-99CD-D18720D99086}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Setup", "samples\DFlow.Transactions.Setup\DFlow.Transactions.Setup.csproj", "{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +98,14 @@ Global
 		{5E8721D7-FD0B-4D28-A06D-0864202B0196}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E8721D7-FD0B-4D28-A06D-0864202B0196}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E8721D7-FD0B-4D28-A06D-0864202B0196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B52828BB-B433-4BE4-99CD-D18720D99086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B52828BB-B433-4BE4-99CD-D18720D99086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B52828BB-B433-4BE4-99CD-D18720D99086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B52828BB-B433-4BE4-99CD-D18720D99086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,5 +122,7 @@ Global
 		{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C} = {2FFA9BA2-0992-4935-86A1-E982B93D0432}
 		{A0BB35E4-9E54-4073-A216-ED9BA682BD18} = {BEFBAD94-5DE2-40BA-844B-AF64DEB21F5A}
 		{5E8721D7-FD0B-4D28-A06D-0864202B0196} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
+		{B52828BB-B433-4BE4-99CD-D18720D99086} = {F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}
+		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 	EndGlobalSection
 EndGlobal

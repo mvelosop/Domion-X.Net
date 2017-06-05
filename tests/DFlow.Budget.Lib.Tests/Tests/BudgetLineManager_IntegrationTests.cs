@@ -56,7 +56,7 @@ namespace DFlow.Budget.Lib.Tests
 
                 var entity = manager.AssertGetByKeyData(data.Name);
 
-                errors = manager.TryDelete(entity);
+                errors = manager.TryDelete(entity).ToList();
 
                 manager.SaveChanges();
             }
@@ -117,7 +117,7 @@ namespace DFlow.Budget.Lib.Tests
 
                 var entity = data.CreateEntity();
 
-                errors = manager.TryInsert(entity);
+                errors = manager.TryInsert(entity).ToList();
 
                 manager.SaveChanges();
             }
@@ -182,7 +182,7 @@ namespace DFlow.Budget.Lib.Tests
 
                 entity.Name = update.Name;
 
-                errors = manager.TryUpdate(entity);
+                errors = manager.TryUpdate(entity).ToList();
 
                 manager.SaveChanges();
             }

@@ -1,7 +1,6 @@
 ﻿using DFlow.Transactions.Core.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace DFlow.Transactions.Lib.Tests.Helpers
 {
@@ -41,8 +40,6 @@ namespace DFlow.Transactions.Lib.Tests.Helpers
         public decimal InitialBalance { get; set; }
 
         public DateTime? InitialBalanceDate { get; set; }
-
-        public Expression<Func<BankAccount, bool>> KeyExpression => t => t.AccountName == AccountName;
 
         public DateTime? LastTransactionDate { get; set; }
 
