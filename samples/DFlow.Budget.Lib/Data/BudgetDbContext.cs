@@ -8,6 +8,7 @@
 //  Original author: Miguel
 //------------------------------------------------------------------------------
 
+using DFlow.Tennants.Lib.Data;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -64,10 +65,11 @@ namespace DFlow.Budget.Lib.Data
             }
         }
 
-        ///
+        /// 
         /// <param name="modelBuilder"></param>
         private void ConfigureExternalModel(ModelBuilder modelBuilder)
         {
+            modelBuilder.AddConfiguration(new TennantConfiguration());
         }
 
         ///

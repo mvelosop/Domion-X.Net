@@ -32,7 +32,12 @@ namespace DFlow.Budget.Lib.Data
                 .HasForeignKey(bl => bl.BudgetClass_Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasIndex(bl => bl.Name)
+            builder.HasOne<BudgetClass>(bl => bl.BudgetClass)
+                .WithMany(bc => bc.BudgetLines)
+                .HasForeignKey(bl => bl.BudgetClass_Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(bl => new { bl.BudgetClass_Id, bl.Name })
                 .IsUnique();
         }
     }

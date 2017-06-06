@@ -9,9 +9,10 @@ using DFlow.Budget.Core.Model;
 namespace DFlow.Budget.Lib.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170606173612_AddTennantMigration_BudgetDbContext")]
+    partial class AddTennantMigration_BudgetDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

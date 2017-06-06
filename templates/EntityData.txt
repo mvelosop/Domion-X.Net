@@ -1,0 +1,68 @@
+//----------------------------------------
+// $APP$               (e.g. DFlow)
+// $MODULE$            (e.g. Budget)
+// $ENTITY$            (e.g. $ENTITY$)
+// $KEYENTITYPROPERTY$ (e.g. Name)
+// $KEYDATAPROPERTY$   (e.g. Name)
+// $KEYDATAPARAM$      (e.g. name)
+//----------------------------------------
+
+using $APP$.$MODULE$.Core.Model;
+using System;
+
+namespace $APP$.$MODULE$.Lib.Tests.Helpers
+{
+    public class $ENTITY$Data
+    {
+        public $ENTITY$Data()
+        {
+        }
+
+		//----------------------------------------------------
+		// Add other REQUIRED parameters (and remove comment)
+		//----------------------------------------------------
+        public $ENTITY$Data(string name)
+        {
+            $KEYDATAPROPERTY$ = name;
+
+			//-----------------------------------------------------------
+			// Add other REQUIRED property mappings (and remove comment)
+			//-----------------------------------------------------------
+        }
+
+        public $ENTITY$Data($ENTITY$ entity)
+        {
+            $KEYDATAPROPERTY$ = entity.$KEYENTITYPROPERTY$;
+
+			//----------------------------------------------------------------------
+			// Add other Entity to DataClass property mappings (and remove comment)
+			//----------------------------------------------------------------------
+        }
+
+        public string $KEYDATAPROPERTY$ { get; set; }
+
+		//-------------------------------------------
+		// Add other properties (and remove comment)
+		//-------------------------------------------
+
+		//--------------------------------------------------------------------
+		// Add FK _Id properties for referenced entities (and remove comment)
+		//--------------------------------------------------------------------
+
+        public $ENTITY$ CreateEntity()
+        {
+            return UpdateEntity(new $ENTITY$());
+        }
+
+		public $entity$ UpdateEntity($ENTITY$ entity)
+		{
+			entity.$KEYENTITYPROPERTY$ = $KEYDATAPROPERTY$;
+
+			//----------------------------------------------------------------------
+			// Add other DataClass to Entity property mappings (and remove comment)
+			//----------------------------------------------------------------------
+
+			return entity;
+		}
+    }
+}

@@ -11,6 +11,7 @@
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Core.Services;
 using DFlow.Budget.Lib.Data;
+using DFlow.Tennants.Core.Model;
 using Domion.Core.Services;
 using Domion.Lib.Data;
 using System;
@@ -23,11 +24,17 @@ namespace DFlow.Budget.Lib.Services
 {
     public class BudgetClassManager : BaseRepository<BudgetClass, int>, IQueryManager<BudgetClass>, IEntityManager<BudgetClass, int>, IBudgetClassManager
     {
-        public static string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate (Id={1})!";
+        public static string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate! (Id={1})";
 
-        public BudgetClassManager(BudgetDbContext dbContext)
+        private Expression<Func<BudgetClass, bool>> _baseFilter;
+        private Tennant _currentTennant;
+
+        public BudgetClassManager(BudgetDbContext dbContext, Tennant currentTennant)
             : base(dbContext)
         {
+            _currentTennant = currentTennant;
+
+            _baseFilter = (bc) => bc.Tennant_Id == _currentTennant.Id;
         }
 
         public BudgetClass FindDuplicateByName(BudgetClass entity)
@@ -44,7 +51,7 @@ namespace DFlow.Budget.Lib.Services
 
         public override IQueryable<BudgetClass> Query(Expression<Func<BudgetClass, bool>> where)
         {
-            return base.Query(where);
+            return base.Query(where).Where(_baseFilter);
         }
 
         public virtual BudgetClass Refresh(BudgetClass entity)

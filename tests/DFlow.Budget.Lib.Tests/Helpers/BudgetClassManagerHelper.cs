@@ -30,7 +30,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <summary>
         /// Creates the test helper for BudgetClassManager
         /// </summary>
-		/// <param name="scope"></param>
+        /// <param name="scope"></param>
         /// <param name="lazyBudgetClassManager"></param>
         public BudgetClassManagerHelper(
             ILifetimeScope scope,

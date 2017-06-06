@@ -8,7 +8,9 @@
 //  Original author: Miguel
 //------------------------------------------------------------------------------
 
+using DFlow.Tennants.Core.Model;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Budget.Core.Model
@@ -17,8 +19,11 @@ namespace DFlow.Budget.Core.Model
     {
         public BudgetClass()
         {
+            BudgetLines = new HashSet<BudgetLine>();
             TransactionType = TransactionType.Income;
         }
+
+        public virtual ICollection<BudgetLine> BudgetLines { get; set; }
 
         public int Id { get; set; }
 
@@ -29,6 +34,10 @@ namespace DFlow.Budget.Core.Model
         public virtual int Order { get; set; }
 
         public virtual Byte[] RowVersion { get; set; }
+
+        public virtual Tennant Tennant { get; set; }
+
+        public virtual int Tennant_Id { get; set; }
 
         public virtual TransactionType TransactionType { get; set; }
     }

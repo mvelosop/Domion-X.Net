@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.0" />
+    <PackageReference Include="FluentAssertions" Version="4.19.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Core\DFlow.Tennants.Core.csproj" />
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj" />
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Setup\DFlow.Tennants.Setup.csproj" />
+    <ProjectReference Include="..\..\src\Domion.FluentAssertions\Domion.FluentAssertions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>

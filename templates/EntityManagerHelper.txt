@@ -1,0 +1,150 @@
+//----------------------------------------
+// $APP$               (e.g. DFlow)
+// $MODULE$            (e.g. Budget)
+// $ENTITY$            (e.g. BudgetClass)
+// $KEYENTITYPROPERTY$ (e.g. Name)
+// $KEYDATAPROPERTY$   (e.g. Name)
+//----------------------------------------
+
+
+using Autofac;
+using $APP$.$MODULE$.Core.Model;
+using $APP$.$MODULE$.Lib.Services;
+using Domion.Lib.Extensions;
+using FluentAssertions;
+using FluentAssertions.Equivalency;
+using System;
+
+namespace $APP$.$MODULE$.Lib.Tests.Helpers
+{
+    /// <summary>
+    ///     <para>
+    ///         Test helper class for $ENTITY$Manager.
+    ///     </para>
+    ///
+    ///     <para>
+    ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "$ENTITY$" using data class "$ENTITY$Data" as input
+    ///     </para>
+    /// </summary>
+    public class $ENTITY$ManagerHelper
+    {
+        private Func<EquivalencyAssertionOptions<$ENTITY$Data>, EquivalencyAssertionOptions<$ENTITY$Data>> _dataEquivalenceOptions =
+            options => options
+                .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
+
+        private Lazy<$ENTITY$Manager> _lazy$ENTITY$Manager;
+
+        private ILifetimeScope _scope;
+
+        /// <summary>
+        /// Creates the test helper for $ENTITY$Manager
+        /// </summary>
+        /// <param name="scope"></param>
+        /// <param name="lazy$ENTITY$Manager"></param>
+        public $ENTITY$ManagerHelper(
+            ILifetimeScope scope,
+            Lazy<$ENTITY$Manager> lazy$ENTITY$Manager)
+        {
+            _scope = scope;
+
+            _lazy$ENTITY$Manager = lazy$ENTITY$Manager;
+        }
+
+        private $ENTITY$Manager $ENTITY$Manager { get { return _lazy$ENTITY$Manager.Value; } }
+
+        /// <summary>
+        /// Asserts that entities with the supplied key data values do not exist
+        /// </summary>
+        /// <param name="dataSet"></param>
+        public void AssertEntitiesDoNotExist(params $ENTITY$Data[] dataSet)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                foreach (var data in dataSet)
+                {
+                    var entity = manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+
+                    entity.Should().BeNull(@"because $ENTITY$ ""{0}"" MUST NOT EXIST!", data.$KEYDATAPROPERTY$);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Asserts that entities equivalent to the supplied input data classes exist
+        /// </summary>
+        /// <param name="dataSet"></param>
+        public void AssertEntitiesExist(params $ENTITY$Data[] dataSet)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                foreach (var data in dataSet)
+                {
+                    $ENTITY$ entity = manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+
+                    entity.Should().NotBeNull(@"because $ENTITY$ ""{0}"" MUST EXIST!", data.$KEYDATAPROPERTY$);
+
+                    var entityData = new $ENTITY$Data(entity);
+
+                    entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ensures that the entities do not exist in the database or are succesfully removed
+        /// </summary>
+        /// <param name="dataSet">Data for the entities to be searched and removed</param>
+        public void EnsureEntitiesDoNotExist(params $ENTITY$Data[] dataSet)
+        {
+            foreach (var data in dataSet)
+            {
+                var entity = $ENTITY$Manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+
+                if (entity != null)
+                {
+                    var errors = $ENTITY$Manager.TryDelete(entity);
+
+                    errors.Should().BeEmpty(@"because $ENTITY$ ""{0}"" has to be removed!", data.$KEYDATAPROPERTY$);
+                }
+            }
+
+            $ENTITY$Manager.SaveChanges();
+
+            AssertEntitiesDoNotExist(dataSet);
+        }
+
+        /// <summary>
+        /// Ensures that the entities exist in the database or are succesfully added
+        /// </summary>
+        /// <param name="dataSet"></param>
+        public void EnsureEntitiesExist(params $ENTITY$Data[] dataSet)
+        {
+            foreach (var data in dataSet)
+            {
+                var entity = $ENTITY$Manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+
+                if (entity == null)
+                {
+                    entity = data.CreateEntity();
+
+                    var errors = $ENTITY$Manager.TryInsert(entity);
+
+                    errors.Should().BeEmpty(@"because $ENTITY$ ""{0}"" has to be added!", data.$KEYDATAPROPERTY$);
+                }
+            }
+
+            $ENTITY$Manager.SaveChanges();
+
+            AssertEntitiesExist(dataSet);
+        }
+
+        private ILifetimeScope GetLocalScope()
+        {
+            return _scope.BeginLifetimeScope();
+        }
+    }
+}

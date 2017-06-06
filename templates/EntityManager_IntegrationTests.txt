@@ -1,0 +1,260 @@
+//----------------------------------------
+// $APP$               (e.g. DFlow)
+// $MODULE$            (e.g. Budget)
+// $ENTITY$            (e.g. BudgetClass)
+// $KEYENTITYPROPERTY$ (e.g. Name)
+// $KEYDATAPROPERTY$   (e.g. Name)
+//----------------------------------------
+
+
+using Autofac;
+using $APP$.$MODULE$.Lib.Services;
+using $APP$.$MODULE$.Lib.Tests.Helpers;
+using $APP$.$MODULE$.Setup;
+using Domion.FluentAssertions.Extensions;
+using FluentAssertions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Xunit;
+
+namespace $APP$.$MODULE$.Lib.Tests
+{
+    [Trait("Type", "Integration")]
+    public class $ENTITY$Manager_IntegrationTests
+    {
+        private static string _connectionString = "Data Source=localhost;Initial Catalog=$APP$.$MODULE$.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+
+        private IContainer _container;
+
+        public $ENTITY$Manager_IntegrationTests()
+        {
+            $MODULE$DbSetupHelper dbHelper = SetupDatabase(_connectionString);
+
+            _container = SetupContainer(dbHelper);
+        }
+
+        [Fact]
+        public void TryDelete_DeletesRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
+
+            var data = new $ENTITY$Data("Delete-Success-Valid - Inserted");
+
+            EnsureEntitiesExist(data);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                var entity = manager.AssertGetByKeyData(data.$KEYDATAPROPERTY$);
+
+                errors = manager.TryDelete(entity).ToList();
+
+                manager.SaveChanges();
+            }
+
+            // Assert ----------------------------
+
+            errors.Should().BeEmpty();
+
+            AssertEntitiesDoNotExist(data);
+        }
+
+        [Fact]
+        public void TryInsert_Fails_WhenDuplicateKeyData()
+        {
+            // Arrange ---------------------------
+
+            var data = new $ENTITY$Data("Insert-Error-Duplicate - Inserted");
+
+            EnsureEntitiesExist(data);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                var entity = data.CreateEntity();
+
+                errors = manager.TryInsert(entity).ToList();
+            }
+
+            // Assert ----------------------------
+
+            errors.Should().ContainErrorMessage($ENTITY$Manager.duplicateBy$KEYENTITYPROPERTY$Error);
+        }
+
+        [Fact]
+        public void TryInsert_InsertsRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
+
+            var data = new $ENTITY$Data("Insert-Success-Valid - Inserted");
+
+            EnsureEntitiesDoNotExist(data);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                var entity = data.CreateEntity();
+
+                errors = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            }
+
+            // Assert ----------------------------
+
+            errors.Should().BeEmpty();
+
+            AssertEntitiesExist(data);
+        }
+
+        [Fact]
+        public void TryUpdate_Fails_WhenDuplicateKeyData()
+        {
+            // Arrange ---------------------------
+
+            var dataFirst = new $ENTITY$Data("Update-Error-Duplicate - Inserted first");
+            var dataSecond = new $ENTITY$Data("Update-Error-Duplicate - Inserted second");
+
+            EnsureEntitiesExist(dataFirst, dataSecond);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                var entity = manager.AssertGetByKeyData(dataFirst.$KEYDATAPROPERTY$);
+
+                entity.$KEYENTITYPROPERTY$ = dataSecond.$KEYDATAPROPERTY$;
+
+                errors = manager.TryUpdate(entity).ToList();
+            }
+
+            // Assert ----------------------------
+
+            errors.Should().ContainErrorMessage($ENTITY$Manager.duplicateBy$KEYENTITYPROPERTY$Error);
+        }
+
+        [Fact]
+        public void TryUpdate_UpdatesRecord_WhenValidData()
+        {
+            // Arrange ---------------------------
+
+            var data = new $ENTITY$Data("Update-Success-Valid - Inserted");
+            var update = new $ENTITY$Data("Update-Success-Valid - Updated");
+
+            EnsureEntitiesExist(data);
+            EnsureEntitiesDoNotExist(update);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<$ENTITY$Manager>();
+
+                var entity = manager.AssertGetByKeyData(data.$KEYDATAPROPERTY$);
+
+                entity.$KEYENTITYPROPERTY$ = update.$KEYDATAPROPERTY$;
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                manager.SaveChanges();
+            }
+
+            // Assert ----------------------------
+
+            errors.Should().BeEmpty();
+
+            AssertEntitiesExist(update);
+        }
+
+        private void AssertEntitiesDoNotExist(params $ENTITY$Data[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<$ENTITY$ManagerHelper>();
+
+                managerHelper.AssertEntitiesDoNotExist(data);
+            }
+        }
+
+        private void AssertEntitiesExist(params $ENTITY$Data[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<$ENTITY$ManagerHelper>();
+
+                managerHelper.AssertEntitiesExist(data);
+            }
+        }
+
+        private void EnsureEntitiesDoNotExist(params $ENTITY$Data[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<$ENTITY$ManagerHelper>();
+
+                managerHelper.EnsureEntitiesDoNotExist(data);
+            }
+        }
+
+        private void EnsureEntitiesExist(params $ENTITY$Data[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<$ENTITY$ManagerHelper>();
+
+                managerHelper.EnsureEntitiesExist(data);
+            }
+        }
+
+        private ILifetimeScope GetLocalScope(IContainer scope = null)
+        {
+            IContainer container = scope ?? _container;
+
+            return container.BeginLifetimeScope();
+        }
+
+        private IContainer SetupContainer($MODULE$DbSetupHelper dbHelper)
+        {
+            var autofacHelper = new $MODULE$AutofacSetupHelper(dbHelper);
+
+            var builder = new ContainerBuilder();
+
+            autofacHelper.SetupContainer(builder);
+
+            IContainer container = builder.Build();
+
+            return container;
+        }
+
+        private $MODULE$DbSetupHelper SetupDatabase(string connectionString)
+        {
+            $MODULE$DbSetupHelper dbHelper = new $MODULE$DbSetupHelper(_connectionString);
+
+            dbHelper.SetupDatabase();
+
+            return dbHelper;
+        }
+    }
+}
