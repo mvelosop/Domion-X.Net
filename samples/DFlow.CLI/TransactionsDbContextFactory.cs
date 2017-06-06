@@ -12,7 +12,7 @@ namespace Demo.Cli
         {
             var dbSetup = new TransactionsDbSetupHelper(_connectionString);
 
-            return dbSetup.CreateDbContext();
+            return new TransactionsDbContext(dbSetup.GetOptions());
         }
     }
 }

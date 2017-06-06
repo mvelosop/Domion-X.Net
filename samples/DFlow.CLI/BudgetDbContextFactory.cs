@@ -12,7 +12,7 @@ namespace Demo.Cli
         {
             var dbSetup = new BudgetDbSetupHelper(_connectionString);
 
-            return dbSetup.CreateDbContext();
+            return new BudgetDbContext(dbSetup.GetOptions());
         }
     }
 }
