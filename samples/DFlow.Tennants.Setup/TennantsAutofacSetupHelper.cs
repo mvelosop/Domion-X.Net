@@ -50,7 +50,7 @@ namespace DFlow.Tennants.Setup
 
         private void RegisterTypes(ContainerBuilder builder, Assembly[] appAssemblies)
         {
-            builder.Register<TennantsDbContext>((c) => _dbSetupHelper.GetDbContext())
+            builder.Register<TennantsDbContext>((c) => _dbSetupHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             foreach (var asm in appAssemblies)

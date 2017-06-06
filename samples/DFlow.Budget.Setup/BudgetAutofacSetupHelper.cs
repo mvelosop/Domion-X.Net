@@ -50,7 +50,7 @@ namespace DFlow.Budget.Setup
 
         private void RegisterTypes(ContainerBuilder builder, Assembly[] appAssemblies)
         {
-            builder.Register<BudgetDbContext>((c) => _dbSetupHelper.GetDbContext())
+            builder.Register<BudgetDbContext>((c) => _dbSetupHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             foreach (var asm in appAssemblies)

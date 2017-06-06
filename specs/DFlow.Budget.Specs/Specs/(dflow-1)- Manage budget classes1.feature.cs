@@ -72,12 +72,12 @@ namespace DFlow.Budget.Specs.Specs
             this.ScenarioTearDown();
         }
         
-        [Xunit.FactAttribute(DisplayName="(dflow-1.1) - Scenario - Add dflow-1.1 budget classes")]
+        [Xunit.FactAttribute(DisplayName="(dflow-1.1) - Scenario - Add budget classes")]
         [Xunit.TraitAttribute("FeatureTitle", "(dflow-1) - Feature - Manage budget classes")]
-        [Xunit.TraitAttribute("Description", "(dflow-1.1) - Scenario - Add dflow-1.1 budget classes")]
-        public virtual void Dflow_1_1_Scenario_AddDflow_1_1BudgetClasses()
+        [Xunit.TraitAttribute("Description", "(dflow-1.1) - Scenario - Add budget classes")]
+        public virtual void Dflow_1_1_Scenario_AddBudgetClasses()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("(dflow-1.1) - Scenario - Add dflow-1.1 budget classes", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("(dflow-1.1) - Scenario - Add budget classes", ((string[])(null)));
 #line 6
 this.ScenarioSetup(scenarioInfo);
 #line 8

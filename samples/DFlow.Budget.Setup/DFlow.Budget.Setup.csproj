@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Domion.Setup\Domion.Setup.csproj" />
     <ProjectReference Include="..\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj" />
   </ItemGroup>
 

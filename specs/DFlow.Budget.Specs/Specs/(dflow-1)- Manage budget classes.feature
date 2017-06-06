@@ -3,7 +3,7 @@
 	As the one responsible to do it
 	I want to manage a list of general budget classes
 
-Scenario: (dflow-1.1) - Scenario - Add dflow-1.1 budget classes
+Scenario: (dflow-1.1) - Scenario - Add budget classes
 	
 	Given there are no registered budget classes
 

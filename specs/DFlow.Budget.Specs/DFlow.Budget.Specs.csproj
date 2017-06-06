@@ -70,11 +70,6 @@
     <Compile Include="Bindings\BudgetHooks.cs" />
     <Compile Include="Bindings\BudgetSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\%28dflow-2%29 - Manage budget lines.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>%28dflow-2%29 - Manage budget lines.feature</DependentUpon>
-    </Compile>
     <Compile Include="Specs\%28dflow-1%29- Manage budget classes1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -84,10 +79,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Specs\%28dflow-2%29 - Manage budget lines.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>%28dflow-2%29 - Manage budget lines.feature.cs</LastGenOutput>
-    </None>
     <None Include="Specs\%28dflow-1%29- Manage budget classes.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>%28dflow-1%29- Manage budget classes1.feature.cs</LastGenOutput>
@@ -109,6 +100,10 @@
     <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj">
       <Project>{2d6cad25-12eb-4e34-b9eb-e66c894d40dd}</Project>
       <Name>Domion.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Domion.Setup\Domion.Setup.csproj">
+      <Project>{64DFE745-CD61-461E-8F67-607B12611579}</Project>
+      <Name>Domion.Setup</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
       <Project>{66186c10-45e2-4227-8f8b-ca69650072c1}</Project>

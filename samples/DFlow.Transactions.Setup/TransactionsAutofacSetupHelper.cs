@@ -50,7 +50,7 @@ namespace DFlow.Transactions.Setup
 
         private void RegisterTypes(ContainerBuilder builder, Assembly[] appAssemblies)
         {
-            builder.Register<TransactionsDbContext>((c) => _dbSetupHelper.GetDbContext())
+            builder.Register<TransactionsDbContext>((c) => _dbSetupHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             foreach (var asm in appAssemblies)

@@ -13,9 +13,31 @@ namespace DFlow.Budget.Specs.Bindings
     {
         // For additional details on SpecFlow step definitions see http://go.specflow.org/doc-stepdef
 
+        private ScenarioContext _scenarioContext;
+
+        public BudgetSteps(ScenarioContext scenarioContext)
+        {
+            _scenarioContext = scenarioContext;
+        }
+
         public BudgetClassManager BudgetClassManager => Resolve<BudgetClassManager>();
 
         public BudgetClassManagerHelper BudgetClassManagerHelper => Resolve<BudgetClassManagerHelper>();
+
+        [Given(@"there are no registered budget classes")]
+        public void GivenThereAreNoRegisteredBudgetClasses()
+        {
+            var entities = BudgetClassManager.Query().ToList();
+
+            foreach (var entity in entities)
+            {
+                var errors = BudgetClassManager.TryDelete(entity);
+
+                errors.Should().BeEmpty();
+            }
+
+            BudgetClassManager.SaveChanges();
+        }
 
         [Then(@"I can find the following budget classes:")]
         public void ThenICanFindTheFollowingBudgetClasses(Table table)
@@ -45,24 +67,9 @@ namespace DFlow.Budget.Specs.Bindings
             BudgetClassManager.SaveChanges();
         }
 
-        [Given(@"there are no registered budget classes")]
-        public void GivenThereAreNoRegisteredBudgetClasses()
-        {
-            var entities = BudgetClassManager.Query().ToList();
-
-            foreach (var entity in entities)
-            {
-                var errors = BudgetClassManager.TryDelete(entity);
-
-                errors.Should().BeEmpty();
-            }
-
-            BudgetClassManager.SaveChanges();
-        }
-
         private T Resolve<T>()
         {
-            return ScenarioContext.Current.Get<ILifetimeScope>(BudgetHooks.containerTag).Resolve<T>();
+            return _scenarioContext.Get<ILifetimeScope>(BudgetHooks.containerTag).Resolve<T>();
         }
     }
 }
