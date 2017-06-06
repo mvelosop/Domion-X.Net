@@ -6,11 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Domion.Setup\Domion.Setup.csproj" />
-    <ProjectReference Include="..\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
   </ItemGroup>
 
 </Project>

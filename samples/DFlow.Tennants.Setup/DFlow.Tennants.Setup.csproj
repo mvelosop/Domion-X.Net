@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Domion.Setup\Domion.Setup.csproj" />
     <ProjectReference Include="..\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj" />
   </ItemGroup>
 

@@ -15,6 +15,13 @@ namespace DFlow.Budget.Specs.Bindings
         private static string _defaultConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Specs;Integrated Security=SSPI;MultipleActiveResultSets=true";
         private static IContainer _testContainer;
 
+        private ScenarioContext _scenarioContext;
+
+        public BudgetHooks(ScenarioContext scenarioContext)
+        {
+            _scenarioContext = scenarioContext;
+        }
+
         [BeforeTestRun]
         public static void BeforeTestRun()
         {
@@ -40,11 +47,17 @@ namespace DFlow.Budget.Specs.Bindings
         [AfterStep]
         public void AfterStep()
         {
-            var scope = ScenarioContext.Current.Get<ILifetimeScope>(containerTag);
+            ILifetimeScope scope;
 
-            scope.Dispose();
+            if (_scenarioContext.TryGetValue<ILifetimeScope>(containerTag, out scope))
+            {
+                if (scope != null)
+                {
+                    scope.Dispose();
+                }
 
-            ScenarioContext.Current.Remove(containerTag);
+                _scenarioContext.Remove(containerTag);
+            }
         }
 
         [BeforeScenario]
@@ -58,7 +71,7 @@ namespace DFlow.Budget.Specs.Bindings
         {
             var scope = _testContainer.BeginLifetimeScope();
 
-            ScenarioContext.Current.Add(containerTag, scope);
+            _scenarioContext.Add(containerTag, scope);
         }
     }
 }

@@ -1,48 +1,29 @@
 ﻿using DFlow.Budget.Setup;
 using DFlow.Transactions.Lib.Data;
+using Domion.Setup;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace DFlow.Transactions.Setup
 {
-    public class TransactionsDbSetupHelper
+    public class TransactionsDbSetupHelper : DbSetupHelper<TransactionsDbContext> 
     {
-        //private static string _defaultConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
-
-        private string _connectionString;
-        private DbContextOptions<TransactionsDbContext> _options;
-
         public TransactionsDbSetupHelper(string connectionString)
+            : base(connectionString)
         {
-            _connectionString = connectionString;
         }
 
-        public TransactionsDbContext GetDbContext()
+        public override void SetupDatabase()
         {
-            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TransactionsDbSetupHelper)}.{nameof(SetupDatabase)} first!");
+            var budgetDbHelper = new BudgetDbSetupHelper(ConnectionString);
 
-            return new TransactionsDbContext(_options);
+            budgetDbHelper.SetupDatabase();
+
+            base.SetupDatabase();
         }
 
-        public void SetupDatabase()
+        protected override TransactionsDbContext CreateRawDbContext(DbContextOptions<TransactionsDbContext> options)
         {
-            BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(_connectionString);
-
-            dbHelper.SetupDatabase();
-
-            lock (_connectionString)
-            {
-                var optionBuilder = new DbContextOptionsBuilder<TransactionsDbContext>();
-
-                optionBuilder.UseSqlServer(_connectionString);
-
-                _options = optionBuilder.Options;
-
-                using (var dbContext = GetDbContext())
-                {
-                    dbContext.Database.Migrate();
-                }
-            }
+            return new TransactionsDbContext(options);
         }
     }
 }
