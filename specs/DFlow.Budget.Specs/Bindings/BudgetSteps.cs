@@ -17,19 +17,11 @@ namespace DFlow.Budget.Specs.Bindings
 
         public BudgetClassManagerHelper BudgetClassManagerHelper => Resolve<BudgetClassManagerHelper>();
 
-        [Given(@"the following budget classes do not exist:")]
-        public void GivenTheFollowingBudgetClassesDoNotExist(Table table)
-        {
-            BudgetClassData[] dataSet = table.CreateSet<BudgetClassData>().ToArray();
-
-            BudgetClassManagerHelper.EnsureEntitiesDoNotExist(dataSet);
-        }
-
-        [Then(@"I can find the following budget classes starting with ""(.*)"":")]
-        public void ThenICanFindTheFollowingBudgetClassesStartingWith(string queryText, Table table)
+        [Then(@"I can find the following budget classes:")]
+        public void ThenICanFindTheFollowingBudgetClasses(Table table)
         {
             var dataSet = BudgetClassManager
-                .Query(bc => bc.Name.StartsWith(queryText))
+                .Query()
                 .ToList()
                 .Select(bc => new BudgetClassData(bc));
 
@@ -46,6 +38,21 @@ namespace DFlow.Budget.Specs.Bindings
                 var entity = data.CreateEntity();
 
                 var errors = BudgetClassManager.TryInsert(entity);
+
+                errors.Should().BeEmpty();
+            }
+
+            BudgetClassManager.SaveChanges();
+        }
+
+        [Given(@"there are no registered budget classes")]
+        public void GivenThereAreNoRegisteredBudgetClasses()
+        {
+            var entities = BudgetClassManager.Query().ToList();
+
+            foreach (var entity in entities)
+            {
+                var errors = BudgetClassManager.TryDelete(entity);
 
                 errors.Should().BeEmpty();
             }

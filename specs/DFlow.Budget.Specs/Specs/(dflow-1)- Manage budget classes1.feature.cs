@@ -22,7 +22,7 @@ namespace DFlow.Budget.Specs.Specs
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "[dflow-1] - Manage Budget Classes.feature"
+#line 1 "(dflow-1)- Manage budget classes.feature"
 #line hidden
         
         public Dflow_1_Feature_ManageBudgetClassesFeature()
@@ -33,7 +33,7 @@ namespace DFlow.Budget.Specs.Specs
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "(dflow-1) - Feature - Manage Budget Classes", "\tIn order to manage my personal budget\r\n\tAs the one responsible to do it\r\n\tI want" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "(dflow-1) - Feature - Manage budget classes", "\tIn order to manage my personal budget\r\n\tAs the one responsible to do it\r\n\tI want" +
                     " to manage a list of general budget classes", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -72,95 +72,118 @@ namespace DFlow.Budget.Specs.Specs
             this.ScenarioTearDown();
         }
         
-        [Xunit.FactAttribute(DisplayName="(dflow-1) - Scenario - Add new budget classes")]
-        [Xunit.TraitAttribute("FeatureTitle", "(dflow-1) - Feature - Manage Budget Classes")]
-        [Xunit.TraitAttribute("Description", "(dflow-1) - Scenario - Add new budget classes")]
-        public virtual void Dflow_1_Scenario_AddNewBudgetClasses()
+        [Xunit.FactAttribute(DisplayName="(dflow-1.1) - Scenario - Add dflow-1.1 budget classes")]
+        [Xunit.TraitAttribute("FeatureTitle", "(dflow-1) - Feature - Manage budget classes")]
+        [Xunit.TraitAttribute("Description", "(dflow-1.1) - Scenario - Add dflow-1.1 budget classes")]
+        public virtual void Dflow_1_1_Scenario_AddDflow_1_1BudgetClasses()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("(dflow-1) - Scenario - Add new budget classes", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("(dflow-1.1) - Scenario - Add dflow-1.1 budget classes", ((string[])(null)));
 #line 6
 this.ScenarioSetup(scenarioInfo);
+#line 8
+ testRunner.Given("there are no registered budget classes", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
                         "TransactionType"});
             table1.AddRow(new string[] {
-                        "New - Income",
+                        "Income",
                         "Income"});
             table1.AddRow(new string[] {
-                        "New - Housing",
+                        "Housing",
                         "Expense"});
             table1.AddRow(new string[] {
-                        "New - Transportation",
+                        "Transportation",
                         "Expense"});
             table1.AddRow(new string[] {
-                        "New - Savings",
+                        "Insurance",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Food",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Children",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Legal",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Savings",
                         "Savings"});
             table1.AddRow(new string[] {
-                        "New - Investment",
+                        "Investment",
                         "Investment"});
             table1.AddRow(new string[] {
-                        "New - Taxes",
+                        "Loans",
+                        "Loan"});
+            table1.AddRow(new string[] {
+                        "Entertainment",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Taxes",
                         "Tax"});
             table1.AddRow(new string[] {
-                        "New - Loans",
-                        "Loan"});
-#line 8
- testRunner.Given("the following budget classes do not exist:", ((string)(null)), table1, "Given ");
+                        "Personal Care",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Pets",
+                        "Expense"});
+            table1.AddRow(new string[] {
+                        "Gifts and Donations",
+                        "Expense"});
+#line 10
+ testRunner.When("I add the following budget classes:", ((string)(null)), table1, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "Name",
                         "TransactionType"});
             table2.AddRow(new string[] {
-                        "New - Income",
+                        "Income",
                         "Income"});
             table2.AddRow(new string[] {
-                        "New - Housing",
+                        "Housing",
                         "Expense"});
             table2.AddRow(new string[] {
-                        "New - Transportation",
+                        "Transportation",
                         "Expense"});
             table2.AddRow(new string[] {
-                        "New - Savings",
+                        "Insurance",
+                        "Expense"});
+            table2.AddRow(new string[] {
+                        "Food",
+                        "Expense"});
+            table2.AddRow(new string[] {
+                        "Children",
+                        "Expense"});
+            table2.AddRow(new string[] {
+                        "Legal",
+                        "Expense"});
+            table2.AddRow(new string[] {
+                        "Savings",
                         "Savings"});
             table2.AddRow(new string[] {
-                        "New - Investment",
+                        "Investment",
                         "Investment"});
             table2.AddRow(new string[] {
-                        "New - Taxes",
+                        "Loans",
+                        "Loan"});
+            table2.AddRow(new string[] {
+                        "Entertainment",
+                        "Expense"});
+            table2.AddRow(new string[] {
+                        "Taxes",
                         "Tax"});
             table2.AddRow(new string[] {
-                        "New - Loans",
-                        "Loan"});
-#line 18
- testRunner.When("I add the following budget classes:", ((string)(null)), table2, "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Name",
-                        "TransactionType"});
-            table3.AddRow(new string[] {
-                        "New - Income",
-                        "Income"});
-            table3.AddRow(new string[] {
-                        "New - Housing",
+                        "Personal Care",
                         "Expense"});
-            table3.AddRow(new string[] {
-                        "New - Transportation",
+            table2.AddRow(new string[] {
+                        "Pets",
                         "Expense"});
-            table3.AddRow(new string[] {
-                        "New - Savings",
-                        "Savings"});
-            table3.AddRow(new string[] {
-                        "New - Investment",
-                        "Investment"});
-            table3.AddRow(new string[] {
-                        "New - Taxes",
-                        "Tax"});
-            table3.AddRow(new string[] {
-                        "New - Loans",
-                        "Loan"});
+            table2.AddRow(new string[] {
+                        "Gifts and Donations",
+                        "Expense"});
 #line 28
- testRunner.Then("I can find the following budget classes starting with \"New - \":", ((string)(null)), table3, "Then ");
+ testRunner.Then("I can find the following budget classes:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

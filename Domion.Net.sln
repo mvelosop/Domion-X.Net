@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Core", "samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Lib", "samples\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj", "{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Setup", "samples\DFlow.Tennants.Setup\DFlow.Tennants.Setup.csproj", "{EC9154C3-4D44-4050-BF51-4CF66704F263}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,10 @@ Global
 		{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC9154C3-4D44-4050-BF51-4CF66704F263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC9154C3-4D44-4050-BF51-4CF66704F263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC9154C3-4D44-4050-BF51-4CF66704F263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC9154C3-4D44-4050-BF51-4CF66704F263}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,5 +144,6 @@ Global
 		{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{B6A20904-251B-490D-BB02-FD5051F95B4D} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 		{EC3E5E18-199C-4EFC-912E-A0379E78D2DA} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
+		{EC9154C3-4D44-4050-BF51-4CF66704F263} = {BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}
 	EndGlobalSection
 EndGlobal

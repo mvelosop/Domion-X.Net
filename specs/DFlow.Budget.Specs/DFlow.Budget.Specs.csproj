@@ -70,18 +70,27 @@
     <Compile Include="Bindings\BudgetHooks.cs" />
     <Compile Include="Bindings\BudgetSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\[dflow-1] - Manage Budget Classes.feature.cs">
+    <Compile Include="Specs\%28dflow-2%29 - Manage budget lines.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>[dflow-1] - Manage Budget Classes.feature</DependentUpon>
+      <DependentUpon>%28dflow-2%29 - Manage budget lines.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Specs\%28dflow-1%29- Manage budget classes1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>%28dflow-1%29- Manage budget classes.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Specs\[dflow-1] - Manage Budget Classes.feature">
+    <None Include="Specs\%28dflow-2%29 - Manage budget lines.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>[dflow-1] - Manage Budget Classes.feature.cs</LastGenOutput>
+      <LastGenOutput>%28dflow-2%29 - Manage budget lines.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Specs\%28dflow-1%29- Manage budget classes.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>%28dflow-1%29- Manage budget classes1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
