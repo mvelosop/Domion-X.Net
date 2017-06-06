@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DFlow.Transactions.Setup
 {
-    public class TransactionsDbSetupHelper : DbSetupHelper<TransactionsDbContext>
+    public class TransactionsDbSetupHelper : DbSetupHelper<TransactionsDbContext> 
     {
         public TransactionsDbSetupHelper(string connectionString)
             : base(connectionString)
@@ -14,7 +14,7 @@ namespace DFlow.Transactions.Setup
 
         public override void SetupDatabase()
         {
-            BudgetDbSetupHelper budgetDbHelper = new BudgetDbSetupHelper(ConnectionString);
+            var budgetDbHelper = new BudgetDbSetupHelper(ConnectionString);
 
             budgetDbHelper.SetupDatabase();
 
