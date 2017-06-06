@@ -1,10 +1,7 @@
-﻿using System;
+﻿using DFlow.Budget.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
-using DFlow.Budget.Lib.Data;
-using DFlow.Budget.Core.Model;
 
 namespace DFlow.Budget.Lib.Migrations
 {
@@ -39,7 +36,7 @@ namespace DFlow.Budget.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetClasses","Budget");
+                    b.ToTable("BudgetClasses", "Budget");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>
@@ -68,7 +65,7 @@ namespace DFlow.Budget.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetLines","Budget");
+                    b.ToTable("BudgetLines", "Budget");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>

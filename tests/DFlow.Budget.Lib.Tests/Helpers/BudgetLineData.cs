@@ -1,8 +1,4 @@
 ﻿using DFlow.Budget.Core.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace DFlow.Budget.Lib.Tests.Helpers
 {
@@ -19,11 +15,18 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             ClassName = className;
         }
 
+        public BudgetLineData(BudgetLine entity)
+        {
+            Name = entity.Name;
+
+            ClassName = entity.BudgetClass.Name;
+
+            BudgetClass_Id = entity.BudgetClass_Id;
+        }
+
         public int BudgetClass_Id { get; set; }
 
         public string ClassName { get; set; }
-
-        public Expression<Func<BudgetLine, bool>> KeyExpression => bc => bc.Name == Name;
 
         public string Name { get; set; }
 

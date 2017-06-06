@@ -16,26 +16,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DFlow.Transactions.Lib.Data
 {
-	public class TransactionTagConfiguration : EntityTypeConfiguration<TransactionTag>
-	{
-		public override void Map(EntityTypeBuilder<TransactionTag> builder)
-		{
-			builder.ToTable("TransactionTags", schema: "Transactions");
+    public class TransactionTagConfiguration : EntityTypeConfiguration<TransactionTag>
+    {
+        public override void Map(EntityTypeBuilder<TransactionTag> builder)
+        {
+            builder.ToTable("TransactionTags", schema: "Transactions");
 
-			builder.HasKey(tt => tt.Id);
+            builder.HasKey(tt => tt.Id);
 
-			builder.Property(tt => tt.RowVersion)
-				.IsRowVersion();
+            builder.Property(tt => tt.RowVersion)
+                .IsRowVersion();
 
-			builder.HasOne<BankTransaction>(tt => tt.BankTransaction)
-				.WithMany(bt => bt.Tags)
-				.HasForeignKey(tt => tt.BankTransaction_Id)
-				.OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne<BankTransaction>(tt => tt.BankTransaction)
+                .WithMany(bt => bt.Tags)
+                .HasForeignKey(tt => tt.BankTransaction_Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
-			builder.HasOne<Tag>(tt => tt.Tag)
-				.WithMany()
-				.HasForeignKey(tt => tt.Tag_Id)
-				.OnDelete(DeleteBehavior.Restrict);
-		}
-	}
+            builder.HasOne<Tag>(tt => tt.Tag)
+                .WithMany()
+                .HasForeignKey(tt => tt.Tag_Id)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

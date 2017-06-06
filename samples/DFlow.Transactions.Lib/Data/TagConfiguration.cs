@@ -11,24 +11,23 @@
 using DFlow.Transactions.Core.Model;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DFlow.Transactions.Lib.Data
 {
-	public class TagConfiguration : EntityTypeConfiguration<Tag>
-	{
-		public override void Map(EntityTypeBuilder<Tag> builder)
-		{
-			builder.ToTable("Tags", schema: "Transactions");
+    public class TagConfiguration : EntityTypeConfiguration<Tag>
+    {
+        public override void Map(EntityTypeBuilder<Tag> builder)
+        {
+            builder.ToTable("Tags", schema: "Transactions");
 
-			builder.HasKey(t => t.Id);
+            builder.HasKey(t => t.Id);
 
-			builder.Property(t => t.RowVersion)
-				.IsRowVersion();
+            builder.Property(t => t.RowVersion)
+                .IsRowVersion();
 
-			builder.HasIndex(t => t.Name)
-				.IsUnique();
-		}
-	}
+            builder.HasIndex(t => t.Name)
+                .IsUnique();
+        }
+    }
 }

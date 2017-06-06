@@ -10,38 +10,37 @@
 
 using DFlow.Budget.Core.Model;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Transactions.Core.Model
 {
-	public class CashTransaction
-	{
-		public CashTransaction()
-		{
-		}
+    public class CashTransaction
+    {
+        public CashTransaction()
+        {
+        }
 
-		public virtual decimal Amount { get;  set; }
+        public virtual decimal Amount { get; set; }
 
-		public virtual BudgetLine BudgetLine { get; set; }
+        public virtual BudgetLine BudgetLine { get; set; }
 
-		public virtual int? BudgetLine_Id { get; set; }
+        public virtual int? BudgetLine_Id { get; set; }
 
-		[Required]
-		[MaxLength(250)] // Default string length
-		public virtual string Currency { get;  set; }
+        [Required]
+        [MaxLength(250)] // Default string length
+        public virtual string Currency { get; set; }
 
-		public virtual DateTime Date { get;  set; }
+        public virtual DateTime Date { get; set; }
 
-		[Required]
-		[MaxLength(250)] // Default string length
-		public virtual string Description { get;  set; }
+        [Required]
+        [MaxLength(250)] // Default string length
+        public virtual string Description { get; set; }
 
-		public int Id { get; set; }
+        public int Id { get; set; }
 
-		[MaxLength(1000)]
-		public virtual string Notes { get; set; }
+        [MaxLength(1000)]
+        public virtual string Notes { get; set; }
 
-		public virtual Byte[] RowVersion { get; set; }
-	}
+        public virtual Byte[] RowVersion { get; set; }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp1.1</TargetFramework>
+        <TargetFramework>net462</TargetFramework>
         <Copyright>Miguel Veloso (mvelosop@gmail.com)</Copyright>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Authors />
@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp1.1</TargetFramework>
+        <TargetFramework>net462</TargetFramework>
         <Version>0.1.0-alpha-1</Version>
     </PropertyGroup>
 

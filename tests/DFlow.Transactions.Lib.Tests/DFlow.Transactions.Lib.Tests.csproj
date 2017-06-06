@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Helpers\TagManagerTestHelper.cs" />
+    <Compile Remove="Tests\TagManager_IntegrationTests.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.2" />
@@ -15,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\samples\DFlow.Transactions.Core\DFlow.Transactions.Core.csproj" />
     <ProjectReference Include="..\..\samples\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj" />
+    <ProjectReference Include="..\..\samples\DFlow.Transactions.Setup\DFlow.Transactions.Setup.csproj" />
     <ProjectReference Include="..\..\src\Domion.FluentAssertions\Domion.FluentAssertions.csproj" />
     <ProjectReference Include="..\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj" />
   </ItemGroup>

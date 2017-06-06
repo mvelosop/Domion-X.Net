@@ -9,23 +9,22 @@
 //------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Transactions.Core.Model
 {
-	public class Tag
-	{
-		public Tag()
-		{
-		}
+    public class Tag
+    {
+        public Tag()
+        {
+        }
 
-		public int Id { get; set; }
+        public int Id { get; set; }
 
-		[Required]
-		[MaxLength(100)]
-		public virtual string Name { get; set; } // Key data ----------
+        [Required]
+        [MaxLength(100)]
+        public virtual string Name { get; set; } // Key data ----------
 
-		public virtual Byte[] RowVersion { get; set; }
-	}
+        public virtual Byte[] RowVersion { get; set; }
+    }
 }

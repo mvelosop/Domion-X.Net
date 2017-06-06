@@ -2,19 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace DFlow.Budget.Lib.Tests.Helpers
+namespace DFlow.Budget.Setup
 {
     public class BudgetDbSetupHelper
     {
-        private static string _defaultConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+        //private static string _defaultConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private string _connectionString;
         private DbContextOptions<BudgetDbContext> _options;
-
-        public BudgetDbSetupHelper()
-            : this(_defaultConnectionString)
-        {
-        }
 
         public BudgetDbSetupHelper(string connectionString)
         {

@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Autofac;
+using DFlow.Budget.Lib.Services;
+using DFlow.Budget.Lib.Tests.Helpers;
+using FluentAssertions;
 using System.Linq;
-using System.Text;
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
 
 namespace DFlow.Budget.Specs.Bindings
 {
@@ -11,22 +13,56 @@ namespace DFlow.Budget.Specs.Bindings
     {
         // For additional details on SpecFlow step definitions see http://go.specflow.org/doc-stepdef
 
-        [Given(@"the following budget classes do not exist:")]
-        public void GivenTheFollowingBudgetClassesDoNotExist(Table table)
+        public BudgetClassManager BudgetClassManager => Resolve<BudgetClassManager>();
+
+        public BudgetClassManagerHelper BudgetClassManagerHelper => Resolve<BudgetClassManagerHelper>();
+
+        [Then(@"I can find the following budget classes:")]
+        public void ThenICanFindTheFollowingBudgetClasses(Table table)
         {
-            ScenarioContext.Current.Pending();
+            var dataSet = BudgetClassManager
+                .Query()
+                .ToList()
+                .Select(bc => new BudgetClassData(bc));
+
+            table.CompareToSet(dataSet);
         }
 
         [When(@"I add the following budget classes:")]
         public void WhenIAddTheFollowingBudgetClasses(Table table)
         {
-            ScenarioContext.Current.Pending();
+            BudgetClassData[] dataSet = table.CreateSet<BudgetClassData>().ToArray();
+
+            foreach (var data in dataSet)
+            {
+                var entity = data.CreateEntity();
+
+                var errors = BudgetClassManager.TryInsert(entity);
+
+                errors.Should().BeEmpty();
+            }
+
+            BudgetClassManager.SaveChanges();
         }
 
-        [Then(@"I can find the following budget classes starting with ""(.*)"":")]
-        public void ThenICanFindTheFollowingBudgetClassesStartingWith(string queryText, Table table)
+        [Given(@"there are no registered budget classes")]
+        public void GivenThereAreNoRegisteredBudgetClasses()
         {
-            ScenarioContext.Current.Pending();
+            var entities = BudgetClassManager.Query().ToList();
+
+            foreach (var entity in entities)
+            {
+                var errors = BudgetClassManager.TryDelete(entity);
+
+                errors.Should().BeEmpty();
+            }
+
+            BudgetClassManager.SaveChanges();
+        }
+
+        private T Resolve<T>()
+        {
+            return ScenarioContext.Current.Get<ILifetimeScope>(BudgetHooks.containerTag).Resolve<T>();
         }
     }
 }

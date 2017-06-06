@@ -1,181 +1,141 @@
-﻿using DFlow.Budget.Core.Model;
+﻿using Autofac;
+using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
+using Domion.Lib.Extensions;
 using FluentAssertions;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using FluentAssertions.Equivalency;
+using System;
 
 namespace DFlow.Budget.Lib.Tests.Helpers
 {
     /// <summary>
-    /// Test helper class for BudgetClassManager
+    ///     <para>
+    ///         Test helper class for BudgetClassManager.
+    ///     </para>
     ///
-    /// Takes a BudgetDbSetup to execute CRUD methods and dispose properly the DbContext.
-    /// Manages entity class BudgetClass using data class BudgetClassData as input
+    ///     <para>
+    ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "BudgetClass" using data class "BudgetClassData" as input
+    ///     </para>
     /// </summary>
     public class BudgetClassManagerHelper
     {
+        private Func<EquivalencyAssertionOptions<BudgetClassData>, EquivalencyAssertionOptions<BudgetClassData>> _dataEquivalenceOptions =
+            options => options
+                .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
+
+        private Lazy<BudgetClassManager> _lazyBudgetClassManager;
+
+        private ILifetimeScope _scope;
+
         /// <summary>
-        /// Creates the test helper for BudgetManager
+        /// Creates the test helper for BudgetClassManager
         /// </summary>
-        /// <param name="dbSetup"></param>
-        public BudgetClassManagerHelper(BudgetDbSetupHelper dbSetup)
+		/// <param name="scope"></param>
+        /// <param name="lazyBudgetClassManager"></param>
+        public BudgetClassManagerHelper(
+            ILifetimeScope scope,
+            Lazy<BudgetClassManager> lazyBudgetClassManager)
         {
-            DbSetup = dbSetup;
+            _scope = scope;
+
+            _lazyBudgetClassManager = lazyBudgetClassManager;
         }
 
-        public BudgetDbSetupHelper DbSetup { get; set; }
+        private BudgetClassManager BudgetClassManager { get { return _lazyBudgetClassManager.Value; } }
 
         /// <summary>
-        /// Asserts that TryDelete method does not return any error message
+        /// Asserts that entities with the supplied key data values do not exist
         /// </summary>
-        /// <param name="entity"></param>
-        public void AssertDelete(BudgetClass entity)
+        /// <param name="dataSet"></param>
+        public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            var errors = TryDelete(entity);
-
-            errors.Should().BeEmpty();
-        }
-
-        /// <summary>
-        /// Asserts that the entities do not exist in the database or are succesfully removed
-        /// </summary>
-        /// <param name="dataArray">Data for the entities to be searched and removed</param>
-        public void AssertEntitiesDoNotExist(params BudgetClassData[] dataArray)
-        {
-            using (var dbContext = DbSetup.GetDbContext())
+            using (var scope = GetLocalScope())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = scope.Resolve<BudgetClassManager>();
 
-                foreach (var data in dataArray)
+                foreach (var data in dataSet)
                 {
-                    var entities = manager.Query(data.KeyExpression).ToList();
+                    var entity = manager.SingleOrDefault(e => e.Name == data.Name);
 
-                    foreach (var entity in entities)
-                    {
-                        var errors = manager.TryDelete(entity);
-
-                        errors.Should().BeEmpty();
-                    }
-                }
-
-                manager.SaveChanges();
-            }
-
-            using (var dbContext = DbSetup.GetDbContext())
-            {
-                var manager = new BudgetClassManager(dbContext);
-
-                foreach (var data in dataArray)
-                {
-                    var entities = manager.Query(data.KeyExpression).ToList();
-
-                    entities.Should().BeEmpty();
+                    entity.Should().BeNull(@"because BudgetClass ""{0}"" MUST NOT EXIST!", data.Name);
                 }
             }
         }
 
         /// <summary>
-        /// Asserts that TryInsert method does not return any error message
+        /// Asserts that entities equivalent to the supplied input data classes exist
         /// </summary>
-        /// <param name="entity"></param>
-        public void AssertInsert(BudgetClass entity)
+        /// <param name="dataSet"></param>
+        public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
-            var errors = TryInsert(entity);
-
-            errors.Should().BeEmpty();
-        }
-
-        /// <summary>
-        /// Asserts that TryUpdate method does not return any error message
-        /// </summary>
-        /// <param name="entity"></param>
-        public void AssertUpdate(BudgetClass entity)
-        {
-            var errors = TryUpdate(entity);
-
-            errors.Should().BeEmpty();
-        }
-
-        /// <summary>
-        /// Gets the entity using the KeyDataExpression from the Data class
-        /// </summary>
-        /// <param name="data">Data for the entity to be searched</param>
-        /// <returns>Entity</returns>
-        public BudgetClass GetEntity(BudgetClassData data)
-        {
-            using (var dbContext = DbSetup.GetDbContext())
+            using (var scope = GetLocalScope())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = scope.Resolve<BudgetClassManager>();
 
-                return manager.SingleOrDefault(data.KeyExpression);
-            }
-        }
-
-        /// <summary>
-        /// Executes the TryDelete method and returns the validation results or saves the changes if ok.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
-        {
-            using (var dbContext = DbSetup.GetDbContext())
-            {
-                var manager = new BudgetClassManager(dbContext);
-
-                var errors = manager.TryDelete(entity);
-
-                if (!errors.Any())
+                foreach (var data in dataSet)
                 {
-                    manager.SaveChanges();
-                }
+                    BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
 
-                return errors.ToList();
+                    entity.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
+
+                    var entityData = new BudgetClassData(entity);
+
+                    entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
+                }
             }
         }
 
         /// <summary>
-        /// Executes the TryInsert method and returns the validation results or saves the changes if ok.
+        /// Ensures that the entities do not exist in the database or are succesfully removed
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
+        /// <param name="dataSet">Data for the entities to be searched and removed</param>
+        public void EnsureEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            using (var dbContext = DbSetup.GetDbContext())
+            foreach (var data in dataSet)
             {
-                var manager = new BudgetClassManager(dbContext);
+                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
-                var errors = manager.TryInsert(entity);
-
-                if (!errors.Any())
+                if (entity != null)
                 {
-                    manager.SaveChanges();
-                }
+                    var errors = BudgetClassManager.TryDelete(entity);
 
-                return errors.ToList();
+                    errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be removed!", data.Name);
+                }
             }
+
+            BudgetClassManager.SaveChanges();
+
+            AssertEntitiesDoNotExist(dataSet);
         }
 
         /// <summary>
-        /// Executes the TryUpdate method and returns the validation results or saves the changes if ok.
+        /// Ensures that the entities exist in the database or are succesfully added
         /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>Validation Results</returns>
-        public IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
+        /// <param name="dataSet"></param>
+        public void EnsureEntitiesExist(params BudgetClassData[] dataSet)
         {
-            using (var dbContext = DbSetup.GetDbContext())
+            foreach (var data in dataSet)
             {
-                var manager = new BudgetClassManager(dbContext);
+                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
-                var errors = manager.TryUpdate(entity);
-
-                if (!errors.Any())
+                if (entity == null)
                 {
-                    manager.SaveChanges();
-                }
+                    entity = data.CreateEntity();
 
-                return errors.ToList();
+                    var errors = BudgetClassManager.TryInsert(entity);
+
+                    errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be added!", data.Name);
+                }
             }
+
+            BudgetClassManager.SaveChanges();
+
+            AssertEntitiesExist(dataSet);
+        }
+
+        private ILifetimeScope GetLocalScope()
+        {
+            return _scope.BeginLifetimeScope();
         }
     }
 }

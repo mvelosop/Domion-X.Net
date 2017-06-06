@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.6.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Autofac.4.6.0\lib\net45\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=4.19.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
@@ -40,6 +42,7 @@
       <HintPath>..\..\packages\FluentAssertions.4.19.2\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,7 +55,6 @@
     </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="xunit.assert, Version=2.2.0.3545, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.assert.2.2.0\lib\netstandard1.1\xunit.assert.dll</HintPath>
@@ -68,26 +70,53 @@
     <Compile Include="Bindings\BudgetHooks.cs" />
     <Compile Include="Bindings\BudgetSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\[dflow-1] - Manage Budget Classes.feature.cs">
+    <Compile Include="Specs\%28dflow-2%29 - Manage budget lines.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>[dflow-1] - Manage Budget Classes.feature</DependentUpon>
+      <DependentUpon>%28dflow-2%29 - Manage budget lines.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Specs\%28dflow-1%29- Manage budget classes1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>%28dflow-1%29- Manage budget classes.feature</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Specs\[dflow-1] - Manage Budget Classes.feature">
+    <None Include="Specs\%28dflow-2%29 - Manage budget lines.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>[dflow-1] - Manage Budget Classes.feature.cs</LastGenOutput>
+      <LastGenOutput>%28dflow-2%29 - Manage budget lines.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Specs\%28dflow-1%29- Manage budget classes.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>%28dflow-1%29- Manage budget classes1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\DFlow.Budget.Core\DFlow.Budget.Core.csproj">
+      <Project>{8ffea04b-e551-47f5-bb84-ef8df86ff1a2}</Project>
+      <Name>DFlow.Budget.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj">
+      <Project>{ED29DD25-9E6D-441A-94DC-3081F79C85A9}</Project>
+      <Name>DFlow.Budget.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj">
+      <Project>{5e8721d7-fd0b-4d28-a06d-0864202b0196}</Project>
+      <Name>DFlow.Budget.Setup</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj">
+      <Project>{2d6cad25-12eb-4e34-b9eb-e66c894d40dd}</Project>
+      <Name>Domion.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
+      <Project>{66186c10-45e2-4227-8f8b-ca69650072c1}</Project>
+      <Name>DFlow.Budget.Lib.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.visualstudio.2.2.0\build\net20\xunit.runner.visualstudio.props'))" />
-  </Target>
 </Project>

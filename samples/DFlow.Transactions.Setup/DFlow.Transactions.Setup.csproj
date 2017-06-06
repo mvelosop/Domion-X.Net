@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj" />
+    <ProjectReference Include="..\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

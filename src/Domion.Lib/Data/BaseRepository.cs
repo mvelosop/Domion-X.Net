@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Domion.Lib.Data
 {
-    public class BaseRepository<T, TKey> : IEntityManager<T, TKey> where T : class
+    public class BaseRepository<T, TKey> : IQueryManager<T>, IEntityManager<T, TKey> where T : class
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<T> _dbSet;
@@ -19,7 +19,7 @@ namespace Domion.Lib.Data
             _dbSet = _dbContext.Set<T>();
         }
 
-        public virtual DbContext DbContext => _dbContext;
+        protected virtual DbContext DbContext => _dbContext;
 
         public void Detach(T entity)
         {
@@ -29,16 +29,6 @@ namespace Domion.Lib.Data
         public virtual T Find(TKey key)
         {
             return _dbContext.Find<T>(key);
-        }
-
-        public virtual T First(Expression<Func<T, bool>> where)
-        {
-            return Query(where).First();
-        }
-
-        public virtual T FirstOrDefault(Expression<Func<T, bool>> where)
-        {
-            return Query(where).FirstOrDefault<T>();
         }
 
         public virtual T GetOriginalEntity(T entity)
@@ -73,26 +63,6 @@ namespace Domion.Lib.Data
         public virtual void SaveChanges()
         {
             _dbContext.SaveChanges();
-        }
-
-        public virtual T Single(Expression<Func<T, bool>> where)
-        {
-            return Query(where).Single<T>();
-        }
-
-        public virtual T SingleOrDefault(Expression<Func<T, bool>> where)
-        {
-            return Query(where).SingleOrDefault<T>();
-        }
-
-        public virtual IEnumerable<ValidationResult> ValidateDelete(T model)
-        {
-            return Enumerable.Empty<ValidationResult>();
-        }
-
-        public virtual IEnumerable<ValidationResult> ValidateSave(T model)
-        {
-            return Enumerable.Empty<ValidationResult>();
         }
 
         protected virtual IEnumerable<ValidationResult> TryDelete(T entity)
@@ -135,6 +105,16 @@ namespace Domion.Lib.Data
             _dbSet.Update(entity);
 
             return Enumerable.Empty<ValidationResult>();
+        }
+
+        protected virtual IEnumerable<ValidationResult> ValidateDelete(T model)
+        {
+            yield break;
+        }
+
+        protected virtual IEnumerable<ValidationResult> ValidateSave(T model)
+        {
+            yield break;
         }
     }
 }

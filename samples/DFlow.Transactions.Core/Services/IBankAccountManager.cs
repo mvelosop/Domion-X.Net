@@ -10,30 +10,23 @@
 
 using DFlow.Transactions.Core.Model;
 using Domion.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace DFlow.Transactions.Core.Services
 {
-	public interface IBankAccountManager : IEntityManager<BankAccount, int>
-	{
-		BankAccount Refresh(BankAccount entity);
+    public interface IBankAccountManager : IQueryManager<BankAccount>, IEntityManager<BankAccount, int>
+    {
+        BankAccount Refresh(BankAccount entity);
 
-		void SaveChanges();
+        void SaveChanges();
 
-		IEnumerable<ValidationResult> TryDelete(BankAccount entity);
+        IEnumerable<ValidationResult> TryDelete(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryInsert(BankAccount entity);
+        IEnumerable<ValidationResult> TryInsert(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryUpdate(BankAccount entity);
+        IEnumerable<ValidationResult> TryUpdate(BankAccount entity);
 
-		IEnumerable<ValidationResult> TryUpsert(BankAccount entity);
-
-		IEnumerable<ValidationResult> ValidateDelete(BankAccount entity);
-
-		IEnumerable<ValidationResult> ValidateSave(BankAccount entity);
-	}
+        IEnumerable<ValidationResult> TryUpsert(BankAccount entity);
+    }
 }

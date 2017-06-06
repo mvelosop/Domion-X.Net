@@ -1,7 +1,12 @@
+using Autofac;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
+using DFlow.Budget.Setup;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Xunit;
 
 namespace DFlow.Budget.Lib.Tests
@@ -9,59 +14,69 @@ namespace DFlow.Budget.Lib.Tests
     [Trait("Type", "Integration")]
     public class BudgetClassManager_IntegrationTests
     {
+        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+
+        private IContainer _container;
+
         public BudgetClassManager_IntegrationTests()
         {
-            var dbHelper = new BudgetDbSetupHelper();
+            BudgetDbSetupHelper dbHelper = SetupDatabase(_connectionString);
 
-            dbHelper.SetupDatabase();
-
-            ManagerHelper = new BudgetClassManagerHelper(dbHelper);
+            _container = SetupContainer(dbHelper);
         }
-
-        public BudgetClassManagerHelper ManagerHelper { get; private set; }
 
         [Fact]
         public void TryDelete_DeletesRecord_WhenValidData()
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Delete test - Inserted");
+            var data = new BudgetClassData("Delete-Success-Valid - Inserted", "Income");
 
-            ManagerHelper.AssertEntitiesDoNotExist(data);
-
-            ManagerHelper.AssertInsert(data.CreateEntity());
-
-            var entity = ManagerHelper.GetEntity(data);
+            EnsureEntitiesExist(data);
 
             // Act -------------------------------
 
-            var errors = ManagerHelper.TryDelete(entity);
+            IEnumerable<ValidationResult> errors = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = manager.AssertGetByKeyData(data.Name);
+
+                errors = manager.TryDelete(entity).ToList();
+
+                manager.SaveChanges();
+            }
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            var saved = ManagerHelper.GetEntity(data);
-
-            saved.Should().BeNull();
+            AssertEntitiesDoNotExist(data);
         }
 
         [Fact]
-        public void TryInsert_Fails_WhenDuplicateData()
+        public void TryInsert_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Duplicate Insert test - Inserted");
+            var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", "Income");
 
-            ManagerHelper.AssertEntitiesDoNotExist(data);
-
-            ManagerHelper.AssertInsert(data.CreateEntity());
+            EnsureEntitiesExist(data);
 
             // Act -------------------------------
 
-            var entity = data.CreateEntity();
+            IEnumerable<ValidationResult> errors = null;
 
-            var errors = ManagerHelper.TryInsert(entity);
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = data.CreateEntity();
+
+                errors = manager.TryInsert(entity).ToList();
+            }
 
             // Assert ----------------------------
 
@@ -73,45 +88,56 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Insert test - Inserted");
+            var data = new BudgetClassData("Insert-Success-Valid - Inserted", "Income");
 
-            ManagerHelper.AssertEntitiesDoNotExist(data);
+            EnsureEntitiesDoNotExist(data);
 
             // Act -------------------------------
 
-            var entity = data.CreateEntity();
+            IEnumerable<ValidationResult> errors = null;
 
-            var errors = ManagerHelper.TryInsert(entity);
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = data.CreateEntity();
+
+                errors = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            }
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            var saved = ManagerHelper.GetEntity(data);
-
-            saved.Should().ShouldBeEquivalentTo(data, options => options.ExcludingMissingMembers());
+            AssertEntitiesExist(data);
         }
 
         [Fact]
-        public void TryUpdate_Fails_WhenDuplicateData()
+        public void TryUpdate_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
 
-            var dataFirst = new BudgetClassData("Duplicate Update test - Inserted first");
-            var dataSecond = new BudgetClassData("Duplicate Update test - Inserted second");
+            var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", "Income");
+            var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", "Income");
 
-            ManagerHelper.AssertEntitiesDoNotExist(dataFirst, dataSecond);
-
-            ManagerHelper.AssertInsert(dataFirst.CreateEntity());
-            ManagerHelper.AssertInsert(dataSecond.CreateEntity());
+            EnsureEntitiesExist(dataFirst, dataSecond);
 
             // Act -------------------------------
 
-            var entity = ManagerHelper.GetEntity(dataFirst);
+            IEnumerable<ValidationResult> errors = null;
 
-            entity.Name = dataSecond.Name;
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
 
-            var errors = ManagerHelper.TryUpdate(entity);
+                var entity = manager.AssertGetByKeyData(dataFirst.Name);
+
+                entity.Name = dataSecond.Name;
+
+                errors = manager.TryUpdate(entity).ToList();
+            }
 
             // Assert ----------------------------
 
@@ -123,28 +149,103 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new BudgetClassData("Update test - Inserted");
-            var update = new BudgetClassData("Update test - UPDATED");
+            var data = new BudgetClassData("Update-Success-Valid - Inserted", "Income");
+            var update = new BudgetClassData("Update-Success-Valid - Updated", "Income");
 
-            ManagerHelper.AssertEntitiesDoNotExist(data, update);
-
-            ManagerHelper.AssertInsert(data.CreateEntity());
-
-            var entity = ManagerHelper.GetEntity(data);
+            EnsureEntitiesExist(data);
+            EnsureEntitiesDoNotExist(update);
 
             // Act -------------------------------
 
-            entity.Name = update.Name;
+            IEnumerable<ValidationResult> errors = null;
 
-            var errors = ManagerHelper.TryUpdate(entity);
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = manager.AssertGetByKeyData(data.Name);
+
+                entity.Name = update.Name;
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                manager.SaveChanges();
+            }
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            var saved = ManagerHelper.GetEntity(update);
+            AssertEntitiesExist(update);
+        }
 
-            saved.ShouldBeEquivalentTo(update, options => options.ExcludingMissingMembers());
+        private void AssertEntitiesDoNotExist(params BudgetClassData[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
+
+                managerHelper.AssertEntitiesDoNotExist(data);
+            }
+        }
+
+        private void AssertEntitiesExist(params BudgetClassData[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
+
+                managerHelper.AssertEntitiesExist(data);
+            }
+        }
+
+        private void EnsureEntitiesDoNotExist(params BudgetClassData[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
+
+                managerHelper.EnsureEntitiesDoNotExist(data);
+            }
+        }
+
+        private void EnsureEntitiesExist(params BudgetClassData[] data)
+        {
+            using (var scope = GetLocalScope())
+            {
+                var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
+
+                managerHelper.EnsureEntitiesExist(data);
+            }
+        }
+
+        private ILifetimeScope GetLocalScope(IContainer scope = null)
+        {
+            IContainer container = scope ?? _container;
+
+            return container.BeginLifetimeScope();
+        }
+
+        private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
+        {
+            var autofacHelper = new BudgetAutofacSetupHelper(dbHelper);
+
+            var builder = new ContainerBuilder();
+
+            autofacHelper.SetupContainer(builder);
+
+            IContainer container = builder.Build();
+
+            return container;
+        }
+
+        private BudgetDbSetupHelper SetupDatabase(string connectionString)
+        {
+            BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(_connectionString);
+
+            dbHelper.SetupDatabase();
+
+            return dbHelper;
         }
     }
 }
