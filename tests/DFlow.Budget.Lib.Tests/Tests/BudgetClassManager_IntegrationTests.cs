@@ -1,4 +1,5 @@
 using Autofac;
+using DFlow.Budget.Lib.Data;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
@@ -7,12 +8,16 @@ using DFlow.Tennants.Lib.Services;
 using DFlow.Tennants.Lib.Tests.Helpers;
 using DFlow.Tennants.Setup;
 using Domion.FluentAssertions.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
+using System.Diagnostics;
 
 namespace DFlow.Budget.Lib.Tests
 {
@@ -125,6 +130,52 @@ namespace DFlow.Budget.Lib.Tests
             errors.Should().BeEmpty();
 
             AssertEntitiesExist(tennantContext, data);
+        }
+
+        [Fact]
+        public void TryInsert_InsertsRecords_WhenDuplicateKeyDataButDifferentTennants()
+        {
+            // Arrange ---------------------------
+
+            var data = new BudgetClassData("Insert-Success-Duplicate-Different-Tennant - Inserted", "Income");
+
+            var firstTennantContext = GetTennantContext("Reference Tennant #1");
+            var secondTennantContext = GetTennantContext("Reference Tennant #2");
+
+            EnsureEntitiesDoNotExist(firstTennantContext, data);
+            EnsureEntitiesDoNotExist(secondTennantContext, data);
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errorsFirst = null;
+            IEnumerable<ValidationResult> errorsSecond = null;
+
+            using (var scope = GetLocalScope(firstTennantContext))
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = data.CreateEntity();
+
+                errorsFirst = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            }
+
+            using (var scope = GetLocalScope(secondTennantContext))
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                var entity = data.CreateEntity();
+
+                errorsSecond = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            }
+
+            // Assert ----------------------------
+
+            errorsFirst.Should().BeEmpty();
+            errorsSecond.Should().BeEmpty();
         }
 
         [Fact]
@@ -298,6 +349,15 @@ namespace DFlow.Budget.Lib.Tests
         {
             BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(_connectionString);
 
+            using (var dbContext = new BudgetDbContext(dbHelper.GetOptions()))
+            {
+                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                loggerFactory.AddProvider(new MyLoggerProvider());
+
+            }
+
             dbHelper.SetupDatabase();
 
             return dbHelper;
@@ -310,4 +370,36 @@ namespace DFlow.Budget.Lib.Tests
             tennantsDataHelper.SeedReferenceTennants();
         }
     }
+
+    public class MyLoggerProvider : ILoggerProvider
+    {
+        public ILogger CreateLogger(string categoryName)
+        {
+            return new MyLogger();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        private class MyLogger : ILogger
+        {
+            public IDisposable BeginScope<TState>(TState state)
+            {
+                return null;
+            }
+
+            public bool IsEnabled(LogLevel logLevel)
+            {
+                return true;
+            }
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+            {
+                Debug.WriteLine(formatter(state, exception));
+            }
+        }
+    }
+
 }
