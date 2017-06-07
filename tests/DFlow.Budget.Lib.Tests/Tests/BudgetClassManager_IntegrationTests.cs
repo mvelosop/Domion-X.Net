@@ -2,8 +2,13 @@ using Autofac;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
+using DFlow.Tennants.Core.Model;
+using DFlow.Tennants.Lib.Services;
+using DFlow.Tennants.Lib.Tests.Helpers;
+using DFlow.Tennants.Setup;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,6 +28,8 @@ namespace DFlow.Budget.Lib.Tests
             BudgetDbSetupHelper dbHelper = SetupDatabase(_connectionString);
 
             _container = SetupContainer(dbHelper);
+
+            SetupReferenceData();
         }
 
         [Fact]
@@ -32,7 +39,7 @@ namespace DFlow.Budget.Lib.Tests
 
             var data = new BudgetClassData("Delete-Success-Valid - Inserted", "Income");
 
-            EnsureEntitiesExist(data);
+            EnsureEntitiesExist(data: data);
 
             // Act -------------------------------
 
@@ -53,7 +60,7 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            AssertEntitiesDoNotExist(data);
+            AssertEntitiesDoNotExist(data: data);
         }
 
         [Fact]
@@ -63,7 +70,7 @@ namespace DFlow.Budget.Lib.Tests
 
             var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", "Income");
 
-            EnsureEntitiesExist(data);
+            EnsureEntitiesExist(data: data);
 
             // Act -------------------------------
 
@@ -90,16 +97,30 @@ namespace DFlow.Budget.Lib.Tests
 
             var data = new BudgetClassData("Insert-Success-Valid - Inserted", "Income");
 
-            EnsureEntitiesDoNotExist(data);
+            Tennant tennant = null;
+
+            using (var scope = GetLocalScope())
+            {
+                var manager = scope.Resolve<TennantManager>();
+
+                tennant = manager.AssertGetByKeyData("Reference Tennant #1");
+            }
+
+            Action<ContainerBuilder> scopeContext = cb =>
+            {
+                cb.Register((c) => tennant);
+            };
+
+            EnsureEntitiesDoNotExist(scopeContext, data);
 
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
 
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(scopeContext))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
-
+                
                 var entity = data.CreateEntity();
 
                 errors = manager.TryInsert(entity).ToList();
@@ -111,7 +132,7 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            AssertEntitiesExist(data);
+            AssertEntitiesExist(scopeContext, data);
         }
 
         [Fact]
@@ -122,7 +143,7 @@ namespace DFlow.Budget.Lib.Tests
             var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", "Income");
             var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", "Income");
 
-            EnsureEntitiesExist(dataFirst, dataSecond);
+            EnsureEntitiesExist(data: new[] { dataFirst, dataSecond });
 
             // Act -------------------------------
 
@@ -152,8 +173,8 @@ namespace DFlow.Budget.Lib.Tests
             var data = new BudgetClassData("Update-Success-Valid - Inserted", "Income");
             var update = new BudgetClassData("Update-Success-Valid - Updated", "Income");
 
-            EnsureEntitiesExist(data);
-            EnsureEntitiesDoNotExist(update);
+            EnsureEntitiesExist(data: data);
+            EnsureEntitiesDoNotExist(data: update);
 
             // Act -------------------------------
 
@@ -176,12 +197,12 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            AssertEntitiesExist(update);
+            AssertEntitiesExist(data: update);
         }
 
-        private void AssertEntitiesDoNotExist(params BudgetClassData[] data)
+        private void AssertEntitiesDoNotExist(Action<ContainerBuilder> scopeContext = null, params BudgetClassData[] data)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(scopeContext))
             {
                 var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
 
@@ -189,9 +210,9 @@ namespace DFlow.Budget.Lib.Tests
             }
         }
 
-        private void AssertEntitiesExist(params BudgetClassData[] data)
+        private void AssertEntitiesExist(Action<ContainerBuilder> scopeContext = null, params BudgetClassData[] data)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(scopeContext))
             {
                 var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
 
@@ -199,9 +220,9 @@ namespace DFlow.Budget.Lib.Tests
             }
         }
 
-        private void EnsureEntitiesDoNotExist(params BudgetClassData[] data)
+        private void EnsureEntitiesDoNotExist(Action<ContainerBuilder> scopeContext = null, params BudgetClassData[] data)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(scopeContext))
             {
                 var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
 
@@ -209,9 +230,9 @@ namespace DFlow.Budget.Lib.Tests
             }
         }
 
-        private void EnsureEntitiesExist(params BudgetClassData[] data)
+        private void EnsureEntitiesExist(Action<ContainerBuilder> scopeContext = null, params BudgetClassData[] data)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(scopeContext))
             {
                 var managerHelper = scope.Resolve<BudgetClassManagerHelper>();
 
@@ -219,20 +240,39 @@ namespace DFlow.Budget.Lib.Tests
             }
         }
 
-        private ILifetimeScope GetLocalScope(IContainer scope = null)
+        private ILifetimeScope GetLocalScope(Action<ContainerBuilder> scopeContext = null, IContainer scope = null)
         {
             IContainer container = scope ?? _container;
 
-            return container.BeginLifetimeScope();
+            if (scopeContext == null)
+            {
+                return container.BeginLifetimeScope();
+            }
+            else
+            {
+                return container.BeginLifetimeScope(scopeContext);
+            }
         }
 
         private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
         {
-            var autofacHelper = new BudgetAutofacSetupHelper(dbHelper);
+            var budgetDiHelper = new BudgetAutofacSetupHelper(dbHelper);
 
             var builder = new ContainerBuilder();
 
-            autofacHelper.SetupContainer(builder);
+            budgetDiHelper.SetupContainer(builder);
+
+            // Tennants --------------------------
+
+            TennantsDbSetupHelper tennantsDbHelper = new TennantsDbSetupHelper(_connectionString);
+
+            tennantsDbHelper.SetupDatabase();
+
+            var tennantsDiHelper = new TennantsAutofacSetupHelper(tennantsDbHelper);
+
+            tennantsDiHelper.SetupContainer(builder);
+
+            //------------------------------------
 
             IContainer container = builder.Build();
 
@@ -246,6 +286,13 @@ namespace DFlow.Budget.Lib.Tests
             dbHelper.SetupDatabase();
 
             return dbHelper;
+        }
+
+        private void SetupReferenceData()
+        {
+            var tennantsDataHelper = new TennantsTestDataHelper(_container);
+
+            tennantsDataHelper.SeedReferenceTennants();
         }
     }
 }

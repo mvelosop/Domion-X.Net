@@ -70,6 +70,8 @@ namespace DFlow.Budget.Lib.Services
         {
             if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
+            entity.Tennant_Id = _currentTennant.Id;
+
             CommonSaveOperations(entity);
 
             return base.TryInsert(entity);
