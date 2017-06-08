@@ -5,6 +5,8 @@
 
 Scenario: (dflow-1.1) - Scenario - Add budget classes
 	
+	Given the current user is working as tennant "dflow-1.1"
+
 	Given there are no registered budget classes
 
 	When I add the following budget classes:

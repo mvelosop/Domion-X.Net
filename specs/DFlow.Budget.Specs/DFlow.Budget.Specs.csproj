@@ -97,6 +97,18 @@
       <Project>{5e8721d7-fd0b-4d28-a06d-0864202b0196}</Project>
       <Name>DFlow.Budget.Setup</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Core\DFlow.Tennants.Core.csproj">
+      <Project>{B6A20904-251B-490D-BB02-FD5051F95B4D}</Project>
+      <Name>DFlow.Tennants.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj">
+      <Project>{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}</Project>
+      <Name>DFlow.Tennants.Lib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\samples\DFlow.Tennants.Setup\DFlow.Tennants.Setup.csproj">
+      <Project>{EC9154C3-4D44-4050-BF51-4CF66704F263}</Project>
+      <Name>DFlow.Tennants.Setup</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj">
       <Project>{2d6cad25-12eb-4e34-b9eb-e66c894d40dd}</Project>
       <Name>Domion.Lib</Name>
@@ -108,6 +120,10 @@
     <ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
       <Project>{66186c10-45e2-4227-8f8b-ca69650072c1}</Project>
       <Name>DFlow.Budget.Lib.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tests\DFlow.Tennants.Lib.Tests\DFlow.Tennants.Lib.Tests.csproj">
+      <Project>{8ccf9b41-19e9-4a4d-a8e2-5da4c1a64240}</Project>
+      <Name>DFlow.Tennants.Lib.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

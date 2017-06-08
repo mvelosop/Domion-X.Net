@@ -333,7 +333,7 @@ namespace DFlow.Budget.Lib.Tests
 
         private BudgetDbSetupHelper SetupDatabase(string connectionString)
         {
-            BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(_connectionString);
+            BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(connectionString);
 
             //using (var dbContext = new BudgetDbContext(dbHelper.GetOptions()))
             //{

@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
+using DFlow.Tennants.Lib.Services;
+using DFlow.Tennants.Lib.Tests.Helpers;
 using FluentAssertions;
 using System.Linq;
 using TechTalk.SpecFlow;
@@ -23,6 +25,22 @@ namespace DFlow.Budget.Specs.Bindings
         public BudgetClassManager BudgetClassManager => Resolve<BudgetClassManager>();
 
         public BudgetClassManagerHelper BudgetClassManagerHelper => Resolve<BudgetClassManagerHelper>();
+
+        public TennantManager TennantManager => Resolve<TennantManager>();
+        public TennantManagerHelper TennantManagerHelper => Resolve<TennantManagerHelper>();
+
+        [Given(@"the current user is working as tennant ""(.*)""")]
+        public void GivenTheCurrentUserIsWorkingAsTennant(string owner)
+        {
+            var data = new TennantData(owner);
+
+            TennantManagerHelper.EnsureEntitiesExist(data);
+
+            var currentTennant = TennantManager.AssertGetByKeyData(owner);
+
+            _scenarioContext.Add("CurrentTennant", currentTennant);
+        }
+
 
         [Given(@"there are no registered budget classes")]
         public void GivenThereAreNoRegisteredBudgetClasses()

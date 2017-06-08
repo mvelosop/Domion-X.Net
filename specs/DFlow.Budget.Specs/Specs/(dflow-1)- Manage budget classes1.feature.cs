@@ -81,6 +81,8 @@ namespace DFlow.Budget.Specs.Specs
 #line 6
 this.ScenarioSetup(scenarioInfo);
 #line 8
+ testRunner.Given("the current user is working as tennant \"dflow-1.1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 10
  testRunner.Given("there are no registered budget classes", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
@@ -131,7 +133,7 @@ this.ScenarioSetup(scenarioInfo);
             table1.AddRow(new string[] {
                         "Gifts and Donations",
                         "Expense"});
-#line 10
+#line 12
  testRunner.When("I add the following budget classes:", ((string)(null)), table1, "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
@@ -182,7 +184,7 @@ this.ScenarioSetup(scenarioInfo);
             table2.AddRow(new string[] {
                         "Gifts and Donations",
                         "Expense"});
-#line 28
+#line 30
  testRunner.Then("I can find the following budget classes:", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
