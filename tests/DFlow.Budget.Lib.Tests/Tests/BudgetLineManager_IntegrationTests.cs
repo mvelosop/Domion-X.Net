@@ -2,6 +2,7 @@ using Autofac;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
+using DFlow.Tennants.Setup;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
 using System.Collections.Generic;
@@ -243,11 +244,23 @@ namespace DFlow.Budget.Lib.Tests
 
         private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
         {
-            var autofacHelper = new BudgetAutofacSetupHelper(dbHelper);
+            var budgetDiHelper = new BudgetAutofacSetupHelper(dbHelper);
 
             var builder = new ContainerBuilder();
 
-            autofacHelper.SetupContainer(builder);
+            budgetDiHelper.SetupContainer(builder);
+
+            // Tennants --------------------------
+
+            TennantsDbSetupHelper tennantsDbHelper = new TennantsDbSetupHelper(_connectionString);
+
+            tennantsDbHelper.SetupDatabase();
+
+            var tennantsDiHelper = new TennantsAutofacSetupHelper(tennantsDbHelper);
+
+            tennantsDiHelper.SetupContainer(builder);
+
+            //------------------------------------
 
             IContainer container = builder.Build();
 

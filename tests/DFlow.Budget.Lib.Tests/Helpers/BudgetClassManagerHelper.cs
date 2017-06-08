@@ -49,7 +49,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet"></param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(_scope))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
@@ -68,7 +68,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet"></param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
-            using (var scope = GetLocalScope())
+            using (var scope = GetLocalScope(_scope))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
@@ -133,9 +133,11 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             AssertEntitiesExist(dataSet);
         }
 
-        private ILifetimeScope GetLocalScope()
+        private ILifetimeScope GetLocalScope(ILifetimeScope scope = null)
         {
-            return _scope.BeginLifetimeScope();
+            var localScope = scope ?? _scope;
+
+            return localScope.BeginLifetimeScope();
         }
     }
 }
