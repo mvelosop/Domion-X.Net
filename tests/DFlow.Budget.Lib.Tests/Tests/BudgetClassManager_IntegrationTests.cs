@@ -38,6 +38,7 @@ namespace DFlow.Budget.Lib.Tests
             // Arrange ---------------------------
 
             var tennantOwner = "Reference Tennant #1";
+
             var data = new BudgetClassData("Delete-Success-Valid - Inserted", "Income");
 
             ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
@@ -74,6 +75,7 @@ namespace DFlow.Budget.Lib.Tests
             // Arrange ---------------------------
 
             var tennantOwner = "Reference Tennant #1";
+
             var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", "Income");
 
             ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
@@ -103,6 +105,7 @@ namespace DFlow.Budget.Lib.Tests
             // Arrange ---------------------------
 
             var tennantOwner = "Reference Tennant #1";
+
             var data = new BudgetClassData("Insert-Success-Valid - Inserted", "Income");
 
             ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
@@ -188,6 +191,7 @@ namespace DFlow.Budget.Lib.Tests
             // Arrange ---------------------------
 
             var tennantOwner = "Reference Tennant #1";
+
             var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", "Income");
             var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", "Income");
 
@@ -220,6 +224,7 @@ namespace DFlow.Budget.Lib.Tests
             // Arrange ---------------------------
 
             var tennantOwner = "Reference Tennant #1";
+
             var data = new BudgetClassData("Update-Success-Valid - Inserted", "Income");
             var update = new BudgetClassData("Update-Success-Valid - Updated", "Income");
 
@@ -264,7 +269,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             Tennant tennant = GetTennant(owner);
 
-            using (var scope = GetLocalScope(cb => cb.Register(c => tennant)))
+            using (var scope = _container.BeginLifetimeScope(cb => cb.Register(c => tennant)))
             {
                 var agent = scope.Resolve<T>();
 
@@ -281,23 +286,9 @@ namespace DFlow.Budget.Lib.Tests
         {
             Tennant tennant = GetTennant(owner);
 
-            using (var scope = GetLocalScope(cb => cb.Register(c => tennant)))
+            using (var scope = _container.BeginLifetimeScope(cb => cb.Register(c => tennant)))
             {
                 action.Invoke(scope);
-            }
-        }
-
-        private ILifetimeScope GetLocalScope(Action<ContainerBuilder> scopeContext, IContainer scope = null)
-        {
-            IContainer container = scope ?? _container;
-
-            if (scopeContext == null)
-            {
-                return container.BeginLifetimeScope();
-            }
-            else
-            {
-                return container.BeginLifetimeScope(scopeContext);
             }
         }
 
@@ -305,7 +296,7 @@ namespace DFlow.Budget.Lib.Tests
         {
             Tennant tennant = null;
 
-            using (var scope = GetLocalScope(null))
+            using (var scope = _container.BeginLifetimeScope())
             {
                 var manager = scope.Resolve<TennantManager>();
 
@@ -313,16 +304,6 @@ namespace DFlow.Budget.Lib.Tests
             }
 
             return tennant;
-        }
-
-        private Action<ContainerBuilder> GetTennantContext(string owner)
-        {
-            Action<ContainerBuilder> scopeContext = cb =>
-            {
-                cb.Register((c) => GetTennant(owner));
-            };
-
-            return scopeContext;
         }
 
         private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
