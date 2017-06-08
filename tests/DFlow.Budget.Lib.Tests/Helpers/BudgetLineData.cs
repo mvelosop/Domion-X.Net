@@ -30,8 +30,10 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
         public string Name { get; set; }
 
-        public BudgetLine CreateEntity()
+        public BudgetLine CreateEntity(BudgetLineDataHelper helper)
         {
+            helper.SetReferences(this);
+
             return new BudgetLine
             {
                 Name = Name,

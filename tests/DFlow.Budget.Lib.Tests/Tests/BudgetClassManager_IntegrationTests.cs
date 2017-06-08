@@ -65,7 +65,7 @@ namespace DFlow.Budget.Lib.Tests
 
             ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
             {
-                managerHelper.EnsureEntitiesDoNotExist(data);
+                managerHelper.AssertEntitiesDoNotExist(data);
             });
         }
 
@@ -255,7 +255,7 @@ namespace DFlow.Budget.Lib.Tests
 
             ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
             {
-                managerHelper.EnsureEntitiesExist(update);
+                managerHelper.AssertEntitiesExist(update);
             });
         }
 

@@ -122,13 +122,11 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (var data in dataSet)
             {
-                BudgetLineDataHelper.SetReferences(data);
-
                 var entity = BudgetLineManager.SingleOrDefault(e => e.Name == data.Name);
 
                 if (entity == null)
                 {
-                    entity = data.CreateEntity();
+                    entity = data.CreateEntity(BudgetLineDataHelper);
 
                     var errors = BudgetLineManager.TryInsert(entity);
 

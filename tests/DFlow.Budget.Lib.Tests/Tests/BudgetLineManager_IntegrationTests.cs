@@ -85,8 +85,9 @@ namespace DFlow.Budget.Lib.Tests
             using (var scope = GetLocalScope())
             {
                 var manager = scope.Resolve<BudgetLineManager>();
+                var dataHelper = scope.Resolve<BudgetLineDataHelper>();
 
-                var entity = data.CreateEntity();
+                var entity = data.CreateEntity(dataHelper);
 
                 errors = manager.TryInsert(entity).ToList();
             }
@@ -114,9 +115,7 @@ namespace DFlow.Budget.Lib.Tests
                 var manager = scope.Resolve<BudgetLineManager>();
                 var dataHelper = scope.Resolve<BudgetLineDataHelper>();
 
-                dataHelper.SetReferences(data);
-
-                var entity = data.CreateEntity();
+                var entity = data.CreateEntity(dataHelper);
 
                 errors = manager.TryInsert(entity).ToList();
 
