@@ -349,14 +349,14 @@ namespace DFlow.Budget.Lib.Tests
         {
             BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(_connectionString);
 
-            using (var dbContext = new BudgetDbContext(dbHelper.GetOptions()))
-            {
-                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
-                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+            //using (var dbContext = new BudgetDbContext(dbHelper.GetOptions()))
+            //{
+            //    var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+            //    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
 
-                loggerFactory.AddProvider(new MyLoggerProvider());
+            //    loggerFactory.AddProvider(new MyLoggerProvider());
 
-            }
+            //}
 
             dbHelper.SetupDatabase();
 
@@ -371,35 +371,35 @@ namespace DFlow.Budget.Lib.Tests
         }
     }
 
-    public class MyLoggerProvider : ILoggerProvider
-    {
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new MyLogger();
-        }
+    //public class MyLoggerProvider : ILoggerProvider
+    //{
+    //    public ILogger CreateLogger(string categoryName)
+    //    {
+    //        return new MyLogger();
+    //    }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+    //    public void Dispose()
+    //    {
+    //        throw new NotImplementedException();
+    //    }
 
-        private class MyLogger : ILogger
-        {
-            public IDisposable BeginScope<TState>(TState state)
-            {
-                return null;
-            }
+    //    private class MyLogger : ILogger
+    //    {
+    //        public IDisposable BeginScope<TState>(TState state)
+    //        {
+    //            return null;
+    //        }
 
-            public bool IsEnabled(LogLevel logLevel)
-            {
-                return true;
-            }
+    //        public bool IsEnabled(LogLevel logLevel)
+    //        {
+    //            return true;
+    //        }
 
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-            {
-                Debug.WriteLine(formatter(state, exception));
-            }
-        }
-    }
+    //        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    //        {
+    //            Debug.WriteLine(formatter(state, exception));
+    //        }
+    //    }
+    //}
 
 }
