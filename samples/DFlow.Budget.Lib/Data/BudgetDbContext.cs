@@ -8,6 +8,7 @@
 //  Original author: Miguel
 //------------------------------------------------------------------------------
 
+using DFlow.Budget.Core.Model;
 using DFlow.Tennants.Lib.Data;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
@@ -30,14 +31,7 @@ namespace DFlow.Budget.Lib.Data
         {
         }
 
-        // Para hacer efectivo el modo del DbContext se debe cambiar el Tag DOMION::IsolatedContext
-        // en el DbContext del Modelo PIM, ejecutar la Transformación y generar el código nuevamente,
-        // porque ese parámetro afecta la generación de las clases del Modelo de Dominio
-
-        public static bool IsolatedContext
-        {
-            get { return false; }
-        }
+        public virtual DbSet<BudgetClass> BudgetClasses { get; set; }
 
         public override int SaveChanges()
         {
@@ -59,13 +53,10 @@ namespace DFlow.Budget.Lib.Data
         {
             ConfigureLocalModel(modelBuilder);
 
-            if (!IsolatedContext)
-            {
-                ConfigureExternalModel(modelBuilder);
-            }
+            ConfigureExternalModel(modelBuilder);
         }
 
-        /// 
+        ///
         /// <param name="modelBuilder"></param>
         private void ConfigureExternalModel(ModelBuilder modelBuilder)
         {

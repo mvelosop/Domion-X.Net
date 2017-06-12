@@ -28,7 +28,7 @@ namespace DFlow.Budget.Lib.Data
             builder.Property(bc => bc.RowVersion)
                 .IsRowVersion();
 
-            // External etities
+			// External entities
 
             builder.HasOne<Tennant>(bc => bc.Tennant)
                 .WithMany()

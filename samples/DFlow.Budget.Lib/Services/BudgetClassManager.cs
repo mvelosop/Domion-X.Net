@@ -29,6 +29,9 @@ namespace DFlow.Budget.Lib.Services
         private Expression<Func<BudgetClass, bool>> _baseFilter;
         private Tennant _currentTennant;
 
+        /// <summary>
+        ///     Entity manager for BudgetClass
+        /// </summary>
         public BudgetClassManager(BudgetDbContext dbContext, Tennant currentTennant)
             : base(dbContext)
         {
@@ -37,6 +40,9 @@ namespace DFlow.Budget.Lib.Services
             _baseFilter = (bc) => bc.Tennant_Id == _currentTennant.Id;
         }
 
+        /// <summary>
+        ///     Returns another BudgetClass with the same Name if it exists or null if doesn't.
+        /// </summary>
         public BudgetClass FindDuplicateByName(BudgetClass entity)
         {
             if (entity.Id == 0)
@@ -49,11 +55,25 @@ namespace DFlow.Budget.Lib.Services
             }
         }
 
-        public override IQueryable<BudgetClass> Query(Expression<Func<BudgetClass, bool>> where)
+        /// <summary>
+        ///     Returns an IQueryable that, when enumerated, will retrieve the objects that satisfy the where condition 
+        ///     or all of them if where condition is null.
+        /// </summary>
+        public override IQueryable<BudgetClass> Query(Expression<Func<BudgetClass, bool>> where = null)
         {
             return base.Query(where).Where(_baseFilter);
         }
 
+        /// <summary>
+        ///     <para>
+        ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
+        ///     </para>
+        ///     <para>
+        ///         Important, this only refreshes the passed entity. It does not refresh the related entities 
+        ///         (navigation or collection properties). If needed yo have to modify this method and call the
+        ///         method on each one.
+        ///     </para>
+        /// </summary>
         public virtual BudgetClass Refresh(BudgetClass entity)
         {
             base.Detach(entity);
@@ -61,11 +81,18 @@ namespace DFlow.Budget.Lib.Services
             return Find(entity.Id);
         }
 
+        /// <summary>
+        ///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.
+        /// </summary>
         public new virtual IEnumerable<ValidationResult> TryDelete(BudgetClass entity)
         {
             return base.TryDelete(entity);
         }
 
+        /// <summary>
+        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method. 
+        ///     This method also checks that the concurrency token (RowVersion) is EMPTY.
+        /// </summary>
         public new virtual IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
         {
             if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
@@ -77,6 +104,10 @@ namespace DFlow.Budget.Lib.Services
             return base.TryInsert(entity);
         }
 
+        /// <summary>
+        ///     Marks an entity for update in the DbContext's change tracker if no errors are found in the ValidateSave method.
+        ///     This method also checks that the concurrency token (RowVersion) is NOT EMPTY.
+        /// </summary>
         public new virtual IEnumerable<ValidationResult> TryUpdate(BudgetClass entity)
         {
             if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
@@ -86,6 +117,9 @@ namespace DFlow.Budget.Lib.Services
             return base.TryUpdate(entity);
         }
 
+        /// <summary>
+        ///     Calls TryInsert or TryUpdate accordingly, based on the value of the Id property;
+        /// </summary>
         public virtual IEnumerable<ValidationResult> TryUpsert(BudgetClass entity)
         {
             if (entity.Id == 0)
@@ -98,16 +132,25 @@ namespace DFlow.Budget.Lib.Services
             }
         }
 
+        /// <summary>
+        ///     Performs operations that have to be executed both on inserts and updates.
+        /// </summary>
         internal virtual void CommonSaveOperations(BudgetClass entity)
         {
             TrimStrings(entity);
         }
 
+        /// <summary>
+        ///     Returns the validation results for conditions that prevent the entity to be removed.
+        /// </summary>
         protected override IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity)
         {
             yield break;
         }
 
+        /// <summary>
+        ///     Returns the validation results for conditions that prevent the entity to be added or updated.
+        /// </summary>
         protected override IEnumerable<ValidationResult> ValidateSave(BudgetClass entity)
         {
             BudgetClass duplicateByName = FindDuplicateByName(entity);
