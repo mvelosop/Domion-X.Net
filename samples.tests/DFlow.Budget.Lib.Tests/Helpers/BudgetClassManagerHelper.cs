@@ -19,13 +19,13 @@ namespace DFlow.Budget.Lib.Tests.Helpers
     /// </summary>
     public class BudgetClassManagerHelper
     {
-        private Func<EquivalencyAssertionOptions<BudgetClassData>, EquivalencyAssertionOptions<BudgetClassData>> _dataEquivalenceOptions =
+        private readonly Func<EquivalencyAssertionOptions<BudgetClassData>, EquivalencyAssertionOptions<BudgetClassData>> _dataEquivalenceOptions =
             options => options
                 .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
 
-        private Lazy<BudgetClassManager> _lazyBudgetClassManager;
+        private readonly Lazy<BudgetClassManager> _lazyBudgetClassManager;
 
-        private ILifetimeScope _scope;
+        private readonly ILifetimeScope _scope;
 
         /// <summary>
         /// Creates the test helper for BudgetClassManager
@@ -41,7 +41,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             _lazyBudgetClassManager = lazyBudgetClassManager;
         }
 
-        private BudgetClassManager BudgetClassManager { get { return _lazyBudgetClassManager.Value; } }
+        private BudgetClassManager BudgetClassManager => _lazyBudgetClassManager.Value;
 
         /// <summary>
         /// Asserts that entities with the supplied key data values do not exist
@@ -49,13 +49,13 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet"></param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            using (var scope = GetLocalScope(_scope))
+            using (ILifetimeScope scope = GetLocalScope(_scope))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                foreach (var data in dataSet)
+                foreach (BudgetClassData data in dataSet)
                 {
-                    var entity = manager.SingleOrDefault(e => e.Name == data.Name);
+                    BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
 
                     entity.Should().BeNull(@"because BudgetClass ""{0}"" MUST NOT EXIST!", data.Name);
                 }
@@ -68,11 +68,11 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet"></param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
-            using (var scope = GetLocalScope(_scope))
+            using (ILifetimeScope scope = GetLocalScope(_scope))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
-                foreach (var data in dataSet)
+                foreach (BudgetClassData data in dataSet)
                 {
                     BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
 
@@ -91,16 +91,15 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched and removed</param>
         public void EnsureEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            foreach (var data in dataSet)
+            foreach (BudgetClassData data in dataSet)
             {
-                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
+                BudgetClass entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
-                if (entity != null)
-                {
-                    var errors = BudgetClassManager.TryDelete(entity);
+                if (entity == null) continue;
 
-                    errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be removed!", data.Name);
-                }
+                var errors = BudgetClassManager.TryDelete(entity);
+
+                errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be removed!", data.Name);
             }
 
             BudgetClassManager.SaveChanges();
@@ -114,18 +113,17 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet"></param>
         public void EnsureEntitiesExist(params BudgetClassData[] dataSet)
         {
-            foreach (var data in dataSet)
+            foreach (BudgetClassData data in dataSet)
             {
-                var entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
+                BudgetClass entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
-                if (entity == null)
-                {
-                    entity = data.CreateEntity();
+                if (entity != null) continue;
 
-                    var errors = BudgetClassManager.TryInsert(entity);
+                entity = data.CreateEntity();
 
-                    errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be added!", data.Name);
-                }
+                var errors = BudgetClassManager.TryInsert(entity);
+
+                errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be added!", data.Name);
             }
 
             BudgetClassManager.SaveChanges();
@@ -135,7 +133,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
         private ILifetimeScope GetLocalScope(ILifetimeScope scope = null)
         {
-            var localScope = scope ?? _scope;
+            ILifetimeScope localScope = scope ?? _scope;
 
             return localScope.BeginLifetimeScope();
         }

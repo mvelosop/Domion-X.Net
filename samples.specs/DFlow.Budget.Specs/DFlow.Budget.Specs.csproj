@@ -117,11 +117,11 @@
       <Project>{64DFE745-CD61-461E-8F67-607B12611579}</Project>
       <Name>Domion.Setup</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
+    <ProjectReference Include="..\..\samples.tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj">
       <Project>{66186c10-45e2-4227-8f8b-ca69650072c1}</Project>
       <Name>DFlow.Budget.Lib.Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\tests\DFlow.Tennants.Lib.Tests\DFlow.Tennants.Lib.Tests.csproj">
+    <ProjectReference Include="..\..\samples.tests\DFlow.Tennants.Lib.Tests\DFlow.Tennants.Lib.Tests.csproj">
       <Project>{8ccf9b41-19e9-4a4d-a8e2-5da4c1a64240}</Project>
       <Name>DFlow.Tennants.Lib.Tests</Name>
     </ProjectReference>

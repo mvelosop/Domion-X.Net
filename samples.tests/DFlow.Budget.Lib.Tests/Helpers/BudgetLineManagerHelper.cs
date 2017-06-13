@@ -1,6 +1,4 @@
-﻿// BudgetLine
-
-using Autofac;
+﻿using Autofac;
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using Domion.Lib.Extensions;
@@ -22,13 +20,13 @@ namespace DFlow.Budget.Lib.Tests.Helpers
     /// </summary>
     public class BudgetLineManagerHelper
     {
-        private Func<EquivalencyAssertionOptions<BudgetLineData>, EquivalencyAssertionOptions<BudgetLineData>> _dataEquivalenceOptions =
+        private readonly Func<EquivalencyAssertionOptions<BudgetLineData>, EquivalencyAssertionOptions<BudgetLineData>> _dataEquivalenceOptions =
             options => options
                 .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
 
-        private Lazy<BudgetLineDataHelper> _lazyBudgetLineDataHelper;
-        private Lazy<BudgetLineManager> _lazyBudgetLineManager;
-        private ILifetimeScope _scope;
+        private readonly Lazy<BudgetLineDataHelper> _lazyBudgetLineDataHelper;
+        private readonly Lazy<BudgetLineManager> _lazyBudgetLineManager;
+        private readonly ILifetimeScope _scope;
 
         /// <summary>
         /// Creates the test helper for BudgetLineManager
@@ -45,9 +43,9 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             _lazyBudgetLineManager = lazyBudgetLineManager;
         }
 
-        private BudgetLineDataHelper BudgetLineDataHelper { get { return _lazyBudgetLineDataHelper.Value; } }
+        private BudgetLineDataHelper BudgetLineDataHelper => _lazyBudgetLineDataHelper.Value;
 
-        private BudgetLineManager BudgetLineManager { get { return _lazyBudgetLineManager.Value; } }
+        private BudgetLineManager BudgetLineManager => _lazyBudgetLineManager.Value;
 
         /// <summary>
         /// Asserts that entities with the supplied key data values do not exist

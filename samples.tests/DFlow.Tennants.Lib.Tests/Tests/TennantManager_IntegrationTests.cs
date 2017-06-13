@@ -36,7 +36,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             // Act -------------------------------
 
-            IEnumerable<ValidationResult> errors = null;
+            IEnumerable<ValidationResult> errors;
 
             using (var scope = GetLocalScope())
             {

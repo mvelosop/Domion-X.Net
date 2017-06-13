@@ -5,7 +5,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 {
     public class BudgetLineDataHelper
     {
-        private Lazy<BudgetClassManager> _lazyBudgetClassManager;
+        private readonly Lazy<BudgetClassManager> _lazyBudgetClassManager;
 
         public BudgetLineDataHelper(
             Lazy<BudgetClassManager> lazyBudgetClassManager)
@@ -13,7 +13,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             _lazyBudgetClassManager = lazyBudgetClassManager;
         }
 
-        private BudgetClassManager BudgetClassManager { get { return _lazyBudgetClassManager.Value; } }
+        private BudgetClassManager BudgetClassManager => _lazyBudgetClassManager.Value;
 
         public void SetReferences(BudgetLineData data)
         {
