@@ -8,7 +8,7 @@
 //  Original author: Miguel
 //------------------------------------------------------------------------------
 
-using DFlow.Tennants.Core.Model;
+using DFlow.Tenants.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -35,9 +35,9 @@ namespace DFlow.Budget.Core.Model
 
         public virtual Byte[] RowVersion { get; set; }
 
-        public virtual Tennant Tennant { get; set; }
+        public virtual Tenant Tenant { get; set; }
 
-        public virtual int Tennant_Id { get; set; }
+        public virtual int Tenant_Id { get; set; }
 
         public virtual TransactionType TransactionType { get; set; }
     }

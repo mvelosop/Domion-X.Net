@@ -1,12 +1,14 @@
 using Autofac;
+using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
-using DFlow.Tennants.Core.Model;
-using DFlow.Tennants.Lib.Services;
-using DFlow.Tennants.Lib.Tests.Helpers;
-using DFlow.Tennants.Setup;
+using DFlow.Tenants.Core.Model;
+using DFlow.Tenants.Lib.Services;
+using DFlow.Tenants.Lib.Tests.Helpers;
+using DFlow.Tenants.Setup;
 using Domion.FluentAssertions.Extensions;
+using Domion.Lib.Extensions;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -14,22 +16,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace DFlow.Budget.Lib.Tests
+namespace DFlow.Budget.Lib.Tests.Tests
 {
     [Trait("Type", "Integration")]
     public class BudgetClassManager_IntegrationTests
     {
-        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+        private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
-        private IContainer _container;
+        private static readonly BudgetDbSetupHelper DbSetupHelper;
+
+        private readonly IContainer Container;
+
+        static BudgetClassManager_IntegrationTests()
+        {
+            DbSetupHelper = SetupDatabase(ConnectionString);
+        }
 
         public BudgetClassManager_IntegrationTests()
         {
-            BudgetDbSetupHelper dbHelper = SetupDatabase(_connectionString);
-
-            _container = SetupContainer(dbHelper);
-
-            SetupReferenceData();
+            Container = SetupContainer(DbSetupHelper);
         }
 
         [Fact]
@@ -37,22 +42,22 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var tennantOwner = "Reference Tennant #1";
+            const string owner = "Reference Tenant #1";
 
-            var data = new BudgetClassData("Delete-Success-Valid - Inserted", "Income");
+            var data = new BudgetClassData("Delete-Success-Valid - Inserted", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesExist(data);
             });
 
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
 
-            ExecuteInLocalScope<BudgetClassManager>(tennantOwner, manager =>
+            UsingManager(owner, (scope, manager) =>
             {
-                var entity = manager.AssertGetByKeyData(data.Name);
+                BudgetClass entity = manager.SingleOrDefault(bc => bc.Name == data.Name);
 
                 errors = manager.TryDelete(entity).ToList();
 
@@ -63,9 +68,9 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.AssertEntitiesDoNotExist(data);
+                helper.AssertEntitiesDoNotExist(data);
             });
         }
 
@@ -74,22 +79,24 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var tennantOwner = "Reference Tennant #1";
+            const string owner = "Reference Tenant #1";
 
-            var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", "Income");
+            var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesExist(data);
             });
 
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
 
-            ExecuteInLocalScope<BudgetClassManager>(tennantOwner, manager =>
+            UsingManager(owner, (scope, manager) =>
             {
-                var entity = data.CreateEntity();
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
 
                 errors = manager.TryInsert(entity).ToList();
             });
@@ -102,24 +109,26 @@ namespace DFlow.Budget.Lib.Tests
         [Fact]
         public void TryInsert_InsertsRecord_WhenValidData()
         {
+            IEnumerable<ValidationResult> errors = null;
+
             // Arrange ---------------------------
 
-            var tennantOwner = "Reference Tennant #1";
+            const string owner = "Reference Tenant #1";
 
-            var data = new BudgetClassData("Insert-Success-Valid - Inserted", "Income");
+            var data = new BudgetClassData("Insert-Success-Valid - Inserted", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesDoNotExist(data);
+                helper.EnsureEntitiesDoNotExist(data);
             });
 
             // Act -------------------------------
 
-            IEnumerable<ValidationResult> errors = null;
-
-            ExecuteInLocalScope<BudgetClassManager>(tennantOwner, manager =>
+            UsingManager(owner, (scope, manager) =>
             {
-                var entity = data.CreateEntity();
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
 
                 errors = manager.TryInsert(entity).ToList();
 
@@ -130,30 +139,30 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>("Reference Tennant #1", managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.AssertEntitiesExist(data);
+                helper.AssertEntitiesExist(data);
             });
         }
 
         [Fact]
-        public void TryInsert_InsertsRecords_WhenDuplicateKeyDataButDifferentTennants()
+        public void TryInsert_InsertsRecords_WhenDuplicateKeyDataButDifferentTenants()
         {
             // Arrange ---------------------------
 
-            var firstTennantOwner = "Reference Tennant #1";
-            var secondTennantOwner = "Reference Tennant #2";
+            const string firstOwner = "Reference Tenant #1";
+            const string secondOwner = "Reference Tenant #2";
 
-            var data = new BudgetClassData("Insert-Success-Duplicate-Different-Tennant - Inserted", "Income");
+            var data = new BudgetClassData("Insert-Success-Duplicate-Different-Tenant - Inserted", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(firstTennantOwner, managerHelper =>
+            UsingManagerHelper(firstOwner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesDoNotExist(data);
+                helper.EnsureEntitiesDoNotExist(data);
             });
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(secondTennantOwner, managerHelper =>
+            UsingManagerHelper(secondOwner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesDoNotExist(data);
+                helper.EnsureEntitiesDoNotExist(data);
             });
 
             // Act -------------------------------
@@ -161,18 +170,22 @@ namespace DFlow.Budget.Lib.Tests
             IEnumerable<ValidationResult> errorsFirst = null;
             IEnumerable<ValidationResult> errorsSecond = null;
 
-            ExecuteInLocalScope<BudgetClassManager>(firstTennantOwner, manager =>
+            UsingManager(firstOwner, (scope, manager) =>
             {
-                var entity = data.CreateEntity();
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
 
                 errorsFirst = manager.TryInsert(entity).ToList();
 
                 manager.SaveChanges();
             });
 
-            ExecuteInLocalScope<BudgetClassManager>(secondTennantOwner, manager =>
+            UsingManager(secondOwner, (scope, manager) =>
             {
-                var entity = data.CreateEntity();
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
 
                 errorsSecond = manager.TryInsert(entity).ToList();
 
@@ -190,23 +203,23 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var tennantOwner = "Reference Tennant #1";
+            const string owner = "Reference Tenant #1";
 
-            var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", "Income");
-            var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", "Income");
+            var dataFirst = new BudgetClassData("Update-Error-Duplicate - Inserted first", TransactionType.Income);
+            var dataSecond = new BudgetClassData("Update-Error-Duplicate - Inserted second", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesExist(dataFirst, dataSecond);
+                helper.EnsureEntitiesExist(dataFirst, dataSecond);
             });
 
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
 
-            ExecuteInLocalScope<BudgetClassManager>(tennantOwner, manager =>
+            UsingManager(owner, (scope, manager) =>
             {
-                var entity = manager.AssertGetByKeyData(dataFirst.Name);
+                BudgetClass entity = manager.SingleOrDefault(bc => bc.Name == dataFirst.Name);
 
                 entity.Name = dataSecond.Name;
 
@@ -223,24 +236,24 @@ namespace DFlow.Budget.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var tennantOwner = "Reference Tennant #1";
+            const string owner = "Reference Tenant #1";
 
-            var data = new BudgetClassData("Update-Success-Valid - Inserted", "Income");
-            var update = new BudgetClassData("Update-Success-Valid - Updated", "Income");
+            var data = new BudgetClassData("Update-Success-Valid - Inserted", TransactionType.Income);
+            var update = new BudgetClassData("Update-Success-Valid - Updated", TransactionType.Income);
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.EnsureEntitiesExist(data);
-                managerHelper.EnsureEntitiesDoNotExist(update);
+                helper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesDoNotExist(update);
             });
 
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
 
-            ExecuteInLocalScope<BudgetClassManager>(tennantOwner, manager =>
+            UsingManager(owner, (scope, manager) =>
             {
-                var entity = manager.AssertGetByKeyData(data.Name);
+                BudgetClass entity = manager.AssertGetByKeyData(data.Name);
 
                 entity.Name = update.Name;
 
@@ -253,76 +266,29 @@ namespace DFlow.Budget.Lib.Tests
 
             errors.Should().BeEmpty();
 
-            ExecuteInLocalScope<BudgetClassManagerHelper>(tennantOwner, managerHelper =>
+            UsingManagerHelper(owner, (scope, helper) =>
             {
-                managerHelper.AssertEntitiesExist(update);
+                helper.AssertEntitiesExist(update);
             });
         }
 
-        /// <summary>
-        /// Creates a local context injecting the Tennant object found by "owner" param, resolves the agent and invokes the action passing the agent
-        /// </summary>
-        /// <typeparam name="T">Agent type</typeparam>
-        /// <param name="owner">Tennant key data</param>
-        /// <param name="action">Action to execute</param>
-        private void ExecuteInLocalScope<T>(string owner, Action<T> action)
+        private static IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
         {
-            Tennant tennant = GetTennant(owner);
-
-            using (var scope = _container.BeginLifetimeScope(cb => cb.Register(c => tennant)))
-            {
-                var agent = scope.Resolve<T>();
-
-                action.Invoke(agent);
-            }
-        }
-
-        /// <summary>
-        /// Creates a local context injecting the Tennant object found by "owner" param and invokes the action passing the context
-        /// </summary>
-        /// <param name="owner">Tennant key data</param>
-        /// <param name="action">Action to execute</param>
-        private void ExecuteInLocalScope(string owner, Action<ILifetimeScope> action)
-        {
-            Tennant tennant = GetTennant(owner);
-
-            using (var scope = _container.BeginLifetimeScope(cb => cb.Register(c => tennant)))
-            {
-                action.Invoke(scope);
-            }
-        }
-
-        private Tennant GetTennant(string owner)
-        {
-            Tennant tennant = null;
-
-            using (var scope = _container.BeginLifetimeScope())
-            {
-                var manager = scope.Resolve<TennantManager>();
-
-                tennant = manager.AssertGetByKeyData(owner);
-            }
-
-            return tennant;
-        }
-
-        private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
-        {
-            var budgetDiHelper = new BudgetAutofacSetupHelper(dbHelper);
+            var containerSetup = new BudgetContainerSetup(dbHelper);
 
             var builder = new ContainerBuilder();
 
-            budgetDiHelper.SetupContainer(builder);
+            containerSetup.RegisterTypes(builder);
 
-            // Tennants --------------------------
+            // Tenants ---------------------------
 
-            TennantsDbSetupHelper tennantsDbHelper = new TennantsDbSetupHelper(_connectionString);
+            var TenantsDbHelper = new TenantsDbSetupHelper(ConnectionString);
 
-            tennantsDbHelper.SetupDatabase();
+            TenantsDbHelper.SetupDatabase();
 
-            var tennantsDiHelper = new TennantsAutofacSetupHelper(tennantsDbHelper);
+            var TenantsDiHelper = new TenantsAutofacSetupHelper(TenantsDbHelper);
 
-            tennantsDiHelper.SetupContainer(builder);
+            TenantsDiHelper.SetupContainer(builder);
 
             //------------------------------------
 
@@ -331,60 +297,59 @@ namespace DFlow.Budget.Lib.Tests
             return container;
         }
 
-        private BudgetDbSetupHelper SetupDatabase(string connectionString)
+        private static BudgetDbSetupHelper SetupDatabase(string connectionString)
         {
-            BudgetDbSetupHelper dbHelper = new BudgetDbSetupHelper(connectionString);
-
-            //using (var dbContext = new BudgetDbContext(dbHelper.GetOptions()))
-            //{
-            //    var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
-            //    var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-            //    loggerFactory.AddProvider(new MyLoggerProvider());
-
-            //}
+            var dbHelper = new BudgetDbSetupHelper(connectionString);
 
             dbHelper.SetupDatabase();
 
             return dbHelper;
         }
 
+        private Tenant GetTenant(string owner)
+        {
+            Tenant tenant;
+
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var manager = scope.Resolve<TenantManager>();
+
+                tenant = manager.SingleOrDefault(t => t.Owner == owner);
+            }
+
+            return tenant;
+        }
+
         private void SetupReferenceData()
         {
-            var tennantsDataHelper = new TennantsTestDataHelper(_container);
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var TenantsDataHelper = new TenantsTestDataHelper(scope);
 
-            tennantsDataHelper.SeedReferenceTennants();
+                TenantsDataHelper.SeedReferenceTenants();
+            }
+        }
+
+        private void UsingManager(string owner, Action<ILifetimeScope, BudgetClassManager> action)
+        {
+            Tenant tenant = GetTenant(owner);
+
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var manager = scope.Resolve<BudgetClassManager>();
+
+                action.Invoke(scope, manager);
+            }
+        }
+
+        private void UsingManagerHelper(string owner, Action<ILifetimeScope, BudgetClassManagerHelper> action)
+        {
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var helper = scope.Resolve<BudgetClassManagerHelper>();
+
+                action.Invoke(scope, helper);
+            }
         }
     }
-
-    //public class MyLoggerProvider : ILoggerProvider
-    //{
-    //    public ILogger CreateLogger(string categoryName)
-    //    {
-    //        return new MyLogger();
-    //    }
-
-    //    public void Dispose()
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    private class MyLogger : ILogger
-    //    {
-    //        public IDisposable BeginScope<TState>(TState state)
-    //        {
-    //            return null;
-    //        }
-
-    //        public bool IsEnabled(LogLevel logLevel)
-    //        {
-    //            return true;
-    //        }
-
-    //        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-    //        {
-    //            Debug.WriteLine(formatter(state, exception));
-    //        }
-    //    }
-    //}
 }

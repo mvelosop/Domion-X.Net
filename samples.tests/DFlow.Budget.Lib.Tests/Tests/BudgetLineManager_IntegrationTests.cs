@@ -1,8 +1,9 @@
 using Autofac;
+using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
-using DFlow.Tennants.Setup;
+using DFlow.Tenants.Setup;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace DFlow.Budget.Lib.Tests
 
                 BudgetClassData[] dataSet = new BudgetClassData[]
                 {
-                    new BudgetClassData("Data-BudgetClass", "Income"),
+                    new BudgetClassData("Data-BudgetClass", TransactionType.Income),
                 };
 
                 budgetClassHelper.EnsureEntitiesExist(dataSet);
@@ -243,21 +244,21 @@ namespace DFlow.Budget.Lib.Tests
 
         private IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
         {
-            var budgetDiHelper = new BudgetAutofacSetupHelper(dbHelper);
+            var budgetDiHelper = new BudgetContainerSetup(dbHelper);
 
             var builder = new ContainerBuilder();
 
-            budgetDiHelper.SetupContainer(builder);
+            budgetDiHelper.RegisterTypes(builder);
 
-            // Tennants --------------------------
+            // Tenants ---------------------------
 
-            TennantsDbSetupHelper tennantsDbHelper = new TennantsDbSetupHelper(_connectionString);
+            TenantsDbSetupHelper tenantsDbHelper = new TenantsDbSetupHelper(_connectionString);
 
-            tennantsDbHelper.SetupDatabase();
+            tenantsDbHelper.SetupDatabase();
 
-            var tennantsDiHelper = new TennantsAutofacSetupHelper(tennantsDbHelper);
+            var TenantsDiHelper = new TenantsAutofacSetupHelper(tenantsDbHelper);
 
-            tennantsDiHelper.SetupContainer(builder);
+            TenantsDiHelper.SetupContainer(builder);
 
             //------------------------------------
 

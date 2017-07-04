@@ -9,8 +9,8 @@ using DFlow.Budget.Core.Model;
 namespace DFlow.Budget.Lib.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    [Migration("20170606173612_AddTennantMigration_BudgetDbContext")]
-    partial class AddTennantMigration_BudgetDbContext
+    [Migration("20170606173612_AddTenantMigration_BudgetDbContext")]
+    partial class AddTenantMigration_BudgetDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,13 +33,13 @@ namespace DFlow.Budget.Lib.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<int>("Tennant_Id");
+                    b.Property<int>("Tenant_Id");
 
                     b.Property<int>("TransactionType");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Tennant_Id", "Name")
+                    b.HasIndex("Tenant_Id", "Name")
                         .IsUnique();
 
                     b.ToTable("BudgetClasses","Budget");
@@ -72,7 +72,7 @@ namespace DFlow.Budget.Lib.Migrations
                     b.ToTable("BudgetLines","Budget");
                 });
 
-            modelBuilder.Entity("DFlow.Tennants.Core.Model.Tennant", b =>
+            modelBuilder.Entity("DFlow.Tenants.Core.Model.Tenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -89,14 +89,14 @@ namespace DFlow.Budget.Lib.Migrations
                     b.HasIndex("Owner")
                         .IsUnique();
 
-                    b.ToTable("Tennants","Tennants");
+                    b.ToTable("Tenants","Tenants");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetClass", b =>
                 {
-                    b.HasOne("DFlow.Tennants.Core.Model.Tennant", "Tennant")
+                    b.HasOne("DFlow.Tenants.Core.Model.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("Tennant_Id");
+                        .HasForeignKey("Tenant_Id");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>

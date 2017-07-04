@@ -6,7 +6,7 @@ namespace Demo.Cli
 {
     public class TransactionsDbContextFactory : IDbContextFactory<TransactionsDbContext>
     {
-        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Tennants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         public TransactionsDbContext Create(DbContextFactoryOptions options)
         {

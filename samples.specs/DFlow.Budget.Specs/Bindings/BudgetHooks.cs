@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using DFlow.Budget.Setup;
-using DFlow.Tennants.Core.Model;
-using DFlow.Tennants.Setup;
+using DFlow.Tenants.Core.Model;
+using DFlow.Tenants.Setup;
 using TechTalk.SpecFlow;
 
 namespace DFlow.Budget.Specs.Bindings
@@ -15,7 +15,7 @@ namespace DFlow.Budget.Specs.Bindings
 
         private static BudgetDbSetupHelper _budgetDbSetupHelper;
         private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Specs;Integrated Security=SSPI;MultipleActiveResultSets=true";
-        private static TennantsDbSetupHelper _tennantsDbSetupHelper;
+        private static TenantsDbSetupHelper _TenantsDbSetupHelper;
 
         private IContainer _container;
         private ScenarioContext _scenarioContext;
@@ -69,10 +69,10 @@ namespace DFlow.Budget.Specs.Bindings
 
         private static void SetupDatabase(string connectionString)
         {
-            _tennantsDbSetupHelper = new TennantsDbSetupHelper(connectionString);
+            _TenantsDbSetupHelper = new TenantsDbSetupHelper(connectionString);
             _budgetDbSetupHelper = new BudgetDbSetupHelper(connectionString);
 
-            _tennantsDbSetupHelper.SetupDatabase();
+            _TenantsDbSetupHelper.SetupDatabase();
             _budgetDbSetupHelper.SetupDatabase();
         }
 
@@ -80,13 +80,13 @@ namespace DFlow.Budget.Specs.Bindings
         {
             var builder = new ContainerBuilder();
 
-            var budgetAutofacHelper = new BudgetAutofacSetupHelper(_budgetDbSetupHelper);
-            var tennantsAutofacHelper = new TennantsAutofacSetupHelper(_tennantsDbSetupHelper);
+            var budgetAutofacHelper = new BudgetContainerSetup(_budgetDbSetupHelper);
+            var TenantsAutofacHelper = new TenantsAutofacSetupHelper(_TenantsDbSetupHelper);
 
-            tennantsAutofacHelper.SetupContainer(builder);
-            budgetAutofacHelper.SetupContainer(builder);
+            TenantsAutofacHelper.SetupContainer(builder);
+            budgetAutofacHelper.RegisterTypes(builder);
 
-            builder.Register<Tennant>((c) => _scenarioContext.Get<Tennant>("CurrentTennant"));
+            builder.Register<Tenant>((c) => _scenarioContext.Get<Tenant>("CurrentTenant"));
 
             IContainer container = builder.Build();
 

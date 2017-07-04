@@ -22,7 +22,7 @@ namespace DFlow.Budget.Core.Services
         ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
         ///     </para>
         ///     <para>
-        ///         Important, this only refreshes the passed entity. It does not refresh the related entities 
+        ///         Important, this only refreshes the passed entity. It does not refresh the related entities
         ///         (navigation or collection properties). If needed yo have to modify this method and call the
         ///         method on each one.
         ///     </para>
@@ -40,7 +40,7 @@ namespace DFlow.Budget.Core.Services
         IEnumerable<ValidationResult> TryDelete(BudgetClass entity);
 
         /// <summary>
-        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method. 
+        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method.
         ///     This method also checks that the concurrency token (RowVersion) is EMPTY.
         /// </summary>
         IEnumerable<ValidationResult> TryInsert(BudgetClass entity);

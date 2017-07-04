@@ -3,20 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using DFlow.Tennants.Lib.Data;
+using DFlow.Tenants.Lib.Data;
 
-namespace DFlow.Tennants.Lib.Migrations
+namespace DFlow.Tenants.Lib.Migrations
 {
-    [DbContext(typeof(TennantsDbContext))]
-    partial class TennantsDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TenantsDbContext))]
+    [Migration("20170605203824_CreateMigration_TenantsDbContext")]
+    partial class CreateMigration_TenantsDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DFlow.Tennants.Core.Model.Tennant", b =>
+            modelBuilder.Entity("DFlow.Tenants.Core.Model.Tenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -33,7 +34,7 @@ namespace DFlow.Tennants.Lib.Migrations
                     b.HasIndex("Owner")
                         .IsUnique();
 
-                    b.ToTable("Tennants","Tennants");
+                    b.ToTable("Tenants","Tenants");
                 });
         }
     }

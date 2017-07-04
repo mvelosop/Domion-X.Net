@@ -1,25 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DFlow.Tennants.Lib.Migrations
+namespace DFlow.Tenants.Lib.Migrations
 {
-    public partial class CreateMigration_TennantsDbContext : Migration
+    public partial class CreateMigration_TenantsDbContext : Migration
     {
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tennants",
-                schema: "Tennants");
+                name: "Tenants",
+                schema: "Tenants");
         }
 
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "Tennants");
+                name: "Tenants");
 
             migrationBuilder.CreateTable(
-                name: "Tennants",
-                schema: "Tennants",
+                name: "Tenants",
+                schema: "Tenants",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -29,13 +29,13 @@ namespace DFlow.Tennants.Lib.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tennants", x => x.Id);
+                    table.PrimaryKey("PK_Tenants", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tennants_Owner",
-                schema: "Tennants",
-                table: "Tennants",
+                name: "IX_Tenants_Owner",
+                schema: "Tenants",
+                table: "Tenants",
                 column: "Owner",
                 unique: true);
         }

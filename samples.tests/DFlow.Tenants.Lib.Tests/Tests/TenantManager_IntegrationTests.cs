@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using DFlow.Tennants.Lib.Services;
-using DFlow.Tennants.Lib.Tests.Helpers;
-using DFlow.Tennants.Setup;
+using DFlow.Tenants.Lib.Services;
+using DFlow.Tenants.Lib.Tests.Helpers;
+using DFlow.Tenants.Setup;
 using Domion.FluentAssertions.Extensions;
 using FluentAssertions;
 using System.Collections.Generic;
@@ -9,18 +9,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace DFlow.Tennants.Lib.Tests
+namespace DFlow.Tenants.Lib.Tests
 {
     [Trait("Type", "Integration")]
-    public class TennantManager_IntegrationTests
+    public class TenantManager_IntegrationTests
     {
-        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Tennants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+        private static string _connectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private IContainer _container;
 
-        public TennantManager_IntegrationTests()
+        public TenantManager_IntegrationTests()
         {
-            TennantsDbSetupHelper dbHelper = SetupDatabase(_connectionString);
+            TenantsDbSetupHelper dbHelper = SetupDatabase(_connectionString);
 
             _container = SetupContainer(dbHelper);
         }
@@ -30,7 +30,7 @@ namespace DFlow.Tennants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TennantData("Delete-Success-Valid - Inserted");
+            var data = new TenantData("Delete-Success-Valid - Inserted");
 
             EnsureEntitiesExist(data);
 
@@ -40,7 +40,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 var entity = manager.AssertGetByKeyData(data.Owner);
 
@@ -61,7 +61,7 @@ namespace DFlow.Tennants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TennantData("Insert-Error-Duplicate - Inserted");
+            var data = new TenantData("Insert-Error-Duplicate - Inserted");
 
             EnsureEntitiesExist(data);
 
@@ -71,7 +71,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 var entity = data.CreateEntity();
 
@@ -80,7 +80,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TennantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
         }
 
         [Fact]
@@ -88,7 +88,7 @@ namespace DFlow.Tennants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TennantData("Insert-Success-Valid - Inserted");
+            var data = new TenantData("Insert-Success-Valid - Inserted");
 
             EnsureEntitiesDoNotExist(data);
 
@@ -98,7 +98,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 var entity = data.CreateEntity();
 
@@ -119,8 +119,8 @@ namespace DFlow.Tennants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var dataFirst = new TennantData("Update-Error-Duplicate - Inserted first");
-            var dataSecond = new TennantData("Update-Error-Duplicate - Inserted second");
+            var dataFirst = new TenantData("Update-Error-Duplicate - Inserted first");
+            var dataSecond = new TenantData("Update-Error-Duplicate - Inserted second");
 
             EnsureEntitiesExist(dataFirst, dataSecond);
 
@@ -130,7 +130,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 var entity = manager.AssertGetByKeyData(dataFirst.Owner);
 
@@ -141,7 +141,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TennantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
         }
 
         [Fact]
@@ -149,8 +149,8 @@ namespace DFlow.Tennants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TennantData("Update-Success-Valid - Inserted");
-            var update = new TennantData("Update-Success-Valid - Updated");
+            var data = new TenantData("Update-Success-Valid - Inserted");
+            var update = new TenantData("Update-Success-Valid - Updated");
 
             EnsureEntitiesExist(data);
             EnsureEntitiesDoNotExist(update);
@@ -161,7 +161,7 @@ namespace DFlow.Tennants.Lib.Tests
 
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 var entity = manager.AssertGetByKeyData(data.Owner);
 
@@ -179,41 +179,41 @@ namespace DFlow.Tennants.Lib.Tests
             AssertEntitiesExist(update);
         }
 
-        private void AssertEntitiesDoNotExist(params TennantData[] data)
+        private void AssertEntitiesDoNotExist(params TenantData[] data)
         {
             using (var scope = GetLocalScope())
             {
-                var managerHelper = scope.Resolve<TennantManagerHelper>();
+                var managerHelper = scope.Resolve<TenantManagerHelper>();
 
                 managerHelper.AssertEntitiesDoNotExist(data);
             }
         }
 
-        private void AssertEntitiesExist(params TennantData[] data)
+        private void AssertEntitiesExist(params TenantData[] data)
         {
             using (var scope = GetLocalScope())
             {
-                var managerHelper = scope.Resolve<TennantManagerHelper>();
+                var managerHelper = scope.Resolve<TenantManagerHelper>();
 
                 managerHelper.AssertEntitiesExist(data);
             }
         }
 
-        private void EnsureEntitiesDoNotExist(params TennantData[] data)
+        private void EnsureEntitiesDoNotExist(params TenantData[] data)
         {
             using (var scope = GetLocalScope())
             {
-                var managerHelper = scope.Resolve<TennantManagerHelper>();
+                var managerHelper = scope.Resolve<TenantManagerHelper>();
 
                 managerHelper.EnsureEntitiesDoNotExist(data);
             }
         }
 
-        private void EnsureEntitiesExist(params TennantData[] data)
+        private void EnsureEntitiesExist(params TenantData[] data)
         {
             using (var scope = GetLocalScope())
             {
-                var managerHelper = scope.Resolve<TennantManagerHelper>();
+                var managerHelper = scope.Resolve<TenantManagerHelper>();
 
                 managerHelper.EnsureEntitiesExist(data);
             }
@@ -226,9 +226,9 @@ namespace DFlow.Tennants.Lib.Tests
             return container.BeginLifetimeScope();
         }
 
-        private IContainer SetupContainer(TennantsDbSetupHelper dbHelper)
+        private IContainer SetupContainer(TenantsDbSetupHelper dbHelper)
         {
-            var autofacHelper = new TennantsAutofacSetupHelper(dbHelper);
+            var autofacHelper = new TenantsAutofacSetupHelper(dbHelper);
 
             var builder = new ContainerBuilder();
 
@@ -239,9 +239,9 @@ namespace DFlow.Tennants.Lib.Tests
             return container;
         }
 
-        private TennantsDbSetupHelper SetupDatabase(string connectionString)
+        private TenantsDbSetupHelper SetupDatabase(string connectionString)
         {
-            TennantsDbSetupHelper dbHelper = new TennantsDbSetupHelper(_connectionString);
+            TenantsDbSetupHelper dbHelper = new TenantsDbSetupHelper(_connectionString);
 
             dbHelper.SetupDatabase();
 

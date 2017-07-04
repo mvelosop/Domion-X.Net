@@ -1,5 +1,5 @@
 ﻿using DFlow.Budget.Lib.Data;
-using DFlow.Tennants.Setup;
+using DFlow.Tenants.Setup;
 using Domion.Setup;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +14,9 @@ namespace DFlow.Budget.Setup
 
         public override void SetupDatabase()
         {
-            var tennantsDbHelper = new TennantsDbSetupHelper(ConnectionString);
+            var TenantsDbHelper = new TenantsDbSetupHelper(ConnectionString);
 
-            tennantsDbHelper.SetupDatabase();
+            TenantsDbHelper.SetupDatabase();
 
             base.SetupDatabase();
         }

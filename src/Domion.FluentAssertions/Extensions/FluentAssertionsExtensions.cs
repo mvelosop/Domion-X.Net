@@ -13,12 +13,12 @@ namespace Domion.FluentAssertions.Extensions
         /// <param name="assertion"></param>
         /// <param name="errorMessage">Error message text, will be trimmed up to the first substitution placeholder ("{.*}").</param>
         /// <param name="because">The reason why the predicate should be satisfied.</param>
-        /// <param name="becauseArgs">The parameters used when formatting the because.</param>
+        /// <param name="becauseArgs">The parameters used when formatting the reason message.</param>
         public static void ContainErrorMessage(this GenericCollectionAssertions<ValidationResult> assertion, string errorMessage, string because = "", params object[] becauseArgs)
         {
             var errorMessageStart = errorMessage.Split('{')[0];
 
-            assertion.Match(c => c.Where(vr => vr.ErrorMessage.StartsWith(errorMessageStart)).Any(), because, becauseArgs);
+            assertion.Match(c => c.Any(vr => vr.ErrorMessage.StartsWith(errorMessageStart)), because, becauseArgs);
         }
     }
 }

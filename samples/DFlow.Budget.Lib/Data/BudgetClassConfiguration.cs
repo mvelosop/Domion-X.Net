@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 using DFlow.Budget.Core.Model;
-using DFlow.Tennants.Core.Model;
+using DFlow.Tenants.Core.Model;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -28,14 +28,14 @@ namespace DFlow.Budget.Lib.Data
             builder.Property(bc => bc.RowVersion)
                 .IsRowVersion();
 
-			// External entities
+            // External entities
 
-            builder.HasOne<Tennant>(bc => bc.Tennant)
+            builder.HasOne<Tenant>(bc => bc.Tenant)
                 .WithMany()
-                .HasForeignKey(bc => bc.Tennant_Id)
+                .HasForeignKey(bc => bc.Tenant_Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasIndex(bc => new { bc.Tennant_Id, bc.Name })
+            builder.HasIndex(bc => new { bc.Tenant_Id, bc.Name })
                 .IsUnique();
         }
     }

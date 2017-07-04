@@ -1,34 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2FFA9BA2-0992-4935-86A1-E982B93D0432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.Core", "src\Domion.Core\Domion.Core.csproj", "{124CC9C3-A86B-4C03-B229-28A92172C39B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Core", "src\Domion.Core\Domion.Core.csproj", "{124CC9C3-A86B-4C03-B229-28A92172C39B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A928011B-F416-4902-9C0F-AA751734085A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.Lib", "src\Domion.Lib\Domion.Lib.csproj", "{2D6CAD25-12EB-4E34-B9EB-E66C894D40DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Lib", "src\Domion.Lib\Domion.Lib.csproj", "{2D6CAD25-12EB-4E34-B9EB-E66C894D40DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{BD8AE2F6-7CD7-4D64-B815-C51DE6D34219}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Core", "samples\DFlow.Budget.Core\DFlow.Budget.Core.csproj", "{8FFEA04B-E551-47F5-BB84-EF8DF86FF1A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Budget.Core", "samples\DFlow.Budget.Core\DFlow.Budget.Core.csproj", "{8FFEA04B-E551-47F5-BB84-EF8DF86FF1A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Lib", "samples\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj", "{ED29DD25-9E6D-441A-94DC-3081F79C85A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Budget.Lib", "samples\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj", "{ED29DD25-9E6D-441A-94DC-3081F79C85A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Core", "samples\DFlow.Transactions.Core\DFlow.Transactions.Core.csproj", "{08B52E17-7362-4114-B0F1-C67C98EF30E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Transactions.Core", "samples\DFlow.Transactions.Core\DFlow.Transactions.Core.csproj", "{08B52E17-7362-4114-B0F1-C67C98EF30E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Lib", "samples\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj", "{F2126BEE-0366-4999-9472-495F40ED33A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Transactions.Lib", "samples\DFlow.Transactions.Lib\DFlow.Transactions.Lib.csproj", "{F2126BEE-0366-4999-9472-495F40ED33A8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples.tests", "samples.tests", "{F5C5CBCC-5824-4CF9-BD82-F4E55D116EAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Lib.Tests", "samples.tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Budget.Lib.Tests", "samples.tests\DFlow.Budget.Lib.Tests\DFlow.Budget.Lib.Tests.csproj", "{66186C10-45E2-4227-8F8B-CA69650072C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.CLI", "samples\DFlow.CLI\DFlow.CLI.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.CLI", "samples\DFlow.CLI\DFlow.CLI.csproj", "{02A45136-7161-4A89-B6B2-8DC84B54750C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{33794F96-A61B-4BAF-8971-49654079BCE5}"
 	ProjectSection(SolutionItems) = preProject
@@ -36,25 +36,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{3379
 		scripts\remove-migration.cmd = scripts\remove-migration.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.FluentAssertions", "src\Domion.FluentAssertions\Domion.FluentAssertions.csproj", "{BE0B774E-7BEC-4C5C-887E-BD3D2D57FE1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples.specs", "samples.specs", "{BEFBAD94-5DE2-40BA-844B-AF64DEB21F5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Specs", "samples.specs\DFlow.Budget.Specs\DFlow.Budget.Specs.csproj", "{A0BB35E4-9E54-4073-A216-ED9BA682BD18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Budget.Setup", "samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj", "{5E8721D7-FD0B-4D28-A06D-0864202B0196}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Budget.Setup", "samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj", "{5E8721D7-FD0B-4D28-A06D-0864202B0196}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Transactions.Lib.Tests", "samples.tests\DFlow.Transactions.Lib.Tests\DFlow.Transactions.Lib.Tests.csproj", "{B52828BB-B433-4BE4-99CD-D18720D99086}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Transactions.Setup", "samples\DFlow.Transactions.Setup\DFlow.Transactions.Setup.csproj", "{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Transactions.Setup", "samples\DFlow.Transactions.Setup\DFlow.Transactions.Setup.csproj", "{03B07551-A1FB-4EB5-B3FE-2D05B152E5B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Core", "samples\DFlow.Tennants.Core\DFlow.Tennants.Core.csproj", "{B6A20904-251B-490D-BB02-FD5051F95B4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Core", "samples\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj", "{B6A20904-251B-490D-BB02-FD5051F95B4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Lib", "samples\DFlow.Tennants.Lib\DFlow.Tennants.Lib.csproj", "{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Lib", "samples\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj", "{EC3E5E18-199C-4EFC-912E-A0379E78D2DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Setup", "samples\DFlow.Tennants.Setup\DFlow.Tennants.Setup.csproj", "{EC9154C3-4D44-4050-BF51-4CF66704F263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Setup", "samples\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj", "{EC9154C3-4D44-4050-BF51-4CF66704F263}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.Setup", "src\Domion.Setup\Domion.Setup.csproj", "{64DFE745-CD61-461E-8F67-607B12611579}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Setup", "src\Domion.Setup\Domion.Setup.csproj", "{64DFE745-CD61-461E-8F67-607B12611579}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{7AA31C01-3F0D-4E99-BDC1-4E413527055A}"
 	ProjectSection(SolutionItems) = preProject
@@ -64,7 +64,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 		templates\EntityManagerHelper.txt = templates\EntityManagerHelper.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tennants.Lib.Tests", "samples.tests\DFlow.Tennants.Lib.Tests\DFlow.Tennants.Lib.Tests.csproj", "{8CCF9B41-19E9-4A4D-A8E2-5DA4C1A64240}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Lib.Tests", "samples.tests\DFlow.Tenants.Lib.Tests\DFlow.Tenants.Lib.Tests.csproj", "{8CCF9B41-19E9-4A4D-A8E2-5DA4C1A64240}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

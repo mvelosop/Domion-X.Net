@@ -81,7 +81,7 @@ namespace DFlow.Budget.Specs.Specs
 #line 6
 this.ScenarioSetup(scenarioInfo);
 #line 8
- testRunner.Given("the current user is working as tennant \"dflow-1.1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("the current user is working as Tenant \"dflow-1.1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 10
  testRunner.Given("there are no registered budget classes", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden

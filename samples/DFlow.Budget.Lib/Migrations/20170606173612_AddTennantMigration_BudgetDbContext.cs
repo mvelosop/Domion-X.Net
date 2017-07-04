@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DFlow.Budget.Lib.Migrations
 {
-    public partial class AddTennantMigration_BudgetDbContext : Migration
+    public partial class AddTenantMigration_BudgetDbContext : Migration
     {
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_BudgetClasses_Tennants_Tennant_Id",
+                name: "FK_BudgetClasses_Tenants_Tenant_Id",
                 schema: "Budget",
                 table: "BudgetClasses");
 
@@ -18,8 +18,8 @@ namespace DFlow.Budget.Lib.Migrations
                 table: "BudgetLines");
 
             //migrationBuilder.DropTable(
-            //    name: "Tennants",
-            //    schema: "Tennants");
+            //    name: "Tenants",
+            //    schema: "Tenants");
 
             migrationBuilder.DropIndex(
                 name: "IX_BudgetLines_BudgetClass_Id_Name",
@@ -27,12 +27,12 @@ namespace DFlow.Budget.Lib.Migrations
                 table: "BudgetLines");
 
             migrationBuilder.DropIndex(
-                name: "IX_BudgetClasses_Tennant_Id_Name",
+                name: "IX_BudgetClasses_Tenant_Id_Name",
                 schema: "Budget",
                 table: "BudgetClasses");
 
             migrationBuilder.DropColumn(
-                name: "Tennant_Id",
+                name: "Tenant_Id",
                 schema: "Budget",
                 table: "BudgetClasses");
 
@@ -90,18 +90,18 @@ namespace DFlow.Budget.Lib.Migrations
                 table: "BudgetClasses");
 
             //migrationBuilder.EnsureSchema(
-            //    name: "Tennants");
+            //    name: "Tenants");
 
             migrationBuilder.AddColumn<int>(
-                name: "Tennant_Id",
+                name: "Tenant_Id",
                 schema: "Budget",
                 table: "BudgetClasses",
                 nullable: false,
                 defaultValue: 0);
 
             //migrationBuilder.CreateTable(
-            //    name: "Tennants",
-            //    schema: "Tennants",
+            //    name: "Tenants",
+            //    schema: "Tenants",
             //    columns: table => new
             //    {
             //        Id = table.Column<int>(nullable: false)
@@ -111,7 +111,7 @@ namespace DFlow.Budget.Lib.Migrations
             //    },
             //    constraints: table =>
             //    {
-            //        table.PrimaryKey("PK_Tennants", x => x.Id);
+            //        table.PrimaryKey("PK_Tenants", x => x.Id);
             //    });
 
             migrationBuilder.CreateIndex(
@@ -122,26 +122,26 @@ namespace DFlow.Budget.Lib.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BudgetClasses_Tennant_Id_Name",
+                name: "IX_BudgetClasses_Tenant_Id_Name",
                 schema: "Budget",
                 table: "BudgetClasses",
-                columns: new[] { "Tennant_Id", "Name" },
+                columns: new[] { "Tenant_Id", "Name" },
                 unique: true);
 
             //migrationBuilder.CreateIndex(
-            //    name: "IX_Tennants_Owner",
-            //    schema: "Tennants",
-            //    table: "Tennants",
+            //    name: "IX_Tenants_Owner",
+            //    schema: "Tenants",
+            //    table: "Tenants",
             //    column: "Owner",
             //    unique: true);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_BudgetClasses_Tennants_Tennant_Id",
+                name: "FK_BudgetClasses_Tenants_Tenant_Id",
                 schema: "Budget",
                 table: "BudgetClasses",
-                column: "Tennant_Id",
-                principalSchema: "Tennants",
-                principalTable: "Tennants",
+                column: "Tenant_Id",
+                principalSchema: "Tenants",
+                principalTable: "Tenants",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 

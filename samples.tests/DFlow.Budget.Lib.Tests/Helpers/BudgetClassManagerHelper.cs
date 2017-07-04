@@ -3,7 +3,6 @@ using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using Domion.Lib.Extensions;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
 using System;
 
 namespace DFlow.Budget.Lib.Tests.Helpers
@@ -19,37 +18,35 @@ namespace DFlow.Budget.Lib.Tests.Helpers
     /// </summary>
     public class BudgetClassManagerHelper
     {
-        private readonly Func<EquivalencyAssertionOptions<BudgetClassData>, EquivalencyAssertionOptions<BudgetClassData>> _dataEquivalenceOptions =
-            options => options
-                .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
-
-        private readonly Lazy<BudgetClassManager> _lazyBudgetClassManager;
-
-        private readonly ILifetimeScope _scope;
+        private readonly Lazy<BudgetClassDataMapper> LazyBudgetClassDataMapper;
+        private readonly Lazy<BudgetClassManager> LazyBudgetClassManager;
+        private readonly ILifetimeScope Scope;
 
         /// <summary>
-        /// Creates the test helper for BudgetClassManager
+        ///     Creates a Helper for BudgetClassManager to help in the test's Arrange and Assert sections
         /// </summary>
-        /// <param name="scope"></param>
-        /// <param name="lazyBudgetClassManager"></param>
         public BudgetClassManagerHelper(
             ILifetimeScope scope,
+            Lazy<BudgetClassDataMapper> lazyBudgetClassDataMapper,
             Lazy<BudgetClassManager> lazyBudgetClassManager)
         {
-            _scope = scope;
+            Scope = scope;
 
-            _lazyBudgetClassManager = lazyBudgetClassManager;
+            LazyBudgetClassManager = lazyBudgetClassManager;
+            LazyBudgetClassDataMapper = lazyBudgetClassDataMapper;
         }
 
-        private BudgetClassManager BudgetClassManager => _lazyBudgetClassManager.Value;
+        private BudgetClassManager BudgetClassManager => LazyBudgetClassManager.Value;
+
+        private BudgetClassDataMapper BudgetClassMapper => LazyBudgetClassDataMapper.Value;
 
         /// <summary>
-        /// Asserts that entities with the supplied key data values do not exist
+        ///     Asserts that entities with the supplied key data values do not exist
         /// </summary>
-        /// <param name="dataSet"></param>
+        /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            using (ILifetimeScope scope = GetLocalScope(_scope))
+            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
@@ -63,14 +60,15 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         }
 
         /// <summary>
-        /// Asserts that entities equivalent to the supplied input data classes exist
+        ///     Asserts that entities equivalent to the supplied input data classes exist
         /// </summary>
-        /// <param name="dataSet"></param>
+        /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
-            using (ILifetimeScope scope = GetLocalScope(_scope))
+            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
                 var manager = scope.Resolve<BudgetClassManager>();
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 foreach (BudgetClassData data in dataSet)
                 {
@@ -78,17 +76,17 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                     entity.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
 
-                    var entityData = new BudgetClassData(entity);
+                    BudgetClassData entityData = mapper.CreateData(entity);
 
-                    entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
+                    entityData.ShouldBeEquivalentTo(data);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures that the entities do not exist in the database or are succesfully removed
+        ///     Ensures that the entities do not exist in the database or are successfully removed
         /// </summary>
-        /// <param name="dataSet">Data for the entities to be searched and removed</param>
+        /// <param name="dataSet">Data for the entities to be searched for and removed if necessary</param>
         public void EnsureEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
             foreach (BudgetClassData data in dataSet)
@@ -108,20 +106,19 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         }
 
         /// <summary>
-        /// Ensures that the entities exist in the database or are succesfully added
+        ///     Ensures that the entities exist in the database or are successfully added
         /// </summary>
         /// <param name="dataSet"></param>
+        /// <param name="dataSet">Data for the entities to be searched for and added or updated if necessary</param>
         public void EnsureEntitiesExist(params BudgetClassData[] dataSet)
         {
             foreach (BudgetClassData data in dataSet)
             {
                 BudgetClass entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
 
-                if (entity != null) continue;
+                entity = entity == null ? BudgetClassMapper.CreateEntity(data) : BudgetClassMapper.UpdateEntity(entity, data);
 
-                entity = data.CreateEntity();
-
-                var errors = BudgetClassManager.TryInsert(entity);
+                var errors = BudgetClassManager.TryUpsert(entity);
 
                 errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be added!", data.Name);
             }
@@ -129,13 +126,6 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             BudgetClassManager.SaveChanges();
 
             AssertEntitiesExist(dataSet);
-        }
-
-        private ILifetimeScope GetLocalScope(ILifetimeScope scope = null)
-        {
-            ILifetimeScope localScope = scope ?? _scope;
-
-            return localScope.BeginLifetimeScope();
         }
     }
 }

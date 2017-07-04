@@ -1,24 +1,25 @@
 ﻿using Autofac;
-using DFlow.Tennants.Lib.Data;
+using DFlow.Tenants.Lib.Data;
+using DFlow.Tenants.Setup;
 using Domion.Setup;
 using System;
 
-namespace DFlow.Tennants.Setup
+namespace DFlow.Tenants.Setup
 {
-    public class TennantsAutofacSetupHelper : Autofac.Module
+    public class TenantsAutofacSetupHelper : Autofac.Module
     {
-        private const string _modulePrefix = "DFlow.Tennants";
+        private const string _modulePrefix = "DFlow.Tenants";
 
-        private TennantsDbSetupHelper _dbSetupHelper;
+        private TenantsDbSetupHelper _dbSetupHelper;
 
-        public TennantsAutofacSetupHelper(TennantsDbSetupHelper dbSetupHelper)
+        public TenantsAutofacSetupHelper(TenantsDbSetupHelper dbSetupHelper)
         {
             _dbSetupHelper = dbSetupHelper ?? throw new ArgumentNullException(nameof(dbSetupHelper));
         }
 
         public void SetupContainer(ContainerBuilder builder)
         {
-            builder.Register<TennantsDbContext>((c) => _dbSetupHelper.CreateDbContext())
+            builder.Register<TenantsDbContext>((c) => _dbSetupHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             ModuleSetupHelper.RegisterCommonModuleTypes(builder, _modulePrefix);

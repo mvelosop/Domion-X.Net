@@ -1,63 +1,64 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Equivalency;
-using DFlow.Tennants.Core.Model;
-using DFlow.Tennants.Lib.Services;
+using DFlow.Tenants.Core.Model;
+using DFlow.Tenants.Lib.Services;
 using System;
 using Autofac;
 using Domion.Lib.Extensions;
+using DFlow.Tenants.Lib.Tests.Helpers;
 
-namespace DFlow.Tennants.Lib.Tests.Helpers
+namespace DFlow.Tenants.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for TennantManager.
+    ///         Test helper class for TenantManager.
     ///     </para>
     ///
     ///     <para>
-    ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "Tennant" using data class "TennantData" as input
+    ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "Tenant" using data class "TenantData" as input
     ///     </para>
     /// </summary>
-    public class TennantManagerHelper
+    public class TenantManagerHelper
     {
-        private Func<EquivalencyAssertionOptions<TennantData>, EquivalencyAssertionOptions<TennantData>> _dataEquivalenceOptions =
+        private Func<EquivalencyAssertionOptions<TenantData>, EquivalencyAssertionOptions<TenantData>> _dataEquivalenceOptions =
             options => options
                 .Excluding(si => si.SelectedMemberPath.EndsWith("_Id"));
 
-        private Lazy<TennantManager> _lazyTennantManager;
+        private Lazy<TenantManager> _lazyTenantManager;
 
         private ILifetimeScope _scope;
 
         /// <summary>
-        /// Creates the test helper for TennantManager
+        /// Creates the test helper for TenantManager
         /// </summary>
         /// <param name="scope"></param>
-        /// <param name="lazyTennantManager"></param>
-        public TennantManagerHelper(
+        /// <param name="lazyTenantManager"></param>
+        public TenantManagerHelper(
             ILifetimeScope scope,
-            Lazy<TennantManager> lazyTennantManager)
+            Lazy<TenantManager> lazyTenantManager)
         {
             _scope = scope;
 
-            _lazyTennantManager = lazyTennantManager;
+            _lazyTenantManager = lazyTenantManager;
         }
 
-        private TennantManager TennantManager { get { return _lazyTennantManager.Value; } }
+        private TenantManager TenantManager { get { return _lazyTenantManager.Value; } }
 
         /// <summary>
         /// Asserts that entities with the supplied key data values do not exist. Does NOT DELETE entities, use EnsureEntitiesDoNotExist for that.
         /// </summary>
         /// <param name="dataSet"></param>
-        public void AssertEntitiesDoNotExist(params TennantData[] dataSet)
+        public void AssertEntitiesDoNotExist(params TenantData[] dataSet)
         {
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 foreach (var data in dataSet)
                 {
                     var entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
 
-                    entity.Should().BeNull(@"because Tennant ""{0}"" MUST NOT EXIST!", data.Owner);
+                    entity.Should().BeNull(@"because Tenant ""{0}"" MUST NOT EXIST!", data.Owner);
                 }
             }
         }
@@ -66,19 +67,19 @@ namespace DFlow.Tennants.Lib.Tests.Helpers
         /// Asserts that entities equivalent to the supplied input data classes exist. Does NOT CREATE OR UPDATE entities, use EnsureEntitiesExist for that.
         /// </summary>
         /// <param name="dataSet"></param>
-        public void AssertEntitiesExist(params TennantData[] dataSet)
+        public void AssertEntitiesExist(params TenantData[] dataSet)
         {
             using (var scope = GetLocalScope())
             {
-                var manager = scope.Resolve<TennantManager>();
+                var manager = scope.Resolve<TenantManager>();
 
                 foreach (var data in dataSet)
                 {
-                    Tennant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                    Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
 
-                    entity.Should().NotBeNull(@"because Tennant ""{0}"" MUST EXIST!", data.Owner);
+                    entity.Should().NotBeNull(@"because Tenant ""{0}"" MUST EXIST!", data.Owner);
 
-                    var entityData = new TennantData(entity);
+                    var entityData = new TenantData(entity);
 
                     entityData.ShouldBeEquivalentTo(data, options => _dataEquivalenceOptions(options));
                 }
@@ -86,49 +87,49 @@ namespace DFlow.Tennants.Lib.Tests.Helpers
         }
 
         /// <summary>
-        /// Ensures that the entities do not exist in the database or are succesfully removed.
+        /// Ensures that the entities do not exist in the database or are successfully removed.
         /// </summary>
         /// <param name="dataSet">Data for the entities to be searched and removed</param>
-        public void EnsureEntitiesDoNotExist(params TennantData[] dataSet)
+        public void EnsureEntitiesDoNotExist(params TenantData[] dataSet)
         {
             foreach (var data in dataSet)
             {
-                var entity = TennantManager.SingleOrDefault(e => e.Owner == data.Owner);
+                var entity = TenantManager.SingleOrDefault(e => e.Owner == data.Owner);
 
                 if (entity != null)
                 {
-                    var errors = TennantManager.TryDelete(entity);
+                    var errors = TenantManager.TryDelete(entity);
 
-                    errors.Should().BeEmpty(@"because Tennant ""{0}"" has to be removed!", data.Owner);
+                    errors.Should().BeEmpty(@"because Tenant ""{0}"" has to be removed!", data.Owner);
                 }
             }
 
-            TennantManager.SaveChanges();
+            TenantManager.SaveChanges();
 
             AssertEntitiesDoNotExist(dataSet);
         }
 
         /// <summary>
-        /// Ensures that the entities exist in the database or are succesfully added.
+        /// Ensures that the entities exist in the database or are successfully added.
         /// </summary>
         /// <param name="dataSet"></param>
-        public void EnsureEntitiesExist(params TennantData[] dataSet)
+        public void EnsureEntitiesExist(params TenantData[] dataSet)
         {
             foreach (var data in dataSet)
             {
-                var entity = TennantManager.SingleOrDefault(e => e.Owner == data.Owner);
+                var entity = TenantManager.SingleOrDefault(e => e.Owner == data.Owner);
 
                 if (entity == null)
                 {
                     entity = data.CreateEntity();
 
-                    var errors = TennantManager.TryInsert(entity);
+                    var errors = TenantManager.TryInsert(entity);
 
-                    errors.Should().BeEmpty(@"because Tennant ""{0}"" has to be added!", data.Owner);
+                    errors.Should().BeEmpty(@"because Tenant ""{0}"" has to be added!", data.Owner);
                 }
             }
 
-            TennantManager.SaveChanges();
+            TenantManager.SaveChanges();
 
             AssertEntitiesExist(dataSet);
         }

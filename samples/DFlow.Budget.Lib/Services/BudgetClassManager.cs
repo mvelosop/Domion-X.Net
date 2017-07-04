@@ -11,7 +11,7 @@
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Core.Services;
 using DFlow.Budget.Lib.Data;
-using DFlow.Tennants.Core.Model;
+using DFlow.Tenants.Core.Model;
 using Domion.Core.Services;
 using Domion.Lib.Data;
 using System;
@@ -27,17 +27,17 @@ namespace DFlow.Budget.Lib.Services
         public static string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate! (Id={1})";
 
         private Expression<Func<BudgetClass, bool>> _baseFilter;
-        private Tennant _currentTennant;
+        private Tenant _currentTenant;
 
         /// <summary>
         ///     Entity manager for BudgetClass
         /// </summary>
-        public BudgetClassManager(BudgetDbContext dbContext, Tennant currentTennant)
+        public BudgetClassManager(BudgetDbContext dbContext, Tenant currentTenant)
             : base(dbContext)
         {
-            _currentTennant = currentTennant;
+            _currentTenant = currentTenant;
 
-            _baseFilter = (bc) => bc.Tennant_Id == _currentTennant.Id;
+            _baseFilter = (bc) => bc.Tenant_Id == _currentTenant.Id;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace DFlow.Budget.Lib.Services
         }
 
         /// <summary>
-        ///     Returns an IQueryable that, when enumerated, will retrieve the objects that satisfy the where condition 
+        ///     Returns an IQueryable that, when enumerated, will retrieve the objects that satisfy the where condition
         ///     or all of them if where condition is null.
         /// </summary>
         public override IQueryable<BudgetClass> Query(Expression<Func<BudgetClass, bool>> where = null)
@@ -69,7 +69,7 @@ namespace DFlow.Budget.Lib.Services
         ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
         ///     </para>
         ///     <para>
-        ///         Important, this only refreshes the passed entity. It does not refresh the related entities 
+        ///         Important, this only refreshes the passed entity. It does not refresh the related entities
         ///         (navigation or collection properties). If needed yo have to modify this method and call the
         ///         method on each one.
         ///     </para>
@@ -90,14 +90,14 @@ namespace DFlow.Budget.Lib.Services
         }
 
         /// <summary>
-        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method. 
+        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method.
         ///     This method also checks that the concurrency token (RowVersion) is EMPTY.
         /// </summary>
         public new virtual IEnumerable<ValidationResult> TryInsert(BudgetClass entity)
         {
             if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
-            entity.Tennant_Id = _currentTennant.Id;
+            entity.Tenant_Id = _currentTenant.Id;
 
             CommonSaveOperations(entity);
 

@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Domion.Core\Domion.Core.csproj" />
-    <ProjectReference Include="..\DFlow.Tennants.Core\DFlow.Tennants.Core.csproj" />
+    <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
   </ItemGroup>
 
 </Project>

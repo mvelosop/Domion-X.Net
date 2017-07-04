@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
-using DFlow.Tennants.Lib.Services;
-using DFlow.Tennants.Lib.Tests.Helpers;
+using DFlow.Tenants.Lib.Services;
+using DFlow.Tenants.Lib.Tests.Helpers;
 using FluentAssertions;
 using System.Linq;
 using TechTalk.SpecFlow;
@@ -26,19 +26,19 @@ namespace DFlow.Budget.Specs.Bindings
 
         public BudgetClassManagerHelper BudgetClassManagerHelper => Resolve<BudgetClassManagerHelper>();
 
-        public TennantManager TennantManager => Resolve<TennantManager>();
-        public TennantManagerHelper TennantManagerHelper => Resolve<TennantManagerHelper>();
+        public TenantManager TenantManager => Resolve<TenantManager>();
+        public TenantManagerHelper TenantManagerHelper => Resolve<TenantManagerHelper>();
 
-        [Given(@"the current user is working as tennant ""(.*)""")]
-        public void GivenTheCurrentUserIsWorkingAsTennant(string owner)
+        [Given(@"the current user is working as Tenant ""(.*)""")]
+        public void GivenTheCurrentUserIsWorkingAsTenant(string owner)
         {
-            var data = new TennantData(owner);
+            var data = new TenantData(owner);
 
-            TennantManagerHelper.EnsureEntitiesExist(data);
+            TenantManagerHelper.EnsureEntitiesExist(data);
 
-            var currentTennant = TennantManager.AssertGetByKeyData(owner);
+            var currentTenant = TenantManager.AssertGetByKeyData(owner);
 
-            _scenarioContext.Add("CurrentTennant", currentTennant);
+            _scenarioContext.Add("CurrentTenant", currentTenant);
         }
 
 
@@ -60,10 +60,12 @@ namespace DFlow.Budget.Specs.Bindings
         [Then(@"I can find the following budget classes:")]
         public void ThenICanFindTheFollowingBudgetClasses(Table table)
         {
+            var mapper = new BudgetClassDataMapper();
+
             var dataSet = BudgetClassManager
                 .Query()
                 .ToList()
-                .Select(bc => new BudgetClassData(bc));
+                .Select(bc => mapper.CreateData(bc));
 
             table.CompareToSet(dataSet);
         }
@@ -73,9 +75,11 @@ namespace DFlow.Budget.Specs.Bindings
         {
             BudgetClassData[] dataSet = table.CreateSet<BudgetClassData>().ToArray();
 
+            var mapper = new BudgetClassDataMapper();
+
             foreach (var data in dataSet)
             {
-                var entity = data.CreateEntity();
+                var entity = mapper.CreateEntity(data);
 
                 var errors = BudgetClassManager.TryInsert(entity);
 
