@@ -1,8 +1,9 @@
 ﻿using DFlow.Budget.Core.Model;
+using Domion.Test.Helpers;
 
 namespace DFlow.Budget.Lib.Tests.Helpers
 {
-    public class BudgetClassDataMapper
+    public class BudgetClassDataMapper : IDataMapper<BudgetClassData, BudgetClass>
     {
         public BudgetClassData CreateData(BudgetClass entity)
         {

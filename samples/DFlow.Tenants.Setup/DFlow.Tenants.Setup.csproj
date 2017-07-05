@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Domion.Setup\Domion.Setup.csproj" />
+    <ProjectReference Include="..\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj" />
+    <ProjectReference Include="..\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

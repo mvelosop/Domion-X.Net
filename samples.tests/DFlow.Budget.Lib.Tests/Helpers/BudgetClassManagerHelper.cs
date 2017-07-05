@@ -41,7 +41,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         private BudgetClassDataMapper BudgetClassMapper => LazyBudgetClassDataMapper.Value;
 
         /// <summary>
-        ///     Asserts that entities with the supplied key data values do not exist
+        ///     Asserts that entities with the supplied key data values do not exist. This method DOES NOT DELETE entities, use EnsureEntitiesDoNotExist for that.
         /// </summary>
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
@@ -60,7 +60,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         }
 
         /// <summary>
-        ///     Asserts that entities equivalent to the supplied input data classes exist
+        ///     Asserts that entities equivalent to the supplied input data classes exist. This method DOES NOT CREATE OR UPDATE entities, , use EnsureEntitiesExist for that.
         /// </summary>
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)

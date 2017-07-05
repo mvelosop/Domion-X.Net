@@ -1,16 +1,17 @@
 ﻿using DFlow.Budget.Lib.Data;
+using DFlow.Tenants.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace DFlow.Budget.Setup
+namespace DFlow.Tenants.Setup
 {
-    public class BudgetDbSetupHelper
+    public class TenantsDbSetupHelper
     {
         private readonly string ConnectionString;
 
-        private DbContextOptions<BudgetDbContext> _options;
+        private DbContextOptions<TenantsDbContext> _options;
 
-        public BudgetDbSetupHelper(string connectionString)
+        public TenantsDbSetupHelper(string connectionString)
         {
             ConnectionString = connectionString;
         }
@@ -19,11 +20,11 @@ namespace DFlow.Budget.Setup
         /// Returns the DbContext if the database has been set up.
         /// </summary>
         /// <returns></returns>
-        public BudgetDbContext CreateDbContext()
+        public TenantsDbContext CreateDbContext()
         {
-            if (_options == null) throw new InvalidOperationException($"Must run {nameof(BudgetDbSetupHelper)}.{nameof(SetupDatabase)} first!");
+            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TenantsDbSetupHelper)}.{nameof(SetupDatabase)} first!");
 
-            return new BudgetDbContext(_options);
+            return new TenantsDbContext(_options);
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace DFlow.Budget.Setup
         /// </summary>
         public void SetupDatabase()
         {
-            var optionBuilder = new DbContextOptionsBuilder<BudgetDbContext>();
+            var optionBuilder = new DbContextOptionsBuilder<TenantsDbContext>();
 
             optionBuilder.UseSqlServer(ConnectionString);
 
