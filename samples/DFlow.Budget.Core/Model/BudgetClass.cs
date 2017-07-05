@@ -23,7 +23,7 @@ namespace DFlow.Budget.Core.Model
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(50)]
+        [MaxLength(100)]
         public virtual string Name { get; set; } // Key data ----------
 
         public virtual int Order { get; set; }

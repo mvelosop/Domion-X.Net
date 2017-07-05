@@ -1,14 +1,18 @@
-﻿using DFlow.Budget.Lib.Data;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using DFlow.Budget.Lib.Data;
+using DFlow.Budget.Core.Model;
 
 namespace DFlow.Budget.Lib.Migrations
 {
     [DbContext(typeof(BudgetDbContext))]
-    partial class BudgetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170609203746_CreateMigration_BudgetDbContext")]
+    partial class CreateMigration_BudgetDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -36,7 +40,7 @@ namespace DFlow.Budget.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetClasses", "Budget");
+                    b.ToTable("BudgetClasses","Budget");
                 });
         }
     }
