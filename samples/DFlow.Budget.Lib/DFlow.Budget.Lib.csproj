@@ -17,6 +17,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj" />
         <ProjectReference Include="..\DFlow.Budget.Core\DFlow.Budget.Core.csproj" />
+        <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
+        <ProjectReference Include="..\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />
     </ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 
 using DFlow.Budget.Core.Model;
+using DFlow.Tenants.Lib.Data;
 using Domion.Lib.Data;
 using Microsoft.EntityFrameworkCore;
 using NLog;
@@ -55,10 +56,11 @@ namespace DFlow.Budget.Lib.Data
             ConfigureExternalModel(modelBuilder);
         }
 
-        ///
+        /// 
         /// <param name="modelBuilder"></param>
         private void ConfigureExternalModel(ModelBuilder modelBuilder)
         {
+            modelBuilder.AddConfiguration(new TenantConfiguration());
         }
 
         ///
@@ -68,6 +70,7 @@ namespace DFlow.Budget.Lib.Data
             // Database schema is "Budget"
 
             modelBuilder.AddConfiguration(new BudgetClassConfiguration());
+            modelBuilder.AddConfiguration(new BudgetLineConfiguration());
         }
     }
 }
