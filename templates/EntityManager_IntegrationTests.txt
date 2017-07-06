@@ -28,18 +28,18 @@ namespace $APP$.$MODULE$.Lib.Tests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=$APP$.$MODULE$.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
-        private static readonly $MODULE$DbSetupHelper DbSetupHelper;
+        private static readonly $MODULE$DbHelper DbHelper;
 
         private readonly IContainer Container;
 
         static $ENTITY$Manager_IntegrationTests()
         {
-            DbSetupHelper = SetupDatabase(ConnectionString);
+            DbHelper = SetupDatabase(ConnectionString);
         }
 
         public $MODULE$Manager_IntegrationTests()
         {
-            Container = SetupContainer(DbSetupHelper);
+            Container = SetupContainer(DbHelper);
         }
 
         [Fact]
@@ -218,7 +218,7 @@ namespace $APP$.$MODULE$.Lib.Tests
             });
         }
 
-        private static IContainer SetupContainer($MODULE$DbSetupHelper dbHelper)
+        private static IContainer SetupContainer($MODULE$DbHelper dbHelper)
         {
             var containerSetup = new $MODULE$ContainerSetup(dbHelper);
 
@@ -231,9 +231,9 @@ namespace $APP$.$MODULE$.Lib.Tests
             return container;
         }
 
-        private static $MODULE$DbSetupHelper SetupDatabase(string connectionString)
+        private static $MODULE$DbHelper SetupDatabase(string connectionString)
         {
-            var dbHelper = new $MODULE$DbSetupHelper(connectionString);
+            var dbHelper = new $MODULE$DbHelper(connectionString);
 
             dbHelper.SetupDatabase();
 
