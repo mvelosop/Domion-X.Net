@@ -1,7 +1,10 @@
-﻿using DFlow.Budget.Lib.Data;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using DFlow.Budget.Lib.Data;
+using DFlow.Budget.Core.Model;
 
 namespace DFlow.Budget.Lib.Migrations
 {
@@ -21,7 +24,7 @@ namespace DFlow.Budget.Lib.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50);
+                        .HasMaxLength(100);
 
                     b.Property<int>("Order");
 
@@ -29,14 +32,16 @@ namespace DFlow.Budget.Lib.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
+                    b.Property<int>("Tenant_Id");
+
                     b.Property<int>("TransactionType");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Tenant_Id", "Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetClasses", "Budget");
+                    b.ToTable("BudgetClasses","Budget");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>
@@ -65,14 +70,42 @@ namespace DFlow.Budget.Lib.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BudgetLines", "Budget");
+                    b.ToTable("BudgetLines","Budget");
+                });
+
+            modelBuilder.Entity("DFlow.Tenants.Core.Model.Tenant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(250);
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Owner")
+                        .IsUnique();
+
+                    b.ToTable("Tenants","Tenants");
+                });
+
+            modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetClass", b =>
+                {
+                    b.HasOne("DFlow.Tenants.Core.Model.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("Tenant_Id");
                 });
 
             modelBuilder.Entity("DFlow.Budget.Core.Model.BudgetLine", b =>
                 {
                     b.HasOne("DFlow.Budget.Core.Model.BudgetClass", "BudgetClass")
-                        .WithMany()
-                        .HasForeignKey("BudgetClass_Id");
+                        .WithMany("BudgetLines")
+                        .HasForeignKey("BudgetClass_Id")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

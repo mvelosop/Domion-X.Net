@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net462</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)'=='net462'">
+        <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Domion.Core\Domion.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Domion.Core\Domion.Core.csproj" />
+        <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
+    </ItemGroup>
 
 </Project>
