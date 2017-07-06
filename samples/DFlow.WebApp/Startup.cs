@@ -47,8 +47,8 @@ namespace DFlow.WebApp
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
-                //.AddFeatureFolders();
+            services.AddMvc()
+                .AddFeatureFolders();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
