@@ -11,7 +11,7 @@ using DFlow.WebApp.Models;
 using DFlow.WebApp.Models.ManageViewModels;
 using DFlow.WebApp.Services;
 
-namespace DFlow.WebApp.Controllers
+namespace DFlow.WebApp.Features.Manage
 {
     [Authorize]
     public class ManageController : Controller

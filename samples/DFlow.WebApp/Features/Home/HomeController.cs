@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DFlow.WebApp.Controllers
+namespace DFlow.WebApp.Features.Home
 {
     public class HomeController : Controller
     {

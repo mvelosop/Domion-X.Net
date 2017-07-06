@@ -12,8 +12,9 @@ using Microsoft.Extensions.Options;
 using DFlow.WebApp.Models;
 using DFlow.WebApp.Models.AccountViewModels;
 using DFlow.WebApp.Services;
+using DFlow.WebApp.Features.Home;
 
-namespace DFlow.WebApp.Controllers
+namespace DFlow.WebApp.Features.Account
 {
     [Authorize]
     public class AccountController : Controller
