@@ -19,18 +19,18 @@ namespace DFlow.Tenants.Lib.Tests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
-        private static readonly TenantsDbSetupHelper DbSetupHelper;
+        private static readonly TenantsDbHelper DbHelper;
 
         private readonly IContainer Container;
 
         static TenantManager_IntegrationTests()
         {
-            DbSetupHelper = SetupDatabase(ConnectionString);
+            DbHelper = SetupDatabase(ConnectionString);
         }
 
         public TenantManager_IntegrationTests()
         {
-            Container = SetupContainer(DbSetupHelper);
+            Container = SetupContainer(DbHelper);
         }
 
         [Fact]
@@ -209,7 +209,7 @@ namespace DFlow.Tenants.Lib.Tests
             });
         }
 
-        private static IContainer SetupContainer(TenantsDbSetupHelper dbHelper)
+        private static IContainer SetupContainer(TenantsDbHelper dbHelper)
         {
             var containerSetup = new TenantsContainerSetup(dbHelper);
 
@@ -222,9 +222,9 @@ namespace DFlow.Tenants.Lib.Tests
             return container;
         }
 
-        private static TenantsDbSetupHelper SetupDatabase(string connectionString)
+        private static TenantsDbHelper SetupDatabase(string connectionString)
         {
-            var dbHelper = new TenantsDbSetupHelper(connectionString);
+            var dbHelper = new TenantsDbHelper(connectionString);
 
             dbHelper.SetupDatabase();
 

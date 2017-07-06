@@ -9,11 +9,11 @@ namespace DFlow.Tenants.Setup
     {
         private const string _modulePrefix = "DFlow.Tenants";
 
-        private readonly TenantsDbSetupHelper DbSetupHelper;
+        private readonly TenantsDbHelper DbHelper;
 
-        public TenantsContainerSetup(TenantsDbSetupHelper dbSetupHelper)
+        public TenantsContainerSetup(TenantsDbHelper dbHelper)
         {
-            DbSetupHelper = dbSetupHelper ?? throw new ArgumentNullException(nameof(dbSetupHelper));
+            DbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace DFlow.Tenants.Setup
         public void RegisterTypes(ContainerBuilder builder)
         {
             // This defers instance registration until it is actually needed
-            builder.Register<TenantsDbContext>((c) => DbSetupHelper.CreateDbContext())
+            builder.Register<TenantsDbContext>((c) => DbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             RegisterCommonModuleTypes(builder, _modulePrefix);

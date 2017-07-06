@@ -5,13 +5,13 @@ using System;
 
 namespace DFlow.Tenants.Setup
 {
-    public class TenantsDbSetupHelper
+    public class TenantsDbHelper
     {
         private readonly string ConnectionString;
 
         private DbContextOptions<TenantsDbContext> _options;
 
-        public TenantsDbSetupHelper(string connectionString)
+        public TenantsDbHelper(string connectionString)
         {
             ConnectionString = connectionString;
         }
@@ -22,7 +22,7 @@ namespace DFlow.Tenants.Setup
         /// <returns></returns>
         public TenantsDbContext CreateDbContext()
         {
-            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TenantsDbSetupHelper)}.{nameof(SetupDatabase)} first!");
+            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TenantsDbHelper)}.{nameof(SetupDatabase)} first!");
 
             return new TenantsDbContext(_options);
         }
