@@ -48,6 +48,7 @@ namespace DFlow.WebApp
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
+                //.AddFeatureFolders();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -74,6 +75,8 @@ namespace DFlow.WebApp
             app.UseStaticFiles();
 
             app.UseIdentity();
+
+            app.UseMvcWithDefaultRoute();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
