@@ -11,6 +11,7 @@
 using DFlow.Budget.Core.Model;
 using DFlow.Budget.Core.Services;
 using DFlow.Budget.Lib.Data;
+using DFlow.Tenants.Core.Model;
 using Domion.Core.Services;
 using Domion.Lib.Data;
 using System;
@@ -23,14 +24,17 @@ namespace DFlow.Budget.Lib.Services
 {
     public class BudgetClassManager : BaseRepository<BudgetClass, int>, IQueryManager<BudgetClass>, IEntityManager<BudgetClass, int>, IBudgetClassManager
     {
-        public static string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate! (Id={1})";
+        public const string duplicateByNameError = @"There's another BudgetClass with Name ""{0}"", can't duplicate! (Id={1})";
+
+        public readonly Tenant CurrentTenant;
 
         /// <summary>
         ///     Entity manager for BudgetClass
         /// </summary>
-        public BudgetClassManager(BudgetDbContext dbContext)
+        public BudgetClassManager(BudgetDbContext dbContext, Tenant currentTenant)
             : base(dbContext)
         {
+            CurrentTenant = currentTenant ?? throw new ArgumentNullException(nameof(currentTenant));
         }
 
         /// <summary>
@@ -54,7 +58,7 @@ namespace DFlow.Budget.Lib.Services
         /// </summary>
         public override IQueryable<BudgetClass> Query(Expression<Func<BudgetClass, bool>> where = null)
         {
-            return base.Query(where);
+            return base.Query(where).Where(bc => bc.Tenant_Id == CurrentTenant.Id);
         }
 
         /// <summary>
@@ -91,6 +95,8 @@ namespace DFlow.Budget.Lib.Services
             if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
             CommonSaveOperations(entity);
+
+            entity.Tenant_Id = CurrentTenant.Id;
 
             return base.TryInsert(entity);
         }

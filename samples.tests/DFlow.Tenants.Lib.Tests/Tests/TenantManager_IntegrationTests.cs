@@ -21,15 +21,12 @@ namespace DFlow.Tenants.Lib.Tests
 
         private static readonly TenantsDbHelper DbHelper;
 
-        private readonly IContainer Container;
+        private static readonly IContainer Container;
 
         static TenantManager_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
-        }
 
-        public TenantManager_IntegrationTests()
-        {
             Container = SetupContainer(DbHelper);
         }
 

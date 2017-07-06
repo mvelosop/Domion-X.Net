@@ -1,4 +1,5 @@
 ﻿using DFlow.Budget.Lib.Data;
+using DFlow.Tenants.Setup;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -14,6 +15,8 @@ namespace DFlow.Budget.Setup
         {
             ConnectionString = connectionString;
         }
+
+        public TenantsDbHelper TenantsDbHelper { get; private set; }
 
         /// <summary>
         /// Returns the DbContext if the database has been set up.
@@ -31,6 +34,8 @@ namespace DFlow.Budget.Setup
         /// </summary>
         public void SetupDatabase()
         {
+            SetupExternalDatabases();
+
             var optionBuilder = new DbContextOptionsBuilder<BudgetDbContext>();
 
             optionBuilder.UseSqlServer(ConnectionString);
@@ -41,6 +46,13 @@ namespace DFlow.Budget.Setup
             {
                 dbContext.Database.Migrate();
             }
+        }
+
+        private void SetupExternalDatabases()
+        {
+            TenantsDbHelper = new TenantsDbHelper(ConnectionString);
+
+            TenantsDbHelper.SetupDatabase();
         }
     }
 }

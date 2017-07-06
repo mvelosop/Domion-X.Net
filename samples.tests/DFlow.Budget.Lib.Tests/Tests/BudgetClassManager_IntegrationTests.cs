@@ -3,6 +3,10 @@ using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Lib.Tests.Helpers;
 using DFlow.Budget.Setup;
+using DFlow.Tenants.Core.Model;
+using DFlow.Tenants.Lib.Services;
+using DFlow.Tenants.Lib.Tests.Extensions;
+using DFlow.Tenants.Lib.Tests.Helpers;
 using Domion.FluentAssertions.Extensions;
 using Domion.Lib.Extensions;
 using FluentAssertions;
@@ -19,18 +23,29 @@ namespace DFlow.Budget.Lib.Tests.Tests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
+        private static readonly IContainer Container;
         private static readonly BudgetDbHelper DbHelper;
+        private static readonly TenantData DefaultTenantData = new TenantData("Default tenant");
 
-        private readonly IContainer Container;
+        private readonly Tenant DefaultTenant;
 
         static BudgetClassManager_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
+
+            Container = SetupContainer(DbHelper);
+
+            SeedBaseData(DbHelper);
         }
 
         public BudgetClassManager_IntegrationTests()
         {
-            Container = SetupContainer(DbHelper);
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var manager = scope.Resolve<TenantManager>();
+
+                DefaultTenant = manager.AssertGetByKeyData(DefaultTenantData.Owner);
+            }
         }
 
         [Fact]
@@ -209,6 +224,16 @@ namespace DFlow.Budget.Lib.Tests.Tests
             });
         }
 
+        private static void SeedBaseData(BudgetDbHelper budgetDbHelper)
+        {
+            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            {
+                var helper = scope.Resolve<TenantManagerHelper>();
+
+                helper.EnsureEntitiesExist(DefaultTenantData);
+            }
+        }
+
         private static IContainer SetupContainer(BudgetDbHelper dbHelper)
         {
             var containerSetup = new BudgetContainerSetup(dbHelper);
@@ -231,9 +256,19 @@ namespace DFlow.Budget.Lib.Tests.Tests
             return dbHelper;
         }
 
+        private Action<ILifetimeScope, BudgetClassManager> GetTenant(TenantData tenantData)
+        {
+            throw new NotImplementedException();
+        }
+
         private void UsingManager(Action<ILifetimeScope, BudgetClassManager> action)
         {
-            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            UsingManager(DefaultTenant, action);
+        }
+
+        private void UsingManager(Tenant currenTenant, Action<ILifetimeScope, BudgetClassManager> action)
+        {
+            using (ILifetimeScope scope = Container.BeginLifetimeScope(cb => cb.Register(c => currenTenant)))
             {
                 var manager = scope.Resolve<BudgetClassManager>();
 
@@ -243,7 +278,12 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
         private void UsingManagerHelper(Action<ILifetimeScope, BudgetClassManagerHelper> action)
         {
-            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            UsingManagerHelper(DefaultTenant, action);
+        }
+
+        private void UsingManagerHelper(Tenant currenTenant, Action<ILifetimeScope, BudgetClassManagerHelper> action)
+        {
+            using (ILifetimeScope scope = Container.BeginLifetimeScope(cb => cb.Register(c => currenTenant)))
             {
                 var helper = scope.Resolve<BudgetClassManagerHelper>();
 

@@ -1,15 +1,21 @@
 ﻿using DFlow.Budget.Core.Model;
 using DFlow.Budget.Lib.Services;
 using DFlow.Budget.Setup;
+using DFlow.Tenants.Core.Model;
+using DFlow.Tenants.Lib.Data;
+using DFlow.Tenants.Lib.Services;
 using Domion.Lib.Extensions;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace DFlow.CLI
 {
     internal class Program
     {
+        private static Tenant _tenant = new Tenant { Owner = "Default Tenant" };
+
         private static BudgetClass[] _dataSet = new BudgetClass[]
         {
             new BudgetClass { Name = "Income", Order = 1, TransactionType = TransactionType.Income },
@@ -23,9 +29,27 @@ namespace DFlow.CLI
         {
             Console.WriteLine("Seeding data...\n");
 
+            Tenant currentTenant = null;
+
+            using (TenantsDbContext dbContext = _dbHelper.TenantsDbHelper.CreateDbContext())
+            {
+                var manager = new TenantManager(dbContext);
+
+                currentTenant = manager.SingleOrDefault(t => t.Owner == _tenant.Owner);
+
+                if (currentTenant == null)
+                {
+                    currentTenant = new Tenant { Owner = _tenant.Owner };
+
+                    manager.TryInsert(currentTenant);
+
+                    manager.SaveChanges();
+                }
+            }
+
             using (var dbContext = _dbHelper.CreateDbContext())
             {
-                var manager = new BudgetClassManager(dbContext);
+                var manager = new BudgetClassManager(dbContext, currentTenant);
 
                 foreach (var item in _dataSet)
                 {
@@ -65,10 +89,6 @@ namespace DFlow.CLI
             LoadSeedData();
 
             PrintDb();
-
-            Console.WriteLine("Press any key to continue...");
-
-            Console.ReadKey();
         }
 
         private static void PrintDb()
