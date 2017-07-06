@@ -59,7 +59,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Test", "src\Domion.Test\Domion.Test.csproj", "{EEEECED4-F1BD-482B-8CC8-2B49D4F301E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tenants.Setup", "samples\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj", "{21AC91AE-911D-4022-9B1D-C29682A782C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Setup", "samples\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj", "{21AC91AE-911D-4022-9B1D-C29682A782C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.WebApp", "samples\DFlow.WebApp\DFlow.WebApp.csproj", "{C3090C52-1AB0-45DE-807B-AC80C237E9C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,6 +137,10 @@ Global
 		{21AC91AE-911D-4022-9B1D-C29682A782C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21AC91AE-911D-4022-9B1D-C29682A782C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21AC91AE-911D-4022-9B1D-C29682A782C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3090C52-1AB0-45DE-807B-AC80C237E9C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3090C52-1AB0-45DE-807B-AC80C237E9C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3090C52-1AB0-45DE-807B-AC80C237E9C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3090C52-1AB0-45DE-807B-AC80C237E9C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,5 +163,6 @@ Global
 		{72E9F4F7-3574-47CA-869B-C57F39C9A28E} = {7CEC1CD1-2D4B-47B2-BFA2-63D6D1F6E110}
 		{EEEECED4-F1BD-482B-8CC8-2B49D4F301E3} = {6F2DE9E6-30CB-4A00-BCC2-A77F24303702}
 		{21AC91AE-911D-4022-9B1D-C29682A782C8} = {F921A8A0-C1EE-4CCE-8FF5-983ABDEE7DFA}
+		{C3090C52-1AB0-45DE-807B-AC80C237E9C3} = {F921A8A0-C1EE-4CCE-8FF5-983ABDEE7DFA}
 	EndGlobalSection
 EndGlobal
