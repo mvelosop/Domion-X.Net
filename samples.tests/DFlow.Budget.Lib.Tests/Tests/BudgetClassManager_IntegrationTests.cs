@@ -26,8 +26,12 @@ namespace DFlow.Budget.Lib.Tests.Tests
         private static readonly IContainer Container;
         private static readonly BudgetDbHelper DbHelper;
         private static readonly TenantData DefaultTenantData = new TenantData("Default tenant");
+        private static readonly TenantData TenantAData = new TenantData("Tenant A");
+        private static readonly TenantData TenantBData = new TenantData("Tenant B");
 
         private readonly Tenant DefaultTenant;
+        private readonly Tenant TenantA;
+        private readonly Tenant TenantB;
 
         static BudgetClassManager_IntegrationTests()
         {
@@ -45,6 +49,8 @@ namespace DFlow.Budget.Lib.Tests.Tests
                 var manager = scope.Resolve<TenantManager>();
 
                 DefaultTenant = manager.AssertGetByKeyData(DefaultTenantData.Owner);
+                TenantA = manager.AssertGetByKeyData(TenantAData.Owner);
+                TenantB = manager.AssertGetByKeyData(TenantBData.Owner);
             }
         }
 
@@ -151,6 +157,66 @@ namespace DFlow.Budget.Lib.Tests.Tests
         }
 
         [Fact]
+        public void TryInsert_InsertsRecords_WhenSameNameOnDifferentTenants()
+        {
+            IEnumerable<ValidationResult> errorsA = null;
+            IEnumerable<ValidationResult> errorsB = null;
+
+            // Arrange ---------------------------
+
+            var data = new BudgetClassData("Insert-Success-Valid - Inserted", TransactionType.Income);
+
+            UsingManagerHelper(TenantA, (scope, helper) =>
+            {
+                helper.EnsureEntitiesDoNotExist(data);
+            });
+
+            UsingManagerHelper(TenantB, (scope, helper) =>
+            {
+                helper.EnsureEntitiesDoNotExist(data);
+            });
+
+            // Act -------------------------------
+
+            UsingManager(TenantA, (scope, manager) =>
+            {
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
+
+                errorsA = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            });
+
+            UsingManager(TenantB, (scope, manager) =>
+            {
+                var mapper = scope.Resolve<BudgetClassDataMapper>();
+
+                BudgetClass entity = mapper.CreateEntity(data);
+
+                errorsB = manager.TryInsert(entity).ToList();
+
+                manager.SaveChanges();
+            });
+
+            // Assert ----------------------------
+
+            errorsA.Should().BeEmpty();
+            errorsB.Should().BeEmpty();
+
+            UsingManagerHelper(TenantA, (scope, helper) =>
+            {
+                helper.AssertEntitiesExist(data);
+            });
+
+            UsingManagerHelper(TenantA, (scope, helper) =>
+            {
+                helper.AssertEntitiesExist(data);
+            });
+        }
+
+        [Fact]
         public void TryUpdate_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
@@ -230,7 +296,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
             {
                 var helper = scope.Resolve<TenantManagerHelper>();
 
-                helper.EnsureEntitiesExist(DefaultTenantData);
+                helper.EnsureEntitiesExist(DefaultTenantData, TenantAData, TenantBData);
             }
         }
 
