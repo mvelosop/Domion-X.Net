@@ -9,11 +9,11 @@ namespace DFlow.Budget.Setup
     {
         private const string _modulePrefix = "DFlow.Budget";
 
-        private readonly BudgetDbSetupHelper DbSetupHelper;
+        private readonly BudgetDbHelper DbHelper;
 
-        public BudgetContainerSetup(BudgetDbSetupHelper dbSetupHelper)
+        public BudgetContainerSetup(BudgetDbHelper dbHelper)
         {
-            DbSetupHelper = dbSetupHelper ?? throw new ArgumentNullException(nameof(dbSetupHelper));
+            DbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace DFlow.Budget.Setup
         public void RegisterTypes(ContainerBuilder builder)
         {
             // This defers instance registration until it is actually needed
-            builder.Register<BudgetDbContext>((c) => DbSetupHelper.CreateDbContext())
+            builder.Register<BudgetDbContext>((c) => DbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             RegisterCommonModuleTypes(builder, _modulePrefix);

@@ -4,13 +4,13 @@ using System;
 
 namespace DFlow.Budget.Setup
 {
-    public class BudgetDbSetupHelper
+    public class BudgetDbHelper
     {
         private readonly string ConnectionString;
 
         private DbContextOptions<BudgetDbContext> _options;
 
-        public BudgetDbSetupHelper(string connectionString)
+        public BudgetDbHelper(string connectionString)
         {
             ConnectionString = connectionString;
         }
@@ -21,7 +21,7 @@ namespace DFlow.Budget.Setup
         /// <returns></returns>
         public BudgetDbContext CreateDbContext()
         {
-            if (_options == null) throw new InvalidOperationException($"Must run {nameof(BudgetDbSetupHelper)}.{nameof(SetupDatabase)} first!");
+            if (_options == null) throw new InvalidOperationException($"Must run {nameof(BudgetDbHelper)}.{nameof(SetupDatabase)} first!");
 
             return new BudgetDbContext(_options);
         }

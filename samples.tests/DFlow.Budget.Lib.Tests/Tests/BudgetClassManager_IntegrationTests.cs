@@ -19,18 +19,18 @@ namespace DFlow.Budget.Lib.Tests.Tests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
-        private static readonly BudgetDbSetupHelper DbSetupHelper;
+        private static readonly BudgetDbHelper DbHelper;
 
         private readonly IContainer Container;
 
         static BudgetClassManager_IntegrationTests()
         {
-            DbSetupHelper = SetupDatabase(ConnectionString);
+            DbHelper = SetupDatabase(ConnectionString);
         }
 
         public BudgetClassManager_IntegrationTests()
         {
-            Container = SetupContainer(DbSetupHelper);
+            Container = SetupContainer(DbHelper);
         }
 
         [Fact]
@@ -209,7 +209,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
             });
         }
 
-        private static IContainer SetupContainer(BudgetDbSetupHelper dbHelper)
+        private static IContainer SetupContainer(BudgetDbHelper dbHelper)
         {
             var containerSetup = new BudgetContainerSetup(dbHelper);
 
@@ -222,9 +222,9 @@ namespace DFlow.Budget.Lib.Tests.Tests
             return container;
         }
 
-        private static BudgetDbSetupHelper SetupDatabase(string connectionString)
+        private static BudgetDbHelper SetupDatabase(string connectionString)
         {
-            var dbHelper = new BudgetDbSetupHelper(connectionString);
+            var dbHelper = new BudgetDbHelper(connectionString);
 
             dbHelper.SetupDatabase();
 

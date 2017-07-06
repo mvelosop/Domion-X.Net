@@ -17,7 +17,7 @@ namespace DFlow.CLI
             new BudgetClass { Name = "Investments", Order = 3, TransactionType = TransactionType.Investment },
         };
 
-        private static BudgetDbSetupHelper _dbHelper;
+        private static BudgetDbHelper _dbHelper;
 
         private static void LoadSeedData()
         {
@@ -98,7 +98,7 @@ namespace DFlow.CLI
 
             Console.WriteLine($"Setting up database\n ({connectionString})...\n");
 
-            _dbHelper = new BudgetDbSetupHelper(connectionString);
+            _dbHelper = new BudgetDbHelper(connectionString);
 
             _dbHelper.SetupDatabase();
         }
