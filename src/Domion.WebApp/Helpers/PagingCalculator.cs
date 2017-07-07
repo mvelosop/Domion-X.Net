@@ -11,7 +11,12 @@ namespace Domion.WebApp.Helpers
             if (itemCount < 0) throw new ArgumentOutOfRangeException("Must be > 0", nameof(itemCount));
 
             Page = pageNumber ?? 1;
+
+
             PageSize = pageSize ?? DefaultPageSize;
+
+            if (PageSize < 0) PageSize = DefaultPageSize;
+
             PageCount = itemCount / PageSize + (itemCount % PageSize > 0 ? 1 : 0);
 
             if (PageCount == 0) Page = 1;
@@ -22,7 +27,7 @@ namespace Domion.WebApp.Helpers
 
             if (Page < 0) Page = 1;
 
-            OutOfRange = (pageNumber.HasValue & Page != pageNumber);
+            OutOfRange = (pageNumber.HasValue & Page != pageNumber) | (pageSize.HasValue & PageSize != pageSize);
         }
 
         public int ItemCount { get; private set; }
