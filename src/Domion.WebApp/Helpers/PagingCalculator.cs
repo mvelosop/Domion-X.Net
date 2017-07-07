@@ -10,12 +10,13 @@ namespace Domion.WebApp.Helpers
         {
             if (itemCount < 0) throw new ArgumentOutOfRangeException("Must be > 0", nameof(itemCount));
 
+            PageSize = pageSize == null | pageSize < 0 ? DefaultPageSize : pageSize.Value;
+
+
             Page = pageNumber ?? 1;
 
 
-            PageSize = pageSize ?? DefaultPageSize;
 
-            if (PageSize < 0) PageSize = DefaultPageSize;
 
             PageCount = itemCount / PageSize + (itemCount % PageSize > 0 ? 1 : 0);
 
