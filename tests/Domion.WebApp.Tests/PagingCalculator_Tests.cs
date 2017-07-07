@@ -18,6 +18,7 @@ namespace Domion.WebApp.Tests
         [InlineData(7, 15, 3, 10, true, 2, 10, 2, 10)]
         [InlineData(8, 15, -1, 10, true, 1, 0, 2, 10)]
         [InlineData(9, 15, 1, -10, true, 1, 0, 2, 10)]
+        [InlineData(10, 15, 1, 0, true, 1, 0, 2, 10)]
         public void Create_AssignsValidValues_WhenValidItemCount(
             int testCase,
             int totalItemCount,

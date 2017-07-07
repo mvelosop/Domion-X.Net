@@ -8,11 +8,11 @@ using System.Linq.Expressions;
 
 namespace DFlow.WebApp.Services
 {
-    public class TenantServices
+    public class TenantsServices
     {
         private readonly Lazy<TenantManager> LazyTenantManager;
 
-        public TenantServices(
+        public TenantsServices(
             Lazy<TenantManager> lazyTenantManager)
         {
             LazyTenantManager = lazyTenantManager;

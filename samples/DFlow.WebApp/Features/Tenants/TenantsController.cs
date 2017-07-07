@@ -14,9 +14,9 @@ namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
-        private readonly TenantServices AppServices;
+        private readonly TenantsServices AppServices;
 
-        public TenantsController(TenantServices appServices)
+        public TenantsController(TenantsServices appServices)
         {
             AppServices = appServices;
         }
@@ -35,9 +35,14 @@ namespace DFlow.WebApp.Features.Tenants
                 return RedirectToAction("Index", new { p = pager.Page, ps = pager.PageSize });
             }
 
-            viewModel.Paging.CurrentPage = pager.Page;
-            viewModel.Paging.ItemsPerPage = pager.PageSize;
-            viewModel.Paging.TotalItems = pager.ItemCount;
+            viewModel.Items = query
+                .AsNoTracking()
+                .OrderBy(t => t.Owner)
+                .Skip(pager.Skip)
+                .Take(pager.Take)
+                .ToList();
+
+            viewModel.SetPaging(pager);
 
             return View(viewModel);
         }

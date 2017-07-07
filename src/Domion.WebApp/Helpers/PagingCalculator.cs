@@ -13,7 +13,7 @@ namespace Domion.WebApp.Helpers
             ItemCount = itemCount;
 
             PageSize = pageSize ?? DefaultPageSize;
-            PageSize = PageSize < 0 ? DefaultPageSize : PageSize;
+            PageSize = PageSize < 1 ? DefaultPageSize : PageSize;
             
             PageCount = ItemCount / PageSize + (ItemCount % PageSize > 0 ? 1 : 0);
 
