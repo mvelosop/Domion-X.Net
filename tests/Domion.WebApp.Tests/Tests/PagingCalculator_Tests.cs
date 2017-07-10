@@ -3,7 +3,7 @@ using FluentAssertions;
 using System;
 using Xunit;
 
-namespace Domion.WebApp.Tests
+namespace Domion.WebApp.Tests.Tests
 {
     [Trait("Type", "Unit")]
     public class PagingCalculator_Tests

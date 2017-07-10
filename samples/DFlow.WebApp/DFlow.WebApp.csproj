@@ -44,5 +44,8 @@
     <ProjectReference Include="..\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Tenants\" />
+  </ItemGroup>
 
 </Project>

@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Lista de Clientes</h2>
 
 <p>
-    <a asp-action="Create">Crear Tenant</a>
+    <a asp-action="Create">Crear Cliente</a>
 </p>
 
 <div>
@@ -15,13 +15,15 @@
               cs-pagenumber-param="p"
               asp-controller="Tenants"
               asp-action="Index"
-              asp-route-ps="@Model.Paging.ItemsPerPage"></cs-pager>
+              asp-route-ps="@Model.Paging.ItemsPerPage">
+    </cs-pager>
 </div>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Owner</th>
+            <th>Nombre</th>
+            <th>Notas</th>
             <th></th>
         </tr>
     </thead>
@@ -29,9 +31,8 @@
         @foreach (var item in Model.Items)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Owner)
-                </td>
+                <td>@item.Owner</td>
+                <td></td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -47,6 +48,7 @@
               cs-pagenumber-param="p"
               asp-controller="Tenants"
               asp-action="Index"
-              asp-route-ps="@Model.Paging.ItemsPerPage"></cs-pager>
+              asp-route-ps="@Model.Paging.ItemsPerPage">
+    </cs-pager>
 </div>
 

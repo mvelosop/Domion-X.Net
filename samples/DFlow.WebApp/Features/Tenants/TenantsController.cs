@@ -1,14 +1,13 @@
-using System;
+using DFlow.Tenants.Core.Model;
+using DFlow.WebApp.Services;
+using Domion.WebApp.Extensions;
+using Domion.WebApp.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DFlow.Tenants.Core.Model;
-using DFlow.WebApp.Models;
-using DFlow.WebApp.Services;
-using Domion.WebApp.Helpers;
 
 namespace DFlow.WebApp.Features.Tenants
 {
@@ -19,6 +18,175 @@ namespace DFlow.WebApp.Features.Tenants
         public TenantsController(TenantsServices appServices)
         {
             AppServices = appServices;
+        }
+
+        // GET: Tenants/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Tenants/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Owner,Notes")] TenantViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var entity = new Tenant();
+
+                entity.Owner = vm.Owner;
+
+                IEnumerable<ValidationResult> errors = AppServices.AddTenant(entity);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(vm);
+        }
+
+        // GET: Tenants/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new TenantViewModel();
+
+            vm.Id = entity.Id;
+            vm.Owner = entity.Owner;
+            vm.Notes = "Nota simulada";
+            vm.RowVersion = entity.RowVersion;
+
+            return View(vm);
+        }
+
+        // POST: Tenants/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<ValidationResult> errors = AppServices.DeleteTenant(entity);
+
+            return RedirectToAction("Index");
+        }
+
+        // GET: Tenants/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new TenantViewModel();
+
+            vm.Id = entity.Id;
+            vm.Owner = entity.Owner;
+            vm.Notes = "Nota simulada";
+            vm.RowVersion = entity.RowVersion;
+
+            return View(vm);
+        }
+
+        // GET: Tenants/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            var vm = new TenantViewModel();
+
+            vm.Id = entity.Id;
+            vm.Owner = entity.Owner;
+            vm.Notes = "Nota simulada";
+            vm.RowVersion = entity.RowVersion;
+
+            return View(vm);
+        }
+
+        // POST: Tenants/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RowVersion,Owner,Notes")] TenantViewModel vm)
+        {
+            if (id != vm.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Tenant entity = AppServices.FindTenantById(vm.Id);
+
+                    if (!EntityExists(vm.Id))
+                    {
+                        return NotFound();
+                    }
+
+                    entity.Owner = vm.Owner;
+
+                    IEnumerable<ValidationResult> errors = AppServices.UpdateTenant(entity);
+
+                    if (!errors.Any())
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.SetValidationResults(errors);
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
+
+            return View(vm);
         }
 
         // GET: Tenants
@@ -47,129 +215,9 @@ namespace DFlow.WebApp.Features.Tenants
             return View(viewModel);
         }
 
-        // GET: Tenants/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var tenant = await _context.Tenant
-        //        .SingleOrDefaultAsync(m => m.Id == id);
-        //    if (tenant == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(tenant);
-        //}
-
-        // GET: Tenants/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        // POST: Tenants/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Owner,RowVersion")] Tenant tenant)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(tenant);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(tenant);
-        //}
-
-        // GET: Tenants/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var tenant = await _context.Tenant.SingleOrDefaultAsync(m => m.Id == id);
-        //    if (tenant == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(tenant);
-        //}
-
-        // POST: Tenants/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Owner,RowVersion")] Tenant tenant)
-        //{
-        //    if (id != tenant.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(tenant);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!TenantExists(tenant.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(tenant);
-        //}
-
-        // GET: Tenants/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var tenant = await _context.Tenant
-        //        .SingleOrDefaultAsync(m => m.Id == id);
-        //    if (tenant == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(tenant);
-        //}
-
-        // POST: Tenants/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var tenant = await _context.Tenant.SingleOrDefaultAsync(m => m.Id == id);
-        //    _context.Tenant.Remove(tenant);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction("Index");
-        //}
-
-        //private bool TenantExists(int id)
-        //{
-        //    return _context.Tenant.Any(e => e.Id == id);
-        //}
+        private bool EntityExists(int id)
+        {
+            return AppServices.FindTenantById(id) != null;
+        }
     }
 }
