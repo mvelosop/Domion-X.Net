@@ -16,56 +16,58 @@ using System;
 
 namespace DFlow.Tenants.Lib.Data
 {
-	public class TenantsDbContext : DbContext
-	{
-		private static Logger logger = LogManager.GetCurrentClassLogger();
+    public class TenantsDbContext : DbContext
+    {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
-		public TenantsDbContext()
-			: base()
-		{
-		}
+        public TenantsDbContext()
+            : base()
+        {
+        }
 
-		public TenantsDbContext(DbContextOptions<TenantsDbContext> options)
-			: base(options)
-		{
-		}
+        public TenantsDbContext(DbContextOptions<TenantsDbContext> options)
+            : base(options)
+        {
+        }
 
-		public override int SaveChanges()
-		{
-			try
-			{
-				return base.SaveChanges();
-			}
-			catch (Exception ex)
-			{
-				logger.Error(ex);
+        public DbSet<Tenant> Tenants { get; set; }
 
-				throw;
-			}
-		}
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
 
-		/// 
-		/// <param name="modelBuilder"></param>
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			ConfigureLocalModel(modelBuilder);
+                throw;
+            }
+        }
 
-			ConfigureExternalModel(modelBuilder);
-		}
+        ///
+        /// <param name="modelBuilder"></param>
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ConfigureLocalModel(modelBuilder);
 
-		/// 
-		/// <param name="modelBuilder"></param>
-		private void ConfigureExternalModel(ModelBuilder modelBuilder)
-		{
-		}
+            ConfigureExternalModel(modelBuilder);
+        }
 
-		/// 
-		/// <param name="modelBuilder"></param>
-		private void ConfigureLocalModel(ModelBuilder modelBuilder)
-		{
-			// Database schema is "Tenants"
+        ///
+        /// <param name="modelBuilder"></param>
+        private void ConfigureExternalModel(ModelBuilder modelBuilder)
+        {
+        }
 
-			modelBuilder.AddConfiguration(new TenantConfiguration());
-		}
-	}
+        ///
+        /// <param name="modelBuilder"></param>
+        private void ConfigureLocalModel(ModelBuilder modelBuilder)
+        {
+            // Database schema is "Tenants"
+
+            modelBuilder.AddConfiguration(new TenantConfiguration());
+        }
+    }
 }

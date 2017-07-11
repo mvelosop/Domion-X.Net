@@ -18,6 +18,7 @@
         <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj" />
         <ProjectReference Include="..\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj" />
         <ProjectReference Include="..\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj" />
+        <ProjectReference Include="..\DFlow.WebApp\DFlow.WebApp.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,37 @@
+@model DFlow.WebApp.Features.Tenants.TenantViewModel
+
+@{
+    var title = "Eliminar Cliente";
+
+    ViewData["Title"] = title;
+}
+
+<h2>@title</h2>
+
+<div class="row">
+    <div class="col-sm-9">
+        <form asp-action="Delete">
+            <h3 style="color:red">¿Realmente quiere eliminar este cliente?</h3>
+
+            <input type="hidden" asp-for="Id" />
+
+            @Html.Partial("_DisplayPartial", Model)
+
+            <hr />
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-offset-4 col-md-8">
+                        <input type="submit" value="Eliminar" class="btn btn-danger" />
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
