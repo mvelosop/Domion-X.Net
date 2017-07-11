@@ -27,11 +27,9 @@ namespace DFlow.WebApp.Features.Tenants
         }
 
         // POST: Tenants/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Owner,Notes")] TenantViewModel vm)
+        public async Task<IActionResult> Create(TenantViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -149,7 +147,7 @@ namespace DFlow.WebApp.Features.Tenants
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RowVersion,Owner,Notes")] TenantViewModel vm)
+        public async Task<IActionResult> Edit(int id, TenantViewModel vm)
         {
             if (id != vm.Id)
             {
