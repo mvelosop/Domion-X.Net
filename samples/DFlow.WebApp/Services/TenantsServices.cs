@@ -25,7 +25,7 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryInsert(entity).ToList();
 
-            if (errors.Any()) return errors;
+            if (errors.Count > 0) return errors;
 
             TenantManager.SaveChanges();
 
@@ -36,7 +36,7 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryDelete(entity).ToList();
 
-            if (errors.Any()) return errors;
+            if (errors.Count > 0) return errors;
 
             TenantManager.SaveChanges();
 
@@ -45,6 +45,11 @@ namespace DFlow.WebApp.Services
 
         public Tenant FindTenantById(int? id)
         {
+            if (id == null)
+            {
+                return null;
+            }
+
             return TenantManager.SingleOrDefault(t => t.Id == id);
         }
 
@@ -57,7 +62,17 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryUpdate(entity).ToList();
 
-            if (errors.Any()) return errors;
+            if (errors.Count > 0) return errors;
+
+            TenantManager.SaveChanges();
+
+            return Enumerable.Empty<ValidationResult>();
+        }
+        public IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
+        {
+            var errors = TenantManager.ValidateDelete(entity).ToList();
+
+            if (errors.Count > 0) return errors;
 
             TenantManager.SaveChanges();
 

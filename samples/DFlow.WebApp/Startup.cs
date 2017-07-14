@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using Autofac;
+using cloudscribe.Web.Common;
+using DFlow.Tenants.Setup;
 using DFlow.WebApp.Data;
 using DFlow.WebApp.Models;
 using DFlow.WebApp.Services;
-using Autofac;
-using DFlow.Tenants.Setup;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 
 namespace DFlow.WebApp
 {
@@ -41,52 +41,40 @@ namespace DFlow.WebApp
 
         public TenantsDbHelper DbHelper { get; private set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILifetimeScope scope)
         {
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddDebug();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-
-            services.AddMvc()
-                .AddFeatureFolders();
-
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-
-            //services.AddDbContext<DFlowWebAppContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DFlowWebAppContext")));
-
-            services.AddCloudscribePagination();
-
-            SetupDatabase();
-        }
-
-        void SetupDatabase()
-        {
-            SetupIdentityDatabase();
-
-            DbHelper = new TenantsDbHelper(Configuration.GetConnectionString("DefaultConnection"));
-
-            DbHelper.SetupDatabase();
-
-        }
-
-        void SetupIdentityDatabase()
-        {
-            var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-
-            optionBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-
-            using (var dbContext = new ApplicationDbContext(optionBuilder.Options))
+            if (env.IsDevelopment())
             {
-                dbContext.Database.Migrate();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                //app.UseBrowserLink();
+
+                LoadDevelopmentTestData(scope);
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
+            app.UseIdentity();
+            app.UseSession();
+            app.UseMvcWithDefaultRoute();
+
+            app.UseCloudscribeCommonStaticFiles();
+
+            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
         // ConfigureContainer is where you can register things directly
@@ -101,54 +89,93 @@ namespace DFlow.WebApp
 
             var containerSetup = new TenantsContainerSetup(DbHelper);
 
+            // cloudscribe configuration
+            builder.RegisterType<CookieTempDataProvider>()
+                .As<ITempDataProvider>()
+                .SingleInstance();
+
+            builder.RegisterType<GlobalResourceManagerStringLocalizerFactory>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterType<GlobalResourceManagerStringLocalizer>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterType<CloudscribeCommonResources>()
+                .SingleInstance();
+
+            // Register application module's services
             containerSetup.RegisterTypes(builder);
 
+            // WebApp services
             builder.RegisterType<TenantsServices>()
                 .InstancePerLifetimeScope();
         }
 
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILifetimeScope scope)
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            // Add framework services.
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
-                LoadDevelopmentTestData(scope);
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            services.AddMvc()
+                .AddFeatureFolders()
+                .AddRazorOptions(options =>
+                {
+                    options.AddCloudscribeCommonEmbeddedViews();
+                });
 
-            app.UseStaticFiles();
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
 
-            app.UseIdentity();
+            services.AddSession();
 
-            app.UseMvcWithDefaultRoute();
+            // Add application services.
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
 
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            // cloudScribe services
+            services.AddCloudscribePagination();
+            services.Configure<GlobalResourceOptions>(Configuration.GetSection("GlobalResourceOptions"));
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            // I chose "GlobalResources" as the folder name where the .resx files will go, but it can be whatever you choose.
+            services.AddLocalization(options => options.ResourcesPath = "GlobalResources");
 
+            SetupDatabase();
         }
 
-        void LoadDevelopmentTestData(ILifetimeScope scope)
+        private void LoadDevelopmentTestData(ILifetimeScope scope)
         {
             var testData = new DevelopmentTestData(scope);
 
             testData.Load();
+        }
+
+        private void SetupDatabase()
+        {
+            SetupIdentityDatabase();
+
+            DbHelper = new TenantsDbHelper(Configuration.GetConnectionString("DefaultConnection"));
+
+            DbHelper.SetupDatabase();
+        }
+
+        private void SetupIdentityDatabase()
+        {
+            var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+
+            optionBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+
+            using (var dbContext = new ApplicationDbContext(optionBuilder.Options))
+            {
+                dbContext.Database.Migrate();
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace DFlow.WebApp.Features.Tenants
         // Support properties
         //----------------------------------------
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public virtual Byte[] RowVersion { get; set; }
     }

@@ -99,6 +99,22 @@ namespace Domion.Lib.Data
         }
 
         /// <summary>
+        ///     Validates if it's ok to delete the entity from the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateDelete(TEntity model)
+        {
+            yield break;
+        }
+
+        /// <summary>
+        ///     Validates if it's ok to save the new or updated entity to the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateSave(TEntity model)
+        {
+            yield break;
+        }
+
+        /// <summary>
         ///     Marks an entity for deletion in the DbContext's change tracker if it passes the ValidateDelete method.
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryDelete(TEntity entity)
@@ -147,22 +163,6 @@ namespace Domion.Lib.Data
             _dbSet.Update(entity);
 
             return Enumerable.Empty<ValidationResult>();
-        }
-
-        /// <summary>
-        ///     Validates if it's ok to delete the entity from the database.
-        /// </summary>
-        protected virtual IEnumerable<ValidationResult> ValidateDelete(TEntity model)
-        {
-            yield break;
-        }
-
-        /// <summary>
-        ///     Validates if it's ok to save the new or updated entity to the database.
-        /// </summary>
-        protected virtual IEnumerable<ValidationResult> ValidateSave(TEntity model)
-        {
-            yield break;
         }
     }
 }

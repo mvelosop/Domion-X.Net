@@ -93,12 +93,12 @@ namespace DFlow.Tenants.Lib.Services
 		{
 			TrimStrings(entity);
 		}
-		protected override IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
+		public override IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
 		{
 			yield break;
 		}
 
-		protected override IEnumerable<ValidationResult> ValidateSave(Tenant entity)
+		public override IEnumerable<ValidationResult> ValidateSave(Tenant entity)
 		{
 			Tenant duplicateByOwner = FindDuplicateByOwner(entity);
 

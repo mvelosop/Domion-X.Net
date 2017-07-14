@@ -15,7 +15,7 @@ namespace Domion.WebApp.Extensions
         /// </summary>
         /// <param name="modelState">The ModelStateDictionary to reset</param>
         /// <param name="validationResults">The ValidationResults to add</param>
-        public static void SetValidationResults(this ModelStateDictionary modelState, IEnumerable<ValidationResult> validationResults)
+        public static void ResetModelErrors(this ModelStateDictionary modelState, IEnumerable<ValidationResult> validationResults)
         {
             modelState.Clear();
 

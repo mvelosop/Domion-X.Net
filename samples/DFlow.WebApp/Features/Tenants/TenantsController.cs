@@ -1,9 +1,12 @@
+using cloudscribe.Web.Common.Extensions;
 using DFlow.Tenants.Core.Model;
 using DFlow.WebApp.Services;
 using Domion.WebApp.Extensions;
 using Domion.WebApp.Helpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,9 +40,26 @@ namespace DFlow.WebApp.Features.Tenants
 
                 entity.Owner = vm.Owner;
 
-                IEnumerable<ValidationResult> errors = AppServices.AddTenant(entity);
+                try
+                {
+                    IEnumerable<ValidationResult> errors = AppServices.AddTenant(entity);
 
-                return RedirectToAction("Index");
+                    ModelState.ResetModelErrors(errors);
+
+                    if (ModelState.IsValid)
+                    {
+                        this.AlertSuccess("Se guardó correctamente el nuevo cliente.");
+
+                        if (!errors.Any())
+                        {
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.AlertDanger("Ocurrió un error inesperado.");
+                }
             }
 
             return View(vm);
@@ -48,26 +68,40 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var entity = AppServices.FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+
+                return RedirectToAction("Index");
             }
 
-            var vm = new TenantViewModel();
+            try
+            {
+                IEnumerable<ValidationResult> errors = AppServices.ValidateDelete(entity);
 
-            vm.Id = entity.Id;
-            vm.Owner = entity.Owner;
-            vm.Notes = "Nota simulada";
-            vm.RowVersion = entity.RowVersion;
+                ModelState.ResetModelErrors(errors);
 
-            return View(vm);
+                if (ModelState.IsValid)
+                {
+                    var vm = new TenantViewModel();
+
+                    vm.Id = entity.Id;
+                    vm.Owner = entity.Owner;
+                    vm.Notes = "Nota simulada";
+                    vm.RowVersion = entity.RowVersion;
+
+                    return View(vm);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                this.AlertDanger("Ocurrió un error inesperado.");
+            }
+
+            return RedirectToAction("Details", id);
         }
 
         // POST: Tenants/Delete/5
@@ -75,19 +109,23 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var entity = AppServices.FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+
+                return RedirectToAction("Index");
             }
 
-            IEnumerable<ValidationResult> errors = AppServices.DeleteTenant(entity);
+            try
+            {
+                IEnumerable<ValidationResult> errors = AppServices.DeleteTenant(entity);
+            }
+            catch (Exception ex)
+            {
+                this.AlertDanger("Ocurrió un error inesperado.");
+            }
 
             return RedirectToAction("Index");
         }
@@ -95,16 +133,13 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var entity = AppServices.FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+
+                return RedirectToAction("Index");
             }
 
             var vm = new TenantViewModel();
@@ -120,16 +155,13 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var entity = AppServices.FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+
+                return RedirectToAction("Index");
             }
 
             var vm = new TenantViewModel();
@@ -147,40 +179,40 @@ namespace DFlow.WebApp.Features.Tenants
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TenantViewModel vm)
+        public async Task<IActionResult> Edit(int? id, TenantViewModel vm)
         {
-            if (id != vm.Id)
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null | vm.Id != id)
             {
-                return NotFound();
+                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Tenant entity = AppServices.FindTenantById(vm.Id);
-
-                    if (!EntityExists(vm.Id))
-                    {
-                        return NotFound();
-                    }
-
                     entity.Owner = vm.Owner;
+                    entity.RowVersion = vm.RowVersion;
 
                     IEnumerable<ValidationResult> errors = AppServices.UpdateTenant(entity);
 
-                    if (!errors.Any())
+                    ModelState.ResetModelErrors(errors);
+
+                    if (ModelState.IsValid)
                     {
                         return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.SetValidationResults(errors);
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    this.AlertDanger($"El registro modificado o eliminado por otro usuario.");
+                }
+                catch (Exception ex)
+                {
+                    this.AlertDanger("Ocurrió un error inesperado.");
                 }
             }
 
