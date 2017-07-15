@@ -151,7 +151,6 @@ namespace DFlow.Tenants.Lib.Tests
             // Act -------------------------------
 
             IEnumerable<ValidationResult> errors = null;
-            IEnumerable<ValidationResult> errors2 = null;
 
             UsingManager((scope, manager) =>
             {
@@ -161,19 +160,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity = mapper.UpdateEntity(entity, update1);
 
-                // Second user simulation
-                using (ILifetimeScope scope2 = scope.BeginLifetimeScope())
-                {
-                    var manager2 = scope2.Resolve<TenantManager>();
-
-                    Tenant entity2 = manager2.SingleOrDefault(e => e.Owner == data.Owner);
-
-                    entity2 = mapper.UpdateEntity(entity2, update2);
-
-                    errors2 = manager2.TryUpdate(entity2);
-
-                    manager2.SaveChanges();
-                }
+                UpdateOnDifferentDbContext(data, update2);
 
                 errors = manager.TryUpdate(entity).ToList();
 
@@ -187,7 +174,6 @@ namespace DFlow.Tenants.Lib.Tests
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
-            errors2.Should().BeEmpty();
 
             UsingManagerHelper((scope, helper) =>
             {
@@ -290,6 +276,26 @@ namespace DFlow.Tenants.Lib.Tests
             dbHelper.SetupDatabase();
 
             return dbHelper;
+        }
+
+        private void UpdateOnDifferentDbContext(TenantData data, TenantData update)
+        {
+            IEnumerable<ValidationResult> errors = null;
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+
+                entity = mapper.UpdateEntity(entity, update);
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                manager.SaveChanges();
+            });
+
+            errors.Should().BeEmpty();
         }
 
         private void UsingManager(Action<ILifetimeScope, TenantManager> action)
