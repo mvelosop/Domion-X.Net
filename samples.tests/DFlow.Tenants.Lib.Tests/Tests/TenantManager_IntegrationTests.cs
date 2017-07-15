@@ -133,13 +133,57 @@ namespace DFlow.Tenants.Lib.Tests
         }
 
         [Fact]
+        public void TryDelete_Fails_WhenConcurrencyConflict()
+        {
+            // Arrange ---------------------------
+
+            var data = new TenantData("Delete-Error-Concurrency - Inserted");
+            var update = new TenantData("Delete-Error-Concurrency - Updated");
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesDoNotExist(update);
+            });
+
+            // Act -------------------------------
+
+            IEnumerable<ValidationResult> errors = null;
+
+            UsingManager((scope, manager) =>
+            {
+                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+
+                UpdateOnDifferentDbContext(data, update);
+
+                errors = manager.TryDelete(entity).ToList();
+
+                Action saveChanges = () => manager.SaveChanges();
+
+                // Assert ------------------------
+
+                saveChanges.ShouldThrow<DbUpdateConcurrencyException>();
+            });
+
+            // Assert ----------------------------
+
+            errors.Should().BeEmpty();
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.AssertEntitiesDoNotExist(data);
+                helper.AssertEntitiesExist(update);
+            });
+        }
+
+        [Fact]
         public void TryUpdate_Fails_WhenConcurrencyConflict()
         {
             // Arrange ---------------------------
 
             var data = new TenantData("Update-Error-Concurrency - Inserted");
-            var update1 = new TenantData("Update-Error-Concurrency - Update 1");
-            var update2 = new TenantData("Update-Error-Concurrency - Update 2");
+            var update1 = new TenantData("Update-Error-Concurrency - Updated 1");
+            var update2 = new TenantData("Update-Error-Concurrency - Updated 2");
 
             UsingManagerHelper((scope, helper) =>
             {
