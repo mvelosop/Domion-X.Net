@@ -19,10 +19,10 @@ using Xunit;
 namespace Domion.WebApp.Tests.Tests
 {
     [Trait("Type", "Unit")]
-    public class IndexRouteValues_Tests
+    public class Navigator_Tests
     {
         [Fact]
-        public void Add_AddsRouteValues_WhenEmptyDictionary()
+        public void Add_AddsRouteValues_WhenNoRoutes()
         {
             // Arrange ---------------------------
 
@@ -31,7 +31,7 @@ namespace Domion.WebApp.Tests.Tests
             routeData.Values.Add("controller", "Tenants");
             routeData.Values.Add("action", "Index");
 
-            var index = new Navigator();
+            var navigator = new Navigator();
 
             var queryValues = new RouteValueDictionary(new { p = 2, ps = 3 });
 
@@ -45,15 +45,49 @@ namespace Domion.WebApp.Tests.Tests
 
             // Act -------------------------------
 
-            index.Add(routeData, queryValues);
+            navigator.AddRouteValues(routeData, queryValues);
 
-            RouteValueDictionary result = index.GetRouteValues(routeData);
+            RouteValueDictionary result = navigator.GetRouteValues(routeData);
 
             // Assert ----------------------------
 
             result.ShouldBeEquivalentTo(expected);
         }
 
+        [Fact]
+        public void Add_UpdatesRouteValues_WhenExistingRoute()
+        {
+            // Arrange ---------------------------
+
+            var routeData = new RouteData();
+
+            routeData.Values.Add("controller", "Tenants");
+            routeData.Values.Add("action", "Index");
+
+            var navigator = new Navigator();
+
+            var queryValues = new RouteValueDictionary(new { p = 2, ps = 3 });
+
+            RouteValueDictionary expected = new RouteValueDictionary(new
+            {
+                controller = "Tenants",
+                action = "Index",
+                p = 3,
+                ps = 3
+            });
+
+            navigator.AddRouteValues(routeData, queryValues);
+
+            // Act -------------------------------
+
+            navigator.AddRouteValues(routeData, new RouteValueDictionary(new { p = 3, ps = 3 }));
+
+            RouteValueDictionary result = navigator.GetRouteValues(routeData);
+
+            // Assert ----------------------------
+
+            result.ShouldBeEquivalentTo(expected);
+        }
 
 
         //public void Add_AddsRouteValues_WhenEmptyDictionary()

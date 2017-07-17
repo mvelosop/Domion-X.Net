@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Domion.WebApp.Navigation
 {
-    public class Navigator : Dictionary<string, RouteValueDictionary>
+    public class Navigator
     {
         private readonly Dictionary<string, RouteValueDictionary> Dictionary = new Dictionary<string, RouteValueDictionary>();
 
-        public void Add(RouteData routeData, RouteValueDictionary routeValues)
+        public void AddRouteValues(RouteData routeData, RouteValueDictionary routeValues)
         {
             string key = string.Join("/", routeData.Values.Select(rd => rd.Value.ToString().ToLower()));
 
@@ -25,6 +25,11 @@ namespace Domion.WebApp.Navigation
             foreach (var item in routeValues)
             {
                 value.Add(item.Key, item.Value);
+            }
+
+            if (Dictionary.ContainsKey(key))
+            {
+                Dictionary.Remove(key);
             }
 
             Dictionary.Add(key, value);
