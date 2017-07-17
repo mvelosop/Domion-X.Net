@@ -8,34 +8,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
-        public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
+        public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
         public const string CreateSuccessAlert = @"Se agregó correctamente el cliente ""{0}"".";
+        public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
         public const string DeleteSuccessAlert = @"Se eliminó correctamente el cliente ""{0}"".";
         public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, intentelo de nuevo, por favor.";
         public const string EntityNotFoundAlert = "No se pudo encontrar el cliente solicitado, pudo haber sido eliminado por otro usuario. (Id={0})";
+        public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
         public const string UnexpectedErrorAlert = "Ocurrió un error inesperado! se creó un registro para investigar qué pasó.";
         public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
-
-        public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
-        public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
 
         private readonly TenantsServices AppServices;
         private readonly ILogger<TenantsController> Logger;
 
-        public TenantsController(ILogger<TenantsController> logger, TenantsServices appServices)
+        public TenantsController(
+            TenantsServices appServices,
+            ILogger<TenantsController> logger)
         {
-            Logger = logger;
             AppServices = appServices;
+            Logger = logger;
         }
 
         // GET: Tenants/Create
@@ -133,7 +131,6 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-
                 return RedirectToAction("Index");
             }
 
@@ -297,6 +294,11 @@ namespace DFlow.WebApp.Features.Tenants
         private void AlertDanger(string message, params object[] args)
         {
             ControllerExtensions.AlertDanger(this, string.Format(message, args));
+        }
+
+        private void AlertInformation(string message, params object[] args)
+        {
+            ControllerExtensions.AlertInformation(this, string.Format(message, args));
         }
 
         private void AlertSuccess(string message, params object[] args)

@@ -5,6 +5,7 @@ using DFlow.Tenants.Setup;
 using DFlow.WebApp.Data;
 using DFlow.WebApp.Models;
 using DFlow.WebApp.Services;
+using Domion.WebApp.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -128,6 +129,10 @@ namespace DFlow.WebApp
 
             builder.RegisterType<CloudscribeCommonResources>()
                 .SingleInstance();
+
+            builder.RegisterType<ViewAlerts>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             // Register application module's services
             containerSetup.RegisterTypes(builder);
