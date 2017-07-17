@@ -35,6 +35,7 @@ namespace DFlow.Tenants.Setup
             var optionBuilder = new DbContextOptionsBuilder<TenantsDbContext>();
 
             optionBuilder.UseSqlServer(ConnectionString);
+            optionBuilder.EnableSensitiveDataLogging();
 
             _options = optionBuilder.Options;
 

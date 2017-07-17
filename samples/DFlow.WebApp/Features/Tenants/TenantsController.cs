@@ -3,23 +3,38 @@ using DFlow.Tenants.Core.Model;
 using DFlow.WebApp.Services;
 using Domion.WebApp.Extensions;
 using Domion.WebApp.Helpers;
-using Microsoft.AspNetCore.Http;
+using Domion.WebApp.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
-        private readonly TenantsServices AppServices;
+        public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
+        public const string CreateSuccessAlert = @"Se agregó correctamente el cliente ""{0}"".";
+        public const string DeleteSuccessAlert = @"Se eliminó correctamente el cliente ""{0}"".";
+        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, intentelo de nuevo, por favor.";
+        public const string EntityNotFoundAlert = "No se pudo encontrar el cliente solicitado, pudo haber sido eliminado por otro usuario. (Id={0})";
+        public const string UnexpectedErrorAlert = "Ocurrió un error inesperado! se creó un registro para investigar qué pasó.";
+        public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
 
-        public TenantsController(TenantsServices appServices)
+        public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
+        public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
+
+        private readonly TenantsServices AppServices;
+        private readonly ILogger<TenantsController> Logger;
+
+        public TenantsController(ILogger<TenantsController> logger, TenantsServices appServices)
         {
+            Logger = logger;
             AppServices = appServices;
         }
 
@@ -34,6 +49,8 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TenantViewModel vm)
         {
+            Logger.LogInformation("Create: {@vm}", vm);
+
             if (ModelState.IsValid)
             {
                 var entity = new Tenant();
@@ -42,13 +59,13 @@ namespace DFlow.WebApp.Features.Tenants
 
                 try
                 {
-                    IEnumerable<ValidationResult> errors = AppServices.AddTenant(entity);
+                    var errors = AppServices.AddTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
                     if (ModelState.IsValid)
                     {
-                        this.AlertSuccess("Se guardó correctamente el nuevo cliente.");
+                        AlertSuccess(CreateSuccessAlert, vm.Owner);
 
                         if (!errors.Any())
                         {
@@ -58,7 +75,9 @@ namespace DFlow.WebApp.Features.Tenants
                 }
                 catch (Exception ex)
                 {
-                    this.AlertDanger("Ocurrió un error inesperado.");
+                    Logger.LogError(WebAppEvents.CREATE_POST, ex, ControllerExceptionLogMessage, ex);
+
+                    AlertDanger(UnexpectedErrorAlert);
                 }
             }
 
@@ -68,63 +87,86 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
-
                 return RedirectToAction("Index");
             }
 
             try
             {
-                IEnumerable<ValidationResult> errors = AppServices.ValidateDelete(entity);
+                var vm = new TenantViewModel();
+
+                vm.Id = entity.Id;
+                vm.Owner = entity.Owner;
+                vm.Notes = "Nota simulada";
+                vm.RowVersion = entity.RowVersion;
+
+                var errors = AppServices.ValidateDelete(entity);
 
                 ModelState.ResetModelErrors(errors);
 
                 if (ModelState.IsValid)
                 {
-                    var vm = new TenantViewModel();
-
-                    vm.Id = entity.Id;
-                    vm.Owner = entity.Owner;
-                    vm.Notes = "Nota simulada";
-                    vm.RowVersion = entity.RowVersion;
-
                     return View(vm);
                 }
 
+                return View("Details", vm);
             }
             catch (Exception ex)
             {
-                this.AlertDanger("Ocurrió un error inesperado.");
+                Logger.LogError(WebAppEvents.DELETE_GET, ex, ControllerExceptionLogMessage, ex);
+
+                AlertDanger(UnexpectedErrorAlert);
             }
 
             return RedirectToAction("Details", id);
         }
 
         // POST: Tenants/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id, byte[] rowVersion)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
 
                 return RedirectToAction("Index");
             }
 
             try
             {
-                IEnumerable<ValidationResult> errors = AppServices.DeleteTenant(entity);
+                entity.RowVersion = rowVersion;
+
+                var errors = AppServices.DeleteTenant(entity);
+
+                ModelState.ResetModelErrors(errors);
+
+                if (ModelState.IsValid)
+                {
+                    AlertSuccess(DeleteSuccessAlert, entity.Owner);
+                }
+                else
+                {
+                    AlertWarning(DeleteValidationAlert, entity.Owner);
+
+                    return RedirectToAction("Delete", new { id = entity.Id });
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+
+                return RedirectToAction("Delete", new { id = entity.Id });
             }
             catch (Exception ex)
             {
-                this.AlertDanger("Ocurrió un error inesperado.");
+                Logger.LogError(WebAppEvents.DELETE_POST, ex, ControllerExceptionLogMessage, ex);
+
+                AlertDanger(UnexpectedErrorAlert);
             }
 
             return RedirectToAction("Index");
@@ -133,12 +175,10 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
-
                 return RedirectToAction("Index");
             }
 
@@ -155,12 +195,10 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
-
                 return RedirectToAction("Index");
             }
 
@@ -181,11 +219,18 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, TenantViewModel vm)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
-            if (entity == null | vm.Id != id)
+            if (entity == null)
             {
-                this.AlertWarning($"No se pudo encontrar el Cliente solicitado (Id={id}).");
+                return RedirectToAction("Index");
+            }
+
+            if (vm.Id != id)
+            {
+                Logger.LogWarning("id={id}, vm={mv}", id, vm);
+
+                AlertWarning(UnexpectedErrorAlert);
 
                 return RedirectToAction("Index");
             }
@@ -197,22 +242,26 @@ namespace DFlow.WebApp.Features.Tenants
                     entity.Owner = vm.Owner;
                     entity.RowVersion = vm.RowVersion;
 
-                    IEnumerable<ValidationResult> errors = AppServices.UpdateTenant(entity);
+                    var errors = AppServices.UpdateTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
                     if (ModelState.IsValid)
                     {
+                        AlertSuccess(UpdateSuccessAlert, entity.Owner);
+
                         return RedirectToAction("Index");
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    this.AlertDanger($"El registro modificado o eliminado por otro usuario.");
+                    AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
                 }
                 catch (Exception ex)
                 {
-                    this.AlertDanger("Ocurrió un error inesperado.");
+                    Logger.LogError(WebAppEvents.EDIT_POST, ex, ControllerExceptionLogMessage, ex);
+
+                    AlertDanger(UnexpectedErrorAlert);
                 }
             }
 
@@ -245,9 +294,33 @@ namespace DFlow.WebApp.Features.Tenants
             return View(viewModel);
         }
 
-        private bool EntityExists(int id)
+        private void AlertDanger(string message, params object[] args)
         {
-            return AppServices.FindTenantById(id) != null;
+            ControllerExtensions.AlertDanger(this, string.Format(message, args));
+        }
+
+        private void AlertSuccess(string message, params object[] args)
+        {
+            ControllerExtensions.AlertSuccess(this, string.Format(message, args));
+        }
+
+        private void AlertWarning(string message, params object[] args)
+        {
+            ControllerExtensions.AlertWarning(this, string.Format(message, args));
+        }
+
+        private Tenant FindTenantById(int? id)
+        {
+            var entity = AppServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                Logger.LogWarning(EntityNotFoundLogMessage, id);
+
+                AlertWarning(EntityNotFoundAlert, id);
+            }
+
+            return entity;
         }
     }
 }

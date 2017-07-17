@@ -4,6 +4,7 @@ using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Helpers;
 using DFlow.Tenants.Setup;
 using Domion.FluentAssertions.Extensions;
+using Domion.Lib.Data;
 using Domion.Lib.Extensions;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -92,7 +93,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
         }
 
         [Fact]
@@ -135,6 +136,8 @@ namespace DFlow.Tenants.Lib.Tests
         [Fact]
         public void TryDelete_Fails_WhenConcurrencyConflict()
         {
+            IEnumerable<ValidationResult> errors = null;
+
             // Arrange ---------------------------
 
             var data = new TenantData("Delete-Error-Concurrency - Inserted");
@@ -146,28 +149,43 @@ namespace DFlow.Tenants.Lib.Tests
                 helper.EnsureEntitiesDoNotExist(update);
             });
 
-            // Act -------------------------------
+            // To simulate a ViewModel and second user updating the record
 
-            IEnumerable<ValidationResult> errors = null;
+            var viewModel = new Tenant();
 
             UsingManager((scope, manager) =>
             {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
                 Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
 
-                UpdateOnDifferentDbContext(data, update);
+                viewModel = mapper.DuplicateEntity(entity);
+
+                mapper.UpdateEntity(entity, update);
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                errors.Should().BeEmpty();
+
+                manager.SaveChanges();
+            });
+
+            // Act -------------------------------
+
+            UsingManager((scope, manager) =>
+            {
+                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+
+                entity.RowVersion = viewModel.RowVersion;
 
                 errors = manager.TryDelete(entity).ToList();
 
-                Action saveChanges = () => manager.SaveChanges();
-
-                // Assert ------------------------
-
-                saveChanges.ShouldThrow<DbUpdateConcurrencyException>();
+                manager.SaveChanges();
             });
 
             // Assert ----------------------------
 
-            errors.Should().BeEmpty();
+            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
 
             UsingManagerHelper((scope, helper) =>
             {
@@ -179,6 +197,8 @@ namespace DFlow.Tenants.Lib.Tests
         [Fact]
         public void TryUpdate_Fails_WhenConcurrencyConflict()
         {
+            IEnumerable<ValidationResult> errors = null;
+
             // Arrange ---------------------------
 
             var data = new TenantData("Update-Error-Concurrency - Inserted");
@@ -188,13 +208,12 @@ namespace DFlow.Tenants.Lib.Tests
             UsingManagerHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
-                helper.EnsureEntitiesDoNotExist(update1);
-                helper.EnsureEntitiesDoNotExist(update2);
+                helper.EnsureEntitiesDoNotExist(update1, update2);
             });
 
-            // Act -------------------------------
+            // To simulate a ViewModel and second user updating the record
 
-            IEnumerable<ValidationResult> errors = null;
+            var viewModel = new Tenant();
 
             UsingManager((scope, manager) =>
             {
@@ -202,22 +221,35 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
 
-                entity = mapper.UpdateEntity(entity, update1);
+                viewModel = mapper.DuplicateEntity(entity);
 
-                UpdateOnDifferentDbContext(data, update2);
+                mapper.UpdateEntity(entity, update2);
 
                 errors = manager.TryUpdate(entity).ToList();
 
-                Action saveChanges = () => manager.SaveChanges();
+                errors.Should().BeEmpty();
 
-                // Assert ------------------------
+                manager.SaveChanges();
+            });
 
-                saveChanges.ShouldThrow<DbUpdateConcurrencyException>();
+            // Act -------------------------------
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+
+                entity = mapper.UpdateEntity(entity, update1);
+
+                entity.RowVersion = viewModel.RowVersion;
+
+                errors = manager.TryUpdate(entity).ToList();
             });
 
             // Assert ----------------------------
 
-            errors.Should().BeEmpty();
+            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
 
             UsingManagerHelper((scope, helper) =>
             {
@@ -256,7 +288,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
         }
 
         [Fact]

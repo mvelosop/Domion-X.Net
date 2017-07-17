@@ -18,6 +18,12 @@ namespace Domion.FluentAssertions.Extensions
         {
             var errorMessageStart = errorMessage.Split('{')[0];
 
+            if (string.IsNullOrEmpty(because))
+            {
+                because = "because must get error message: {0}";
+                becauseArgs = new[] { errorMessage };
+            }
+
             assertion.Match(c => c.Any(vr => vr.ErrorMessage.StartsWith(errorMessageStart)), because, becauseArgs);
         }
     }

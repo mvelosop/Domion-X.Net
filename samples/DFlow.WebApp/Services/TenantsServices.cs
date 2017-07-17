@@ -1,6 +1,7 @@
 ﻿using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using Domion.Lib.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,10 +13,13 @@ namespace DFlow.WebApp.Services
     public class TenantsServices
     {
         private readonly Lazy<TenantManager> LazyTenantManager;
+        readonly ILogger<TenantsServices> Logger;
 
         public TenantsServices(
+            ILogger<TenantsServices> logger,
             Lazy<TenantManager> lazyTenantManager)
         {
+            Logger = logger;
             LazyTenantManager = lazyTenantManager;
         }
 
@@ -25,7 +29,7 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryInsert(entity).ToList();
 
-            if (errors.Count > 0) return errors;
+            if (errors.Any()) return errors;
 
             TenantManager.SaveChanges();
 
@@ -36,7 +40,7 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryDelete(entity).ToList();
 
-            if (errors.Count > 0) return errors;
+            if (errors.Any()) return errors;
 
             TenantManager.SaveChanges();
 
@@ -50,7 +54,9 @@ namespace DFlow.WebApp.Services
                 return null;
             }
 
-            return TenantManager.SingleOrDefault(t => t.Id == id);
+            Tenant entity = TenantManager.SingleOrDefault(t => t.Id == id);
+
+            return entity;
         }
 
         public IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> expression = null)
@@ -62,7 +68,7 @@ namespace DFlow.WebApp.Services
         {
             var errors = TenantManager.TryUpdate(entity).ToList();
 
-            if (errors.Count > 0) return errors;
+            if (errors.Any()) return errors;
 
             TenantManager.SaveChanges();
 
@@ -70,9 +76,17 @@ namespace DFlow.WebApp.Services
         }
         public IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
         {
+            if (entity.Owner.ToUpper().Contains("NO ELIMINAR"))
+            {
+                return new List<ValidationResult>
+                {
+                    new ValidationResult(@"No se puede eliminar porque dice ""NO ELIMINAR"".")
+                };
+            }
+
             var errors = TenantManager.ValidateDelete(entity).ToList();
 
-            if (errors.Count > 0) return errors;
+            if (errors.Any()) return errors;
 
             TenantManager.SaveChanges();
 

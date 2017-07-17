@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using cloudscribe.Web.Common;
+using DFlow.Tenants.Lib.Data;
 using DFlow.Tenants.Setup;
 using DFlow.WebApp.Data;
 using DFlow.WebApp.Models;
@@ -9,11 +10,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using System;
+using System.IO;
 
 namespace DFlow.WebApp
 {
@@ -35,6 +40,12 @@ namespace DFlow.WebApp
             builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Seq("http://localhost:5341")
+                //.WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log.txt"))
+                .CreateLogger();
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -46,6 +57,8 @@ namespace DFlow.WebApp
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            loggerFactory.AddSerilog();
 
             if (env.IsDevelopment())
             {
@@ -75,6 +88,17 @@ namespace DFlow.WebApp
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
+            {
+                var dbContext = subScope.Resolve<TenantsDbContext>();
+
+                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+
+                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                dbLoggerFactory.AddSerilog();
+            }
         }
 
         // ConfigureContainer is where you can register things directly
