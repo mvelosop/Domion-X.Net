@@ -1,7 +1,6 @@
 ﻿using Domion.WebApp.Navigation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
@@ -9,9 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,54 +15,16 @@ using Xunit;
 namespace Domion.WebApp.Tests.Tests
 {
     [Trait("Type", "Unit")]
-    public class Navigator_Tests
+    public class RouteNavigator_Tests
     {
-        [Fact]
-        public void Add_AddsRouteValues_WhenNoRoutes()
-        {
-            // Arrange ---------------------------
-
-            var routeData = new RouteData();
-
-            routeData.Values.Add("controller", "Tenants");
-            routeData.Values.Add("action", "Index");
-
-            var navigator = new Navigator();
-
-            var queryValues = new RouteValueDictionary(new { p = 2, ps = 3 });
-
-            RouteValueDictionary expected = new RouteValueDictionary(new
-            {
-                controller = "Tenants",
-                action = "Index",
-                p = 2,
-                ps = 3
-            });
-
-            // Act -------------------------------
-
-            navigator.AddRouteValues(routeData, queryValues);
-
-            RouteValueDictionary result = navigator.GetRouteValues(routeData);
-
-            // Assert ----------------------------
-
-            result.ShouldBeEquivalentTo(expected);
-        }
-
         [Fact]
         public void Add_UpdatesRouteValues_WhenExistingRoute()
         {
             // Arrange ---------------------------
 
-            var routeData = new RouteData();
+            RouteData routeData = CreateBasicRouteData();
 
-            routeData.Values.Add("controller", "Tenants");
-            routeData.Values.Add("action", "Index");
-
-            var navigator = new Navigator();
-
-            var queryValues = new RouteValueDictionary(new { p = 2, ps = 3 });
+            var navigator = new RouteNavigator();
 
             RouteValueDictionary expected = new RouteValueDictionary(new
             {
@@ -76,7 +34,7 @@ namespace Domion.WebApp.Tests.Tests
                 ps = 3
             });
 
-            navigator.AddRouteValues(routeData, queryValues);
+            navigator.AddRouteValues(routeData, new RouteValueDictionary(new { p = 2, ps = 3 }));
 
             // Act -------------------------------
 
@@ -88,7 +46,69 @@ namespace Domion.WebApp.Tests.Tests
 
             result.ShouldBeEquivalentTo(expected);
         }
+        RouteData CreateBasicRouteData()
+        {
+            var routeData = new RouteData();
 
+            routeData.Values.Add("controller", "Tenants");
+            routeData.Values.Add("action", "Index");
+
+            return routeData;
+        }
+
+        [Fact]
+        public void AddRouteValues_AddsBaseRoute_WhenNoQueryValues()
+        {
+            // Arrange ---------------------------
+
+            RouteData routeData = CreateBasicRouteData();
+
+            var navigator = new RouteNavigator();
+
+            RouteValueDictionary expected = new RouteValueDictionary(new
+            {
+                controller = "Tenants",
+                action = "Index"
+            });
+
+            // Act -------------------------------
+
+            navigator.AddRouteValues(routeData);
+
+            RouteValueDictionary result = navigator.GetRouteValues(routeData);
+
+            // Assert ----------------------------
+
+            result.ShouldBeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void AddRouteValues_AddsRouteValues_WhenNoRoutes()
+        {
+            // Arrange ---------------------------
+
+            RouteData routeData = CreateBasicRouteData();
+
+            var navigator = new RouteNavigator();
+
+            RouteValueDictionary expected = new RouteValueDictionary(new
+            {
+                controller = "Tenants",
+                action = "Index",
+                p = 2,
+                ps = 3
+            });
+
+            // Act -------------------------------
+
+            navigator.AddRouteValues(routeData, new RouteValueDictionary(new { p = 2, ps = 3 }));
+
+            RouteValueDictionary result = navigator.GetRouteValues(routeData);
+
+            // Assert ----------------------------
+
+            result.ShouldBeEquivalentTo(expected);
+        }
 
         //public void Add_AddsRouteValues_WhenEmptyDictionary()
         //{
@@ -136,33 +156,13 @@ namespace Domion.WebApp.Tests.Tests
 
         //}
 
-        private static UrlHelper CreateUrlHelper(ActionContext context)
-        {
-            return new UrlHelper(context);
-        }
-
-
-
-        private static IServiceProvider CreateServices()
-        {
-            var services = new ServiceCollection();
-            services.AddOptions();
-            services.AddLogging();
-            services.AddRouting();
-            services
-                .AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>()
-                .AddSingleton<UrlEncoder>(UrlEncoder.Default);
-
-            return services.BuildServiceProvider();
-        }
-
         private static IRouteBuilder CreateRouteBuilder(IServiceProvider services)
         {
             //var app = new Mock<IApplicationBuilder>();
 
             var app = Substitute.For<IApplicationBuilder>();
 
-            // 
+            //
             //app
             //    .SetupGet(a => a.ApplicationServices)
             //    .Returns(services);
@@ -180,6 +180,24 @@ namespace Domion.WebApp.Tests.Tests
             };
         }
 
+        private static IServiceProvider CreateServices()
+        {
+            var services = new ServiceCollection();
+            services.AddOptions();
+            services.AddLogging();
+            services.AddRouting();
+            services
+                .AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>()
+                .AddSingleton<UrlEncoder>(UrlEncoder.Default);
+
+            return services.BuildServiceProvider();
+        }
+
+        private static UrlHelper CreateUrlHelper(ActionContext context)
+        {
+            return new UrlHelper(context);
+        }
+
         private class PassThroughRouter : IRouter
         {
             public VirtualPathData GetVirtualPath(VirtualPathContext context)
@@ -193,7 +211,5 @@ namespace Domion.WebApp.Tests.Tests
                 return Task.FromResult(false);
             }
         }
-
     }
-
 }

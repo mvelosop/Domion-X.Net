@@ -1,19 +1,16 @@
 ﻿using Microsoft.AspNetCore.Routing;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domion.WebApp.Navigation
 {
-    public class Navigator
+    public class RouteNavigator
     {
         private readonly Dictionary<string, RouteValueDictionary> Dictionary = new Dictionary<string, RouteValueDictionary>();
 
-        public void AddRouteValues(RouteData routeData, RouteValueDictionary routeValues)
+        public void AddRouteValues(RouteData routeData, RouteValueDictionary routeValues = null)
         {
-            string key = string.Join("/", routeData.Values.Select(rd => rd.Value.ToString().ToLower()));
+            string key = GetKey(routeData);
 
             var value = new RouteValueDictionary();
 
@@ -22,9 +19,12 @@ namespace Domion.WebApp.Navigation
                 value.Add(item.Key, item.Value);
             }
 
-            foreach (var item in routeValues)
+            if (routeValues != null)
             {
-                value.Add(item.Key, item.Value);
+                foreach (var item in routeValues)
+                {
+                    value.Add(item.Key, item.Value);
+                }
             }
 
             if (Dictionary.ContainsKey(key))
@@ -37,13 +37,18 @@ namespace Domion.WebApp.Navigation
 
         public RouteValueDictionary GetRouteValues(RouteData routeData)
         {
-            string key = string.Join("/", routeData.Values.Select(rd => rd.Value.ToString().ToLower()));
+            string key = GetKey(routeData);
 
             RouteValueDictionary value = null;
 
             Dictionary.TryGetValue(key, out value);
 
             return value;
+        }
+
+        private string GetKey(RouteData routeData)
+        {
+            return string.Join("/", routeData.Values.Select(rd => rd.Value.ToString().ToUpper()));
         }
     }
 }
