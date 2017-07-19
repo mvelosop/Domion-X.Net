@@ -58,7 +58,9 @@ namespace Domion.WebApp.Navigation
                 valuesDictionary["controller"] = actionContext.Controller;
             }
 
-            return valuesDictionary;
+            RouteValueDictionary returnRouteValues = ActionContext.HttpContext.Session.GetRouteValues(valuesDictionary);
+
+            return returnRouteValues;
         }
 
         // Taken from UrlHelper at aspnet/Mvc

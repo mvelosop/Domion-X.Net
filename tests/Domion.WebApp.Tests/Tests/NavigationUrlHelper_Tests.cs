@@ -43,22 +43,21 @@ namespace Domion.WebApp.Tests.Tests
                 HttpContext = CreateHttpContext(services)
             };
 
-            // Last index url
-            actionContext.HttpContext.Session.SaveRouteValues(new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 2, ps = 3 }));
+            var indexRouteValues = new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 2, ps = 3 });
+            var detailsRouteValues = new RouteValueDictionary(new { controller = "Tenants", action = "Details", p = 1 });
+
+            // Index url
+            actionContext.HttpContext.Session.SaveRouteValues(indexRouteValues);
 
             var routeData = new RouteData();
 
-            routeData.Values.Add("controller", "Tenants");
-            routeData.Values.Add("action", "Details");
-            routeData.Values.Add("id", "1");
-
             actionContext.RouteData = routeData;
 
+            // This simulates being at the "Details" action
+            actionContext.RouteData.AddRouteValues(detailsRouteValues);
             actionContext.RouteData.Routers.Add(routeBuilder.Build());
 
             var navUrlHelper = new NavigationUrlHelper(actionContext);
-
-            var expected = new RouteValueDictionary(new { action = "Index", controller = "Tenants", p = 2, ps = 3 });
 
             // Act -------------------------------
 
@@ -71,7 +70,7 @@ namespace Domion.WebApp.Tests.Tests
 
             // Assert ----------------------------
 
-            urlValues.ShouldBeEquivalentTo(expected);
+            urlValues.ShouldBeEquivalentTo(indexRouteValues);
         }
 
         private HttpContext CreateHttpContext(IServiceProvider services)

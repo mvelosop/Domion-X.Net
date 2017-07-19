@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,8 +9,10 @@ namespace Domion.WebApp.Navigation
 {
     public static class NavigatorSessionExtensions
     {
-        public static void SaveRouteValues(this ISession session, RouteValueDictionary routeValues = null)
+        public static void SaveRouteValues(this ISession session, RouteValueDictionary routeValues)
         {
+            if (routeValues == null) throw new ArgumentNullException(nameof(routeValues));
+
             string key = GetKey(routeValues);
 
             if (session.TryGetValue(key, out byte[] dummy))
@@ -22,13 +25,15 @@ namespace Domion.WebApp.Navigation
 
         public static RouteValueDictionary GetRouteValues(this ISession session, RouteValueDictionary routeValues)
         {
+            if (routeValues == null) throw new ArgumentNullException(nameof(routeValues));
+
             string key = GetKey(routeValues);
 
             var value = session.GetString(key);
 
             if (value == null)
             {
-                return new RouteValueDictionary();
+                return routeValues;
             }
 
             var routeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);

@@ -56,23 +56,41 @@ namespace Domion.WebApp.Tests.Tests
         {
             // Arrange ---------------------------
 
-            var routeObject = new RouteValueDictionary(new { controller = "Tenants", action = "Index" });
-            var initialRouteObject = new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 2, ps = 3 });
-            var updatedRouteObject = new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 5, ps = 3 });
+            var routeValues = new RouteValueDictionary(new { controller = "Tenants", action = "Index" });
+            var initialRouteValues = new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 2, ps = 3 });
+            var updatedRouteValues = new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 5, ps = 3 });
 
             ISession session = new TestSession();
 
-            session.SaveRouteValues(new RouteValueDictionary(initialRouteObject));
+            session.SaveRouteValues(new RouteValueDictionary(initialRouteValues));
 
             // Act -------------------------------
 
-            session.SaveRouteValues(new RouteValueDictionary(updatedRouteObject));
+            session.SaveRouteValues(new RouteValueDictionary(updatedRouteValues));
 
             // Assert ----------------------------
 
-            RouteValueDictionary result = session.GetRouteValues(new RouteValueDictionary(routeObject));
+            RouteValueDictionary result = session.GetRouteValues(routeValues);
 
-            result.ShouldBeEquivalentTo(updatedRouteObject);
+            result.ShouldBeEquivalentTo(updatedRouteValues);
+        }
+
+        [Fact]
+        public void GetRouteValues_ReturnsSameRoute_WhenNonExistingRoute()
+        {
+            // Arrange ---------------------------
+
+            var routeValues = new RouteValueDictionary(new { controller = "Tenants", action = "Index" });
+
+            ISession session = new TestSession();
+
+            // Act -------------------------------
+
+            RouteValueDictionary result = session.GetRouteValues(routeValues);
+
+            // Assert ----------------------------
+
+            result.ShouldBeEquivalentTo(routeValues);
         }
     }
 }
