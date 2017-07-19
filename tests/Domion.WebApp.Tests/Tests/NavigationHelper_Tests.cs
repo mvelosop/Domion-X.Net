@@ -24,7 +24,7 @@ using Xunit;
 namespace Domion.WebApp.Tests.Tests
 {
     [Trait("Type", "Unit")]
-    public class NavigationUrlHelper_Tests
+    public class NavigationHelper_Tests
     {
         [Fact]
         public void ReturnRoute__ReturnsRouteParams_WhenExistingRoute()
@@ -57,7 +57,7 @@ namespace Domion.WebApp.Tests.Tests
             actionContext.RouteData.AddRouteValues(detailsRouteValues);
             actionContext.RouteData.Routers.Add(routeBuilder.Build());
 
-            var navUrlHelper = new NavigationUrlHelper(actionContext);
+            var navHelper = new NavigationHelper(actionContext);
 
             // Act -------------------------------
 
@@ -66,7 +66,7 @@ namespace Domion.WebApp.Tests.Tests
                 Action = "Index"
             };
 
-            RouteValueDictionary urlValues = navUrlHelper.ReturnRoute(urlActionContext);
+            RouteValueDictionary urlValues = navHelper.GetReturnRoute(urlActionContext);
 
             // Assert ----------------------------
 

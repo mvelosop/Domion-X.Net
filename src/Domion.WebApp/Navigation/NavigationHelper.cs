@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace Domion.WebApp.Navigation
 {
-    public class NavigationUrlHelper
+    public class NavigationHelper
     {
         private readonly ActionContext ActionContext;
         private readonly RouteValueDictionary RouteValueDictionary;
         private readonly RouteValueDictionary AmbientValues;
 
-        public NavigationUrlHelper(ActionContext actionContext)
+        public NavigationHelper(ActionContext actionContext)
         {
             ActionContext = actionContext ?? throw new ArgumentNullException(nameof(actionContext));
 
@@ -21,7 +21,7 @@ namespace Domion.WebApp.Navigation
         }
 
         // Adapted from UrlHelper at aspnet/Mvc
-        public RouteValueDictionary ReturnRoute(UrlActionContext actionContext)
+        public RouteValueDictionary GetReturnRoute(UrlActionContext actionContext)
         {
             if (actionContext == null)
             {
