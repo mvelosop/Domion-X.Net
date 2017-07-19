@@ -4,6 +4,7 @@ using DFlow.WebApp.Services;
 using Domion.WebApp.Extensions;
 using Domion.WebApp.Helpers;
 using Domion.WebApp.Logging;
+using Domion.WebApp.Navigation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -268,6 +269,8 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants
         public async Task<IActionResult> Index(int? p, int? ps)
         {
+            //RouteNavigator navigator = HttpContext.Session.GetRouteNavigator();
+
             var viewModel = new TenantListViewModel();
 
             IQueryable<Tenant> query = AppServices.Query();

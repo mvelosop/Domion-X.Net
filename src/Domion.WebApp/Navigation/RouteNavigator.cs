@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,6 +45,11 @@ namespace Domion.WebApp.Navigation
             Dictionary.TryGetValue(key, out value);
 
             return value;
+        }
+
+        public RouteValueDictionary GetReturnValues(string action)
+        {
+            throw new NotImplementedException();
         }
 
         private string GetKey(RouteData routeData)
