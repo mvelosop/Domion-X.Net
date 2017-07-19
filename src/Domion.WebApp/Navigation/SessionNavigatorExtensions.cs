@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Domion.WebApp.Navigation
 {
-    public static class NavigatorSessionExtensions
+    public static class SessionNavigatorExtensions
     {
         public static void SaveRouteValues(this ISession session, RouteValueDictionary routeValues)
         {
@@ -33,7 +33,7 @@ namespace Domion.WebApp.Navigation
 
             if (value == null)
             {
-                return routeValues;
+                return new RouteValueDictionary();
             }
 
             var routeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);

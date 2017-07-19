@@ -269,6 +269,7 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants
         public async Task<IActionResult> Index(int? p, int? ps)
         {
+            //HttpContext.Save
             //RouteNavigator navigator = HttpContext.Session.GetRouteNavigator();
 
             var viewModel = new TenantListViewModel();

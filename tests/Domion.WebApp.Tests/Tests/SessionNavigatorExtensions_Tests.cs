@@ -76,7 +76,7 @@ namespace Domion.WebApp.Tests.Tests
         }
 
         [Fact]
-        public void GetRouteValues_ReturnsSameRoute_WhenNonExistingRoute()
+        public void GetRouteValues_ReturnsEmptyRoute_WhenNonExistingRoute()
         {
             // Arrange ---------------------------
 
@@ -90,7 +90,7 @@ namespace Domion.WebApp.Tests.Tests
 
             // Assert ----------------------------
 
-            result.ShouldBeEquivalentTo(routeValues);
+            result.Should().BeEmpty();
         }
     }
 }

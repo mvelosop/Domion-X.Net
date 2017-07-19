@@ -60,6 +60,11 @@ namespace Domion.WebApp.Navigation
 
             RouteValueDictionary returnRouteValues = ActionContext.HttpContext.Session.GetRouteValues(valuesDictionary);
 
+            if (returnRouteValues.Count == 0)
+            {
+                return valuesDictionary;
+            }
+
             return returnRouteValues;
         }
 
