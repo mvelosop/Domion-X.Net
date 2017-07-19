@@ -1,10 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Routing;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantViewModel
     {
+        public TenantViewModel()
+        {
+            ReturnToIndexRouteValues = new Dictionary<string, string>();
+        }
+
         //----------------------------------------
         // UI properties
         //----------------------------------------
@@ -24,5 +31,7 @@ namespace DFlow.WebApp.Features.Tenants
         public int? Id { get; set; }
 
         public virtual Byte[] RowVersion { get; set; }
+
+        public Dictionary<string, string> ReturnToIndexRouteValues { get; set; }
     }
 }

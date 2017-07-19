@@ -6,9 +6,12 @@ using Domion.WebApp.Helpers;
 using Domion.WebApp.Logging;
 using Domion.WebApp.Navigation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,6 +39,8 @@ namespace DFlow.WebApp.Features.Tenants
             AppServices = appServices;
             Logger = logger;
         }
+
+        public RouteValueDictionary ReturnToIndexRoute { get; private set; }
 
         // GET: Tenants/Create
         public IActionResult Create()
@@ -68,7 +73,7 @@ namespace DFlow.WebApp.Features.Tenants
 
                         if (!errors.Any())
                         {
-                            return RedirectToAction("Index");
+                            return ReturnToIndex();
                         }
                     }
                 }
@@ -90,7 +95,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return RedirectToAction("Index");
+                return ReturnToIndex();
             }
 
             try
@@ -132,7 +137,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return RedirectToAction("Index");
+                return ReturnToIndex();
             }
 
             try
@@ -167,7 +172,7 @@ namespace DFlow.WebApp.Features.Tenants
                 AlertDanger(UnexpectedErrorAlert);
             }
 
-            return RedirectToAction("Index");
+            return ReturnToIndex();
         }
 
         // GET: Tenants/Details/5
@@ -177,7 +182,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return RedirectToAction("Index");
+                return ReturnToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -186,6 +191,13 @@ namespace DFlow.WebApp.Features.Tenants
             vm.Owner = entity.Owner;
             vm.Notes = "Nota simulada";
             vm.RowVersion = entity.RowVersion;
+
+            vm.ReturnToIndexRouteValues.Clear();
+
+            foreach (var item in ReturnToIndexRoute)
+            {
+                vm.ReturnToIndexRouteValues.Add(item.Key, Convert.ToString(item.Value, CultureInfo.InvariantCulture));
+            }
 
             return View(vm);
         }
@@ -197,7 +209,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return RedirectToAction("Index");
+                ReturnToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -221,7 +233,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return RedirectToAction("Index");
+                ReturnToIndex();
             }
 
             if (vm.Id != id)
@@ -230,7 +242,7 @@ namespace DFlow.WebApp.Features.Tenants
 
                 AlertWarning(UnexpectedErrorAlert);
 
-                return RedirectToAction("Index");
+                return ReturnToIndex();
             }
 
             if (ModelState.IsValid)
@@ -248,7 +260,7 @@ namespace DFlow.WebApp.Features.Tenants
                     {
                         AlertSuccess(UpdateSuccessAlert, entity.Owner);
 
-                        return RedirectToAction("Index");
+                        return ReturnToIndex();
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -269,8 +281,7 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants
         public async Task<IActionResult> Index(int? p, int? ps)
         {
-            //HttpContext.Save
-            //RouteNavigator navigator = HttpContext.Session.GetRouteNavigator();
+            this.SaveRouteValues();
 
             var viewModel = new TenantListViewModel();
 
@@ -293,6 +304,22 @@ namespace DFlow.WebApp.Features.Tenants
             viewModel.SetPaging(pager);
 
             return View(viewModel);
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            base.OnActionExecuting(context);
+
+            var navHelper = new NavigationHelper(context);
+
+            ReturnToIndexRoute = navHelper.GetReturnRoute("Index");
+
+            //ViewBag[nameof(ReturnToIndexRoute)] = ReturnToIndexRoute;
+        }
+
+        public IActionResult ReturnToIndex()
+        {
+            return RedirectToAction("Index", ReturnToIndexRoute);
         }
 
         private void AlertDanger(string message, params object[] args)

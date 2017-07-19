@@ -8,7 +8,7 @@ using Xunit;
 namespace Domion.WebApp.Tests.Tests
 {
     [Trait("Type", "Unit")]
-    public class SessionNavigatorExtensions_Tests
+    public class SessionNavigationExtensions_Tests
     {
         [Fact]
         public void SaveRouteValues_AddsRoute_WhenNoParams()
