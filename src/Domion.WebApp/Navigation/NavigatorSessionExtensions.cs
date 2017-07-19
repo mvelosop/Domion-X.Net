@@ -12,27 +12,12 @@ namespace Domion.WebApp.Navigation
         {
             string key = GetKey(routeValues);
 
-            var values = new Dictionary<string, object>();
-
-            foreach (var item in routeValues)
-            {
-                values[item.Key] = item.Value;
-            }
-
-            if (routeValues != null)
-            {
-                foreach (var item in routeValues)
-                {
-                    values[item.Key] = item.Value;
-                }
-            }
-
             if (session.TryGetValue(key, out byte[] dummy))
             {
                 session.Remove(key);
             }
 
-            session.SetString(key, JsonConvert.SerializeObject(values));
+            session.SetString(key, JsonConvert.SerializeObject(routeValues));
         }
 
         public static RouteValueDictionary GetRouteValues(this ISession session, RouteValueDictionary routeValues)
@@ -45,11 +30,10 @@ namespace Domion.WebApp.Navigation
             {
                 return new RouteValueDictionary();
             }
-            {
-                var routeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
 
-                return new RouteValueDictionary(routeDict);
-            }
+            var routeDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
+
+            return new RouteValueDictionary(routeDict);
         }
 
         private static string GetKey(RouteValueDictionary routeValues)
