@@ -119,9 +119,9 @@ namespace Domion.Lib.Data
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryDelete(TEntity entity)
         {
-            var deleteErrors = ValidateDelete(entity);
+            var deleteErrors = ValidateDelete(entity).ToList();
 
-            if (deleteErrors.Any())
+            if (deleteErrors.Count > 0)
             {
                 return deleteErrors;
             }
@@ -136,9 +136,9 @@ namespace Domion.Lib.Data
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryInsert(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            var saveErrors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (saveErrors.Count > 0)
             {
                 return saveErrors;
             }
@@ -153,9 +153,9 @@ namespace Domion.Lib.Data
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryUpdate(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            var saveErrors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (saveErrors.Count > 0)
             {
                 return saveErrors;
             }
