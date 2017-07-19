@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+// Taken from: https://github.com/aspnet/Mvc/blob/rel/1.1.3/test/Microsoft.AspNetCore.Mvc.ViewFeatures.Test/ViewFeatures/SessionStateTempDataProviderTest.cs
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
 namespace Domion.WebApp.Tests.Helpers
 {
     public class TestSession : ISession

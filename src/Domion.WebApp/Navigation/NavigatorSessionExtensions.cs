@@ -8,13 +8,13 @@ namespace Domion.WebApp.Navigation
 {
     public static class NavigatorSessionExtensions
     {
-        public static void SaveRouteValues(this ISession session, RouteData routeData, RouteValueDictionary routeValues = null)
+        public static void SaveRouteValues(this ISession session, RouteValueDictionary routeValues = null)
         {
-            string key = GetKey(routeData);
+            string key = GetKey(routeValues);
 
             var values = new Dictionary<string, object>();
 
-            foreach (var item in routeData.Values)
+            foreach (var item in routeValues)
             {
                 values[item.Key] = item.Value;
             }
@@ -35,9 +35,9 @@ namespace Domion.WebApp.Navigation
             session.SetString(key, JsonConvert.SerializeObject(values));
         }
 
-        public static RouteValueDictionary GetRouteValues(this ISession session, RouteData routeData)
+        public static RouteValueDictionary GetRouteValues(this ISession session, RouteValueDictionary routeValues)
         {
-            string key = GetKey(routeData);
+            string key = GetKey(routeValues);
 
             var value = session.GetString(key);
 
@@ -52,25 +52,25 @@ namespace Domion.WebApp.Navigation
             }
         }
 
-        private static string GetKey(RouteData routeData)
+        private static string GetKey(RouteValueDictionary routeValues)
         {
             var sb = new StringBuilder();
 
             sb.Append("__Domion.WebApp.Navigation.RouteNavigator:");
 
-            if (routeData.Values.TryGetValue("area", out object area))
+            if (routeValues.TryGetValue("area", out object area))
             {
                 sb.Append(area);
                 sb.Append("/");
             }
 
-            if (routeData.Values.TryGetValue("controller", out object controller))
+            if (routeValues.TryGetValue("controller", out object controller))
             {
                 sb.Append(controller);
                 sb.Append("/");
             }
 
-            if (routeData.Values.TryGetValue("action", out object action))
+            if (routeValues.TryGetValue("action", out object action))
             {
                 sb.Append(action);
             }

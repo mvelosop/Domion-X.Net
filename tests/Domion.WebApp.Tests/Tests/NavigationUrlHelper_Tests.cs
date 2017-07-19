@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,13 +27,9 @@ namespace Domion.WebApp.Tests.Tests
     public class NavigationUrlHelper_Tests
     {
         [Fact]
-        public void GetReturnValuesForAction_ReturnsRouteValues_WhenFound()
+        public void ReturnRoute__ReturnsRouteParams_WhenExistingRoute()
         {
             // Arrange ---------------------------
-
-            //var navigator = new RouteNavigator();
-
-            //navigator.AddRouteValues(CreateRouteData("Index", "Tenants"), new RouteValueDictionary(new { p = 2, ps = 3 }));
 
             var services = CreateServices();
             var routeBuilder = CreateRouteBuilder(services);
@@ -46,7 +43,8 @@ namespace Domion.WebApp.Tests.Tests
                 HttpContext = CreateHttpContext(services)
             };
 
-            //actionContext.HttpContext.Session.Set(typeof(RouteNavigator).FullName, navigator);
+            // Last index url
+            actionContext.HttpContext.Session.SaveRouteValues(new RouteValueDictionary(new { controller = "Tenants", action = "Index", p = 2, ps = 3 }));
 
             var routeData = new RouteData();
 
@@ -64,7 +62,12 @@ namespace Domion.WebApp.Tests.Tests
 
             // Act -------------------------------
 
-            RouteValueDictionary urlValues = navUrlHelper.ReturnRoute("Index");
+            var urlActionContext = new UrlActionContext
+            {
+                Action = "Index"
+            };
+
+            RouteValueDictionary urlValues = navUrlHelper.ReturnRoute(urlActionContext);
 
             // Assert ----------------------------
 
