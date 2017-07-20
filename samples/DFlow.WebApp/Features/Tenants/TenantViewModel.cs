@@ -9,11 +9,13 @@ namespace DFlow.WebApp.Features.Tenants
     {
         public TenantViewModel()
         {
-            ReturnToIndexRouteValues = new Dictionary<string, string>();
+            LastIndexRouteDictionary = new Dictionary<string, string>();
         }
 
+        public string Title { get; set; }
+
         //----------------------------------------
-        // UI properties
+        // Form properties
         //----------------------------------------
 
         [Display(Name = "Nombre")]
@@ -32,6 +34,6 @@ namespace DFlow.WebApp.Features.Tenants
 
         public virtual Byte[] RowVersion { get; set; }
 
-        public Dictionary<string, string> ReturnToIndexRouteValues { get; set; }
+        public Dictionary<string, string> LastIndexRouteDictionary { get; set; }
     }
 }

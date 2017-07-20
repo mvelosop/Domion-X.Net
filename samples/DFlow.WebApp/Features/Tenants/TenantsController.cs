@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,33 +20,46 @@ namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
+        public const string AddTitle = "Agregar Cliente";
         public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
-        public const string CreateSuccessAlert = @"Se agregÛ correctamente el cliente ""{0}"".";
+        public const string CreateSuccessAlert = @"Se agreg√≥ correctamente el cliente ""{0}"".";
         public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
-        public const string DeleteSuccessAlert = @"Se eliminÛ correctamente el cliente ""{0}"".";
-        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validaciÛn, intentelo de nuevo, por favor.";
+        public const string DeleteSuccessAlert = @"Se elimin√≥ correctamente el cliente ""{0}"".";
+        public const string DeleteTitle = "Eliminar Cliente";
+        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validaci√≥n, intentelo de nuevo, por favor.";
+        public const string DetailsTitle = "Consultar Cliente";
+        public const string EditTitle = "Modificar Cliente";
         public const string EntityNotFoundAlert = "No se pudo encontrar el cliente solicitado, pudo haber sido eliminado por otro usuario. (Id={0})";
         public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
-        public const string UnexpectedErrorAlert = "OcurriÛ un error inesperado! se creÛ un registro para investigar quÈ pasÛ.";
+        public const string UnexpectedErrorAlert = "Ocurri√≥ un error inesperado! se cre√≥ un registro para investigar qu√© pas√≥.";
         public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
 
-        private readonly TenantsServices AppServices;
-        private readonly ILogger<TenantsController> Logger;
+        private readonly TenantsServices _appServices;
+        private readonly ILogger<TenantsController> _logger;
 
         public TenantsController(
             TenantsServices appServices,
             ILogger<TenantsController> logger)
         {
-            AppServices = appServices;
-            Logger = logger;
+            _appServices = appServices;
+            _logger = logger;
+
+            LastIndexRouteDictionary = new Dictionary<string, string>();
+            LastIndexRouteValues = new RouteValueDictionary();
         }
 
-        public RouteValueDictionary ReturnToIndexRoute { get; private set; }
+        public Dictionary<string, string> LastIndexRouteDictionary { get; }
+
+        public RouteValueDictionary LastIndexRouteValues { get; private set; }
 
         // GET: Tenants/Create
         public IActionResult Create()
         {
-            return View();
+            var vm = new TenantViewModel();
+
+            SetupViewModel(vm, AddTitle);
+
+            return View(vm);
         }
 
         // POST: Tenants/Create
@@ -53,7 +67,7 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TenantViewModel vm)
         {
-            Logger.LogInformation("Create: {@vm}", vm);
+            _logger.LogInformation("Create: {@vm}", vm);
 
             if (ModelState.IsValid)
             {
@@ -63,27 +77,26 @@ namespace DFlow.WebApp.Features.Tenants
 
                 try
                 {
-                    var errors = AppServices.AddTenant(entity);
+                    var errors = _appServices.AddTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
                     if (ModelState.IsValid)
                     {
-                        AlertSuccess(CreateSuccessAlert, vm.Owner);
+                        this.AlertSuccess(CreateSuccessAlert, vm.Owner);
 
-                        if (!errors.Any())
-                        {
-                            return ReturnToIndex();
-                        }
+                        return RedirectToAction("Details", new { id = entity.Id });
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(WebAppEvents.CREATE_POST, ex, ControllerExceptionLogMessage, ex);
+                    _logger.LogError(WebAppEvents.CREATE_POST, ex, ControllerExceptionLogMessage, ex);
 
-                    AlertDanger(UnexpectedErrorAlert);
+                    this.AlertDanger(UnexpectedErrorAlert);
                 }
             }
+
+            SetupViewModel(vm, AddTitle);
 
             return View(vm);
         }
@@ -95,7 +108,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             try
@@ -107,9 +120,11 @@ namespace DFlow.WebApp.Features.Tenants
                 vm.Notes = "Nota simulada";
                 vm.RowVersion = entity.RowVersion;
 
-                var errors = AppServices.ValidateDelete(entity);
+                var errors = _appServices.ValidateDelete(entity);
 
                 ModelState.ResetModelErrors(errors);
+
+                SetupViewModel(vm, DeleteTitle);
 
                 if (ModelState.IsValid)
                 {
@@ -120,12 +135,12 @@ namespace DFlow.WebApp.Features.Tenants
             }
             catch (Exception ex)
             {
-                Logger.LogError(WebAppEvents.DELETE_GET, ex, ControllerExceptionLogMessage, ex);
+                _logger.LogError(WebAppEvents.DELETE_GET, ex, ControllerExceptionLogMessage, ex);
 
-                AlertDanger(UnexpectedErrorAlert);
+                this.AlertDanger(UnexpectedErrorAlert);
             }
 
-            return RedirectToAction("Details", id);
+            return RedirectToAction("Details", new { id = id});
         }
 
         // POST: Tenants/Delete/5
@@ -137,42 +152,42 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             try
             {
                 entity.RowVersion = rowVersion;
 
-                var errors = AppServices.DeleteTenant(entity);
+                var errors = _appServices.DeleteTenant(entity);
 
                 ModelState.ResetModelErrors(errors);
 
                 if (ModelState.IsValid)
                 {
-                    AlertSuccess(DeleteSuccessAlert, entity.Owner);
+                    this.AlertSuccess(DeleteSuccessAlert, entity.Owner);
                 }
                 else
                 {
-                    AlertWarning(DeleteValidationAlert, entity.Owner);
+                    this.AlertWarning(DeleteValidationAlert, entity.Owner);
 
                     return RedirectToAction("Delete", new { id = entity.Id });
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+                this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
 
                 return RedirectToAction("Delete", new { id = entity.Id });
             }
             catch (Exception ex)
             {
-                Logger.LogError(WebAppEvents.DELETE_POST, ex, ControllerExceptionLogMessage, ex);
+                _logger.LogError(WebAppEvents.DELETE_POST, ex, ControllerExceptionLogMessage, ex);
 
-                AlertDanger(UnexpectedErrorAlert);
+                this.AlertDanger(UnexpectedErrorAlert);
             }
 
-            return ReturnToIndex();
+            return RedirectBackToIndex();
         }
 
         // GET: Tenants/Details/5
@@ -182,7 +197,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                return ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -192,12 +207,7 @@ namespace DFlow.WebApp.Features.Tenants
             vm.Notes = "Nota simulada";
             vm.RowVersion = entity.RowVersion;
 
-            vm.ReturnToIndexRouteValues.Clear();
-
-            foreach (var item in ReturnToIndexRoute)
-            {
-                vm.ReturnToIndexRouteValues.Add(item.Key, Convert.ToString(item.Value, CultureInfo.InvariantCulture));
-            }
+            SetupViewModel(vm, DetailsTitle);
 
             return View(vm);
         }
@@ -209,7 +219,7 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -218,6 +228,8 @@ namespace DFlow.WebApp.Features.Tenants
             vm.Owner = entity.Owner;
             vm.Notes = "Nota simulada";
             vm.RowVersion = entity.RowVersion;
+
+            SetupViewModel(vm, EditTitle);
 
             return View(vm);
         }
@@ -233,16 +245,16 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (entity == null)
             {
-                ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             if (vm.Id != id)
             {
-                Logger.LogWarning("id={id}, vm={mv}", id, vm);
+                _logger.LogWarning("id={id}, vm={mv}", id, vm);
 
-                AlertWarning(UnexpectedErrorAlert);
+                this.AlertWarning(UnexpectedErrorAlert);
 
-                return ReturnToIndex();
+                return RedirectBackToIndex();
             }
 
             if (ModelState.IsValid)
@@ -252,28 +264,30 @@ namespace DFlow.WebApp.Features.Tenants
                     entity.Owner = vm.Owner;
                     entity.RowVersion = vm.RowVersion;
 
-                    var errors = AppServices.UpdateTenant(entity);
+                    var errors = _appServices.UpdateTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
                     if (ModelState.IsValid)
                     {
-                        AlertSuccess(UpdateSuccessAlert, entity.Owner);
+                        this.AlertSuccess(UpdateSuccessAlert, entity.Owner);
 
-                        return ReturnToIndex();
+                        return RedirectToAction("Details", new { id = entity.Id });
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+                    this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(WebAppEvents.EDIT_POST, ex, ControllerExceptionLogMessage, ex);
+                    _logger.LogError(WebAppEvents.EDIT_POST, ex, ControllerExceptionLogMessage, ex);
 
-                    AlertDanger(UnexpectedErrorAlert);
+                    this.AlertDanger(UnexpectedErrorAlert);
                 }
             }
+
+            SetupViewModel(vm, EditTitle);
 
             return View(vm);
         }
@@ -283,10 +297,11 @@ namespace DFlow.WebApp.Features.Tenants
         {
             this.SaveRouteValues();
 
-            var viewModel = new TenantListViewModel();
+            var vm = new TenantListViewModel();
 
-            IQueryable<Tenant> query = AppServices.Query();
+            IQueryable<Tenant> query = _appServices.Query();
 
+            // ReSharper disable once PossibleMultipleEnumeration
             var pager = new PagingCalculator(query.Count(), p, ps);
 
             if (pager.OutOfRange)
@@ -294,16 +309,19 @@ namespace DFlow.WebApp.Features.Tenants
                 return RedirectToAction("Index", new { p = pager.Page, ps = pager.PageSize });
             }
 
-            viewModel.Items = query
+            // ReSharper disable once PossibleMultipleEnumeration
+            vm.Items = query
                 .AsNoTracking()
                 .OrderBy(t => t.Owner)
                 .Skip(pager.Skip)
                 .Take(pager.Take)
                 .ToList();
 
-            viewModel.SetPaging(pager);
+            vm.SetPaging(pager);
 
-            return View(viewModel);
+            vm.Title = "√çndice de Clientes";
+
+            return View(vm);
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -312,48 +330,37 @@ namespace DFlow.WebApp.Features.Tenants
 
             var navHelper = new NavigationHelper(context);
 
-            ReturnToIndexRoute = navHelper.GetReturnRoute("Index");
+            LastIndexRouteValues = navHelper.GetReturnRoute("Index");
 
-            //ViewBag[nameof(ReturnToIndexRoute)] = ReturnToIndexRoute;
+            foreach (var item in LastIndexRouteValues)
+            {
+                LastIndexRouteDictionary.Add(item.Key, Convert.ToString(item.Value, CultureInfo.InvariantCulture));
+            }
         }
 
-        public IActionResult ReturnToIndex()
+        public IActionResult RedirectBackToIndex()
         {
-            return RedirectToAction("Index", ReturnToIndexRoute);
-        }
-
-        private void AlertDanger(string message, params object[] args)
-        {
-            ControllerExtensions.AlertDanger(this, string.Format(message, args));
-        }
-
-        private void AlertInformation(string message, params object[] args)
-        {
-            ControllerExtensions.AlertInformation(this, string.Format(message, args));
-        }
-
-        private void AlertSuccess(string message, params object[] args)
-        {
-            ControllerExtensions.AlertSuccess(this, string.Format(message, args));
-        }
-
-        private void AlertWarning(string message, params object[] args)
-        {
-            ControllerExtensions.AlertWarning(this, string.Format(message, args));
+            return RedirectToAction("Index", LastIndexRouteValues);
         }
 
         private Tenant FindTenantById(int? id)
         {
-            var entity = AppServices.FindTenantById(id);
+            var entity = _appServices.FindTenantById(id);
 
             if (entity == null)
             {
-                Logger.LogWarning(EntityNotFoundLogMessage, id);
+                _logger.LogWarning(EntityNotFoundLogMessage, id);
 
-                AlertWarning(EntityNotFoundAlert, id);
+                this.AlertWarning(EntityNotFoundAlert, id);
             }
 
             return entity;
+        }
+
+        private void SetupViewModel(TenantViewModel vm, string title)
+        {
+            vm.Title = title;
+            vm.LastIndexRouteDictionary = LastIndexRouteDictionary;
         }
     }
 }

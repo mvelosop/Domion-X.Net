@@ -1,27 +1,42 @@
 @model DFlow.WebApp.Features.Tenants.TenantViewModel
 
 @{
-    var title = "Consultar Cliente";
+    ViewData["Title"] = Model.Title;
 
-    ViewData["Title"] = title;
+    Func<dynamic, object> Links =
+
+        @<div class="links">
+             <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary">Índice</a> |
+             <a asp-action="Create">Agregar Cliente</a> |
+            <a asp-action="Edit" asp-route-id="@Model.Id">Modificar</a> |
+            <a asp-action="Delete" asp-route-id="@Model.Id">Eliminar</a>
+        </div>;
+
 }
 
-<h2>@title</h2>
+<h2>@Model.Title</h2>
+
+@Links(Model)
 
 @Html.Partial("AlertsPartial")
 
+<h3 style="color: darkblue">@Model.Owner</h3>
+
 <div class="row">
     <div class="col-sm-9">
-        <div asp-validation-summary="All" class="text-danger"></div>
+        <form>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-        @Html.Partial("_DisplayPartial", Model)
+            @Html.Partial("_DisplayPartial", Model)
 
+            <hr />
+
+        </form>
     </div>
+
     <div class="col-sm-3">
-
     </div>
+
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index" asp-all-route-data="@Model.ReturnToIndexRouteValues">Back to List</a>
-</div>
+
+@Links(Model)

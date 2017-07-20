@@ -12,20 +12,22 @@ namespace DFlow.WebApp.Services
 {
     public class TenantsServices
     {
-        private readonly Lazy<TenantManager> LazyTenantManager;
-        readonly ILogger<TenantsServices> Logger;
+        private readonly Lazy<TenantManager> _lazyTenantManager;
+        readonly ILogger<TenantsServices> _logger;
+        
+        private static readonly List<ValidationResult> NoErrors = new List<ValidationResult>();
 
         public TenantsServices(
             ILogger<TenantsServices> logger,
             Lazy<TenantManager> lazyTenantManager)
         {
-            Logger = logger;
-            LazyTenantManager = lazyTenantManager;
+            _logger = logger;
+            _lazyTenantManager = lazyTenantManager;
         }
 
-        private TenantManager TenantManager => LazyTenantManager.Value;
+        private TenantManager TenantManager => _lazyTenantManager.Value;
 
-        public IEnumerable<ValidationResult> AddTenant(Tenant entity)
+        public List<ValidationResult> AddTenant(Tenant entity)
         {
             var errors = TenantManager.TryInsert(entity).ToList();
 
@@ -33,10 +35,10 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
 
-        public IEnumerable<ValidationResult> DeleteTenant(Tenant entity)
+        public List<ValidationResult> DeleteTenant(Tenant entity)
         {
             var errors = TenantManager.TryDelete(entity).ToList();
 
@@ -44,7 +46,7 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
 
         public Tenant FindTenantById(int? id)
@@ -64,7 +66,7 @@ namespace DFlow.WebApp.Services
             return TenantManager.Query(expression);
         }
 
-        public IEnumerable<ValidationResult> UpdateTenant(Tenant entity)
+        public List<ValidationResult> UpdateTenant(Tenant entity)
         {
             var errors = TenantManager.TryUpdate(entity).ToList();
 
@@ -72,25 +74,17 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
-        public IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
+        public List<ValidationResult> ValidateDelete(Tenant entity)
         {
-            if (entity.Owner.ToUpper().Contains("NO ELIMINAR"))
-            {
-                return new List<ValidationResult>
-                {
-                    new ValidationResult(@"No se puede eliminar porque dice ""NO ELIMINAR"".")
-                };
-            }
-
             var errors = TenantManager.ValidateDelete(entity).ToList();
 
             if (errors.Any()) return errors;
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
     }
 }
