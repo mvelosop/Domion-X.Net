@@ -5,20 +5,19 @@
 
     Func<dynamic, object> Pager =
 
-        @<div>
-            <cs-pager cs-pager-ul-class ="pagination pagination-sm"
-                      cs-paging-info="@Model.Paging"
-                      cs-pagenumber-param="p"
-                      asp-controller="Tenants"
-                      asp-action="Index"
-                      asp-route-ps="@Model.Paging.ItemsPerPage">
-            </cs-pager>
-        </div>;
-    
+        @<cs-pager cs-pager-ul-class="pagination pagination-sm"
+                   cs-paging-info="@Model.Paging"
+                   cs-pagenumber-param="p"
+                   asp-controller="Tenants"
+                   asp-action="Index"
+                   asp-route-ps="@Model.Paging.ItemsPerPage"
+                   asp-route-search="@Model.Search">
+        </cs-pager>;
+
     Func<dynamic, object> Links =
 
         @<div class="links">
-            <a asp-action="Create">Agregar Cliente</a>
+            <a asp-action="Create"><i class="fa fa-plus" aria-hidden="true"></i> Agregar Cliente</a>
         </div>;
 }
 
@@ -28,9 +27,29 @@
 
 @Html.Partial("AlertsPartial")
 
-@Pager(Model)
+<div class="row">
+    <div class="col-md-3" style="margin: 10px 0;">
+        <form asp-action="Index" method="get">
+            <input type="hidden" name="p" id="p">
+            <input type="hidden" name="ps" id="ps">
 
-<table class="table">
+            <div class="input-group">
+                <input type="search" asp-for="Search" class="form-control input-sm" placeholder="Buscar...">
+                
+                <span class="input-group-btn">
+                    <button class="btn btn-sm" style="background-color:#404040; color: whitesmoke; font-weight: bold" type="button">Buscar</button>
+                </span>
+            </div>
+            
+        </form>
+    </div>
+    <div style="text-align: right">
+        @Pager(Model)
+    </div>
+</div>
+
+
+<table class="table table-hover">
     <thead>
         <tr>
             <th>Nombre</th>
@@ -42,12 +61,14 @@
         @foreach (var item in Model.Items)
         {
             <tr>
-                <td>@item.Owner</td>
+                <td><a asp-action="Details" asp-route-id="@item.Id">@item.Owner</a></td>
                 <td></td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <td class="index-ops">
+                    <div class="icons">
+                        <a asp-action="Details" asp-route-id="@item.Id"><span title="Consultar"><i class="fa fa-file-text-o" aria-hidden="true"></i></span></a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id"><span title="Modificar"><i class="fa fa-pencil" aria-hidden="true"></i></span></a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id"><span title="Eliminar"><i class="fa fa-trash-o" aria-hidden="true"></i></span></a>
+                    </div>
                 </td>
             </tr>
         }

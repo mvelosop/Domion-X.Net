@@ -61,9 +61,17 @@ namespace DFlow.WebApp.Services
             return entity;
         }
 
-        public IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> expression = null)
+        public IQueryable<Tenant> Search(string searchText)
         {
-            return TenantManager.Query(expression);
+
+            Expression<Func<Tenant, bool>> queryExpression = null;
+
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                queryExpression = t => t.Owner.Contains(searchText);
+            }
+                
+            return TenantManager.Query(queryExpression);
         }
 
         public List<ValidationResult> UpdateTenant(Tenant entity)

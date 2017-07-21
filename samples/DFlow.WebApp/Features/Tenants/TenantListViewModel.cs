@@ -14,6 +14,8 @@ namespace DFlow.WebApp.Features.Tenants
 
         public string Title { get; set; }     
 
+        public string Search { get; set; }
+        
         public List<Tenant> Items { get; set; }
 
         public PaginationSettings Paging { get; set; }

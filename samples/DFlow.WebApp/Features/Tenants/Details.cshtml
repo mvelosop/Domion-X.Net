@@ -6,12 +6,11 @@
     Func<dynamic, object> Links =
 
         @<div class="links">
-             <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary">Índice</a> |
-             <a asp-action="Create">Agregar Cliente</a> |
-            <a asp-action="Edit" asp-route-id="@Model.Id">Modificar</a> |
-            <a asp-action="Delete" asp-route-id="@Model.Id">Eliminar</a>
+            <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary"><i class="fa fa-list" aria-hidden="true"></i> Índice</a> |
+            <a asp-action="Create"><i class="fa fa-plus" aria-hidden="true"></i> Agregar Cliente</a> |
+            <a asp-action="Edit" asp-route-id="@Model.Id"><i class="fa fa-pencil" aria-hidden="true"></i> Modificar</a> |
+            <a asp-action="Delete" asp-route-id="@Model.Id"><i class="fa fa-trash-o" aria-hidden="true"></i> Eliminar</a>
         </div>;
-
 }
 
 <h2>@Model.Title</h2>
@@ -20,7 +19,7 @@
 
 @Html.Partial("AlertsPartial")
 
-<h3 style="color: darkblue">@Model.Owner</h3>
+<h3 style="color: #404040; font-weight: bold">@Model.Owner</h3>
 
 <div class="row">
     <div class="col-sm-9">

@@ -14,7 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel.Implementation;
 
 namespace DFlow.WebApp.Features.Tenants
 {
@@ -293,20 +295,25 @@ namespace DFlow.WebApp.Features.Tenants
         }
 
         // GET: Tenants
-        public async Task<IActionResult> Index(int? p, int? ps)
+        public async Task<IActionResult> Index(int? p, int? ps, string search)
         {
             this.SaveRouteValues();
 
             var vm = new TenantListViewModel();
 
-            IQueryable<Tenant> query = _appServices.Query();
+            IQueryable<Tenant> query = _appServices.Search(search);
 
             // ReSharper disable once PossibleMultipleEnumeration
             var pager = new PagingCalculator(query.Count(), p, ps);
 
             if (pager.OutOfRange)
             {
-                return RedirectToAction("Index", new { p = pager.Page, ps = pager.PageSize });
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    pager.PagingValues.Add("search", search);
+                }
+                
+                return RedirectToAction("Index", pager.PagingValues);
             }
 
             // ReSharper disable once PossibleMultipleEnumeration
@@ -320,6 +327,7 @@ namespace DFlow.WebApp.Features.Tenants
             vm.SetPaging(pager);
 
             vm.Title = "Índice de Clientes";
+            vm.Search = search;
 
             return View(vm);
         }
