@@ -30,7 +30,7 @@ namespace Domion.WebApp.Tests.Tests
 
             // Act -------------------------------
 
-            modelState.SetValidationResults(errors);
+            modelState.ResetModelErrors(errors);
 
             // Assert ----------------------------
 

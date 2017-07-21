@@ -10,53 +10,67 @@
 
 using DFlow.Tenants.Core.Model;
 using Domion.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace DFlow.Tenants.Core.Services
 {
-	public interface ITenantManager : IQueryManager<Tenant>, IEntityManager<Tenant, int>
-	{
-		/// <summary>
-		///     <para>
-		///         Refreshes the entity in the DbContext's change tracker, requerying the database.
-		///     </para>
-		///     <para>
-		///         Important, this only refreshes the passed entity. It does not refresh the related entities 
-		///         (navigation or collection properties). If needed yo have to modify this method and call the
-		///         method on each one.
-		///     </para>
-		/// </summary>
-		Tenant Refresh(Tenant entity);
+    public interface ITenantManager : IQueryManager<Tenant>, IEntityManager<Tenant, int>
+    {
+        /// <summary>
+        ///     Returns another Tenant with the same Owner.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>The duplicate Tenant or null if none</returns>
+        Tenant FindDuplicateByOwner(Tenant entity);
 
-		/// <summary>
-		///     Saves changes from the DbContext's change tracker to the database.
-		/// </summary>
-		void SaveChanges();
+        /// <summary>
+        ///     <para>
+        ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
+        ///     </para>
+        ///     <para>
+        ///         Important, this only refreshes the passed entity. It does not refresh the related entities
+        ///         (navigation or collection properties). If needed yo have to modify this method and call the
+        ///         method on each one.
+        ///     </para>
+        /// </summary>
+        Tenant Refresh(Tenant entity);
 
-		/// <summary>
-		///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.
-		/// </summary>
-		IEnumerable<ValidationResult> TryDelete(Tenant entity);
+        /// <summary>
+        ///     Saves changes from the DbContext's change tracker to the database.
+        /// </summary>
+        void SaveChanges();
 
-		/// <summary>
-		///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method. 
-		///     This method also checks that the concurrency token (RowVersion) is EMPTY.
-		/// </summary>
-		IEnumerable<ValidationResult> TryInsert(Tenant entity);
+        /// <summary>
+        ///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.
+        /// </summary>
+        IEnumerable<ValidationResult> TryDelete(Tenant entity);
 
-		/// <summary>
-		///     Marks an entity for update in the DbContext's change tracker if no errors are found in the ValidateSave method.
-		///     This method also checks that the concurrency token (RowVersion) is NOT EMPTY.
-		/// </summary>
-		IEnumerable<ValidationResult> TryUpdate(Tenant entity);
+        /// <summary>
+        ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method.
+        ///     This method also checks that the concurrency token (RowVersion) is EMPTY.
+        /// </summary>
+        IEnumerable<ValidationResult> TryInsert(Tenant entity);
 
-		/// <summary>
-		///     Calls TryInsert or TryUpdate accordingly, based on the value of the Id property;
-		/// </summary>
-		IEnumerable<ValidationResult> TryUpsert(Tenant entity);
-	}
+        /// <summary>
+        ///     Marks an entity for update in the DbContext's change tracker if no errors are found in the ValidateSave method.
+        ///     This method also checks that the concurrency token (RowVersion) is NOT EMPTY.
+        /// </summary>
+        IEnumerable<ValidationResult> TryUpdate(Tenant entity);
+
+        /// <summary>
+        ///     Calls TryInsert or TryUpdate accordingly, based on the value of the Id property;
+        /// </summary>
+        IEnumerable<ValidationResult> TryUpsert(Tenant entity);
+
+        /// <summary>
+        ///     Validates if it's ok to delete the entity from the database.
+        /// </summary>
+        IEnumerable<ValidationResult> ValidateDelete(Tenant entity);
+
+        /// <summary>
+        ///     Validates if it's ok to save the new or updated entity to the database.
+        /// </summary>
+        IEnumerable<ValidationResult> ValidateSave(Tenant model);
+    }
 }

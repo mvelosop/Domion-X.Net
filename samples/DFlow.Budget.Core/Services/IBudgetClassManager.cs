@@ -55,5 +55,15 @@ namespace DFlow.Budget.Core.Services
         ///     Calls TryInsert or TryUpdate accordingly, based on the value of the Id property;
         /// </summary>
         IEnumerable<ValidationResult> TryUpsert(BudgetClass entity);
+
+        /// <summary>
+        ///     Returns the validation results for conditions that prevent the entity to be removed.
+        /// </summary>
+        IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity);
+
+        /// <summary>
+        ///     Returns the validation results for conditions that prevent the entity to be added or updated.
+        /// </summary>
+        IEnumerable<ValidationResult> ValidateSave(BudgetClass entity);
     }
 }

@@ -1,11 +1,18 @@
+using cloudscribe.Web.Common.Extensions;
 using DFlow.Tenants.Core.Model;
 using DFlow.WebApp.Services;
 using Domion.WebApp.Extensions;
 using Domion.WebApp.Helpers;
+using Domion.WebApp.Logging;
+using Domion.WebApp.Navigation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,17 +20,46 @@ namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
-        private readonly TenantsServices AppServices;
+        public const string AddTitle = "Agregar Cliente";
+        public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
+        public const string CreateSuccessAlert = @"Se agregó correctamente el cliente ""{0}"".";
+        public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
+        public const string DeleteSuccessAlert = @"Se eliminó correctamente el cliente ""{0}"".";
+        public const string DeleteTitle = "Eliminar Cliente";
+        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, intentelo de nuevo, por favor.";
+        public const string DetailsTitle = "Consultar Cliente";
+        public const string EditTitle = "Modificar Cliente";
+        public const string EntityNotFoundAlert = "No se pudo encontrar el cliente solicitado, pudo haber sido eliminado por otro usuario. (Id={0})";
+        public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
+        public const string UnexpectedErrorAlert = "Ocurrió un error inesperado! se creó un registro para investigar qué pasó.";
+        public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
 
-        public TenantsController(TenantsServices appServices)
+        private readonly TenantsServices _appServices;
+        private readonly ILogger<TenantsController> _logger;
+
+        public TenantsController(
+            TenantsServices appServices,
+            ILogger<TenantsController> logger)
         {
-            AppServices = appServices;
+            _appServices = appServices;
+            _logger = logger;
+
+            LastIndexRouteDictionary = new Dictionary<string, string>();
+            LastIndexRouteValues = new RouteValueDictionary();
         }
+
+        public Dictionary<string, string> LastIndexRouteDictionary { get; }
+
+        public RouteValueDictionary LastIndexRouteValues { get; private set; }
 
         // GET: Tenants/Create
         public IActionResult Create()
         {
-            return View();
+            var vm = new TenantViewModel();
+
+            SetupViewModel(vm, AddTitle);
+
+            return View(vm);
         }
 
         // POST: Tenants/Create
@@ -31,16 +67,36 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TenantViewModel vm)
         {
+            _logger.LogInformation("Create: {@vm}", vm);
+
             if (ModelState.IsValid)
             {
                 var entity = new Tenant();
 
                 entity.Owner = vm.Owner;
 
-                IEnumerable<ValidationResult> errors = AppServices.AddTenant(entity);
+                try
+                {
+                    var errors = _appServices.AddTenant(entity);
 
-                return RedirectToAction("Index");
+                    ModelState.ResetModelErrors(errors);
+
+                    if (ModelState.IsValid)
+                    {
+                        this.AlertSuccess(CreateSuccessAlert, vm.Owner);
+
+                        return RedirectToAction("Details", new { id = entity.Id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(WebAppEvents.CREATE_POST, ex, ControllerExceptionLogMessage, ex);
+
+                    this.AlertDanger(UnexpectedErrorAlert);
+                }
             }
+
+            SetupViewModel(vm, AddTitle);
 
             return View(vm);
         }
@@ -48,63 +104,100 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                return RedirectBackToIndex();
             }
 
-            var vm = new TenantViewModel();
+            try
+            {
+                var vm = new TenantViewModel();
 
-            vm.Id = entity.Id;
-            vm.Owner = entity.Owner;
-            vm.Notes = "Nota simulada";
-            vm.RowVersion = entity.RowVersion;
+                vm.Id = entity.Id;
+                vm.Owner = entity.Owner;
+                vm.Notes = "Nota simulada";
+                vm.RowVersion = entity.RowVersion;
 
-            return View(vm);
+                var errors = _appServices.ValidateDelete(entity);
+
+                ModelState.ResetModelErrors(errors);
+
+                SetupViewModel(vm, DeleteTitle);
+
+                if (ModelState.IsValid)
+                {
+                    return View(vm);
+                }
+
+                return View("Details", vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(WebAppEvents.DELETE_GET, ex, ControllerExceptionLogMessage, ex);
+
+                this.AlertDanger(UnexpectedErrorAlert);
+            }
+
+            return RedirectToAction("Details", new { id = id});
         }
 
         // POST: Tenants/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        public async Task<IActionResult> Delete(int? id, byte[] rowVersion)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                return RedirectBackToIndex();
             }
 
-            IEnumerable<ValidationResult> errors = AppServices.DeleteTenant(entity);
+            try
+            {
+                entity.RowVersion = rowVersion;
 
-            return RedirectToAction("Index");
+                var errors = _appServices.DeleteTenant(entity);
+
+                ModelState.ResetModelErrors(errors);
+
+                if (ModelState.IsValid)
+                {
+                    this.AlertSuccess(DeleteSuccessAlert, entity.Owner);
+                }
+                else
+                {
+                    this.AlertWarning(DeleteValidationAlert, entity.Owner);
+
+                    return RedirectToAction("Delete", new { id = entity.Id });
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+
+                return RedirectToAction("Delete", new { id = entity.Id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(WebAppEvents.DELETE_POST, ex, ControllerExceptionLogMessage, ex);
+
+                this.AlertDanger(UnexpectedErrorAlert);
+            }
+
+            return RedirectBackToIndex();
         }
 
         // GET: Tenants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                return RedirectBackToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -113,6 +206,8 @@ namespace DFlow.WebApp.Features.Tenants
             vm.Owner = entity.Owner;
             vm.Notes = "Nota simulada";
             vm.RowVersion = entity.RowVersion;
+
+            SetupViewModel(vm, DetailsTitle);
 
             return View(vm);
         }
@@ -120,16 +215,11 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var entity = AppServices.FindTenantById(id);
+            var entity = FindTenantById(id);
 
             if (entity == null)
             {
-                return NotFound();
+                return RedirectBackToIndex();
             }
 
             var vm = new TenantViewModel();
@@ -138,6 +228,8 @@ namespace DFlow.WebApp.Features.Tenants
             vm.Owner = entity.Owner;
             vm.Notes = "Nota simulada";
             vm.RowVersion = entity.RowVersion;
+
+            SetupViewModel(vm, EditTitle);
 
             return View(vm);
         }
@@ -147,42 +239,55 @@ namespace DFlow.WebApp.Features.Tenants
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TenantViewModel vm)
+        public async Task<IActionResult> Edit(int? id, TenantViewModel vm)
         {
-            if (id != vm.Id)
+            var entity = FindTenantById(id);
+
+            if (entity == null)
             {
-                return NotFound();
+                return RedirectBackToIndex();
+            }
+
+            if (vm.Id != id)
+            {
+                _logger.LogWarning("id={id}, vm={mv}", id, vm);
+
+                this.AlertWarning(UnexpectedErrorAlert);
+
+                return RedirectBackToIndex();
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Tenant entity = AppServices.FindTenantById(vm.Id);
-
-                    if (!EntityExists(vm.Id))
-                    {
-                        return NotFound();
-                    }
-
                     entity.Owner = vm.Owner;
+                    entity.RowVersion = vm.RowVersion;
 
-                    IEnumerable<ValidationResult> errors = AppServices.UpdateTenant(entity);
+                    var errors = _appServices.UpdateTenant(entity);
 
-                    if (!errors.Any())
+                    ModelState.ResetModelErrors(errors);
+
+                    if (ModelState.IsValid)
                     {
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.SetValidationResults(errors);
+                        this.AlertSuccess(UpdateSuccessAlert, entity.Owner);
+
+                        return RedirectToAction("Details", new { id = entity.Id });
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(WebAppEvents.EDIT_POST, ex, ControllerExceptionLogMessage, ex);
+
+                    this.AlertDanger(UnexpectedErrorAlert);
                 }
             }
+
+            SetupViewModel(vm, EditTitle);
 
             return View(vm);
         }
@@ -190,10 +295,13 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants
         public async Task<IActionResult> Index(int? p, int? ps)
         {
-            var viewModel = new TenantListViewModel();
+            this.SaveRouteValues();
 
-            IQueryable<Tenant> query = AppServices.Query();
+            var vm = new TenantListViewModel();
 
+            IQueryable<Tenant> query = _appServices.Query();
+
+            // ReSharper disable once PossibleMultipleEnumeration
             var pager = new PagingCalculator(query.Count(), p, ps);
 
             if (pager.OutOfRange)
@@ -201,21 +309,58 @@ namespace DFlow.WebApp.Features.Tenants
                 return RedirectToAction("Index", new { p = pager.Page, ps = pager.PageSize });
             }
 
-            viewModel.Items = query
+            // ReSharper disable once PossibleMultipleEnumeration
+            vm.Items = query
                 .AsNoTracking()
                 .OrderBy(t => t.Owner)
                 .Skip(pager.Skip)
                 .Take(pager.Take)
                 .ToList();
 
-            viewModel.SetPaging(pager);
+            vm.SetPaging(pager);
 
-            return View(viewModel);
+            vm.Title = "Índice de Clientes";
+
+            return View(vm);
         }
 
-        private bool EntityExists(int id)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            return AppServices.FindTenantById(id) != null;
+            base.OnActionExecuting(context);
+
+            var navHelper = new NavigationHelper(context);
+
+            LastIndexRouteValues = navHelper.GetReturnRoute("Index");
+
+            foreach (var item in LastIndexRouteValues)
+            {
+                LastIndexRouteDictionary.Add(item.Key, Convert.ToString(item.Value, CultureInfo.InvariantCulture));
+            }
+        }
+
+        public IActionResult RedirectBackToIndex()
+        {
+            return RedirectToAction("Index", LastIndexRouteValues);
+        }
+
+        private Tenant FindTenantById(int? id)
+        {
+            var entity = _appServices.FindTenantById(id);
+
+            if (entity == null)
+            {
+                _logger.LogWarning(EntityNotFoundLogMessage, id);
+
+                this.AlertWarning(EntityNotFoundAlert, id);
+            }
+
+            return entity;
+        }
+
+        private void SetupViewModel(TenantViewModel vm, string title)
+        {
+            vm.Title = title;
+            vm.LastIndexRouteDictionary = LastIndexRouteDictionary;
         }
     }
 }

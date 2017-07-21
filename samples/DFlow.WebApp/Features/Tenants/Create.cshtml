@@ -1,12 +1,22 @@
-@model DFlow.WebApp.Features.Tenants.TenantViewModel
+﻿@model DFlow.WebApp.Features.Tenants.TenantViewModel
 
 @{
-    var title = "Agregar Cliente";
+    ViewData["Title"] = Model.Title;
 
-    ViewData["Title"] = title;
+    Func<dynamic, object> Links =
+
+        @<div class="links">
+             <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary">Índice</a>
+        </div>;
 }
 
-<h2>@title</h2>
+<h2>@Model.Title</h2>
+
+@Links(Model)
+
+@Html.Partial("AlertsPartial")
+
+<h3 style="color: darkblue">@Model.Owner</h3>
 
 <div class="row">
     <div class="col-sm-9">
@@ -14,27 +24,22 @@
             <div asp-validation-summary="All" class="text-danger"></div>
 
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="RowVersion" />
 
             @Html.Partial("_EditPartial", Model)
 
             <hr />
 
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-md-offset-4 col-md-8">
-                        <input type="submit" value="Guardar" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
+            @Html.Partial("_SaveButtonPartial")
 
         </form>
     </div>
+
+    <div class="col-sm-3">
+    </div>
+
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@Links(Model)
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

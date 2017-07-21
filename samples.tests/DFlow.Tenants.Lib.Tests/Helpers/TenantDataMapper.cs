@@ -20,6 +20,18 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
             return UpdateEntity(new Tenant(), data);
         }
 
+        public Tenant DuplicateEntity(Tenant entity)
+        {
+            var duplicate = new Tenant
+            {
+                Id = entity.Id,
+                Owner = entity.Owner,
+                RowVersion = entity.RowVersion
+            };
+
+            return duplicate;
+        }
+
         public Tenant UpdateEntity(Tenant entity, TenantData data)
         {
             entity.Owner = data.Owner;

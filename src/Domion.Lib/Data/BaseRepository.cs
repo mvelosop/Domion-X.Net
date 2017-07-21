@@ -99,13 +99,29 @@ namespace Domion.Lib.Data
         }
 
         /// <summary>
+        ///     Validates if it's ok to delete the entity from the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateDelete(TEntity model)
+        {
+            yield break;
+        }
+
+        /// <summary>
+        ///     Validates if it's ok to save the new or updated entity to the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateSave(TEntity model)
+        {
+            yield break;
+        }
+
+        /// <summary>
         ///     Marks an entity for deletion in the DbContext's change tracker if it passes the ValidateDelete method.
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryDelete(TEntity entity)
         {
-            var deleteErrors = ValidateDelete(entity);
+            var deleteErrors = ValidateDelete(entity).ToList();
 
-            if (deleteErrors.Any())
+            if (deleteErrors.Count > 0)
             {
                 return deleteErrors;
             }
@@ -120,9 +136,9 @@ namespace Domion.Lib.Data
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryInsert(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            var saveErrors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (saveErrors.Count > 0)
             {
                 return saveErrors;
             }
@@ -137,9 +153,9 @@ namespace Domion.Lib.Data
         /// </summary>
         protected virtual IEnumerable<ValidationResult> TryUpdate(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            var saveErrors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (saveErrors.Count > 0)
             {
                 return saveErrors;
             }
@@ -147,22 +163,6 @@ namespace Domion.Lib.Data
             _dbSet.Update(entity);
 
             return Enumerable.Empty<ValidationResult>();
-        }
-
-        /// <summary>
-        ///     Validates if it's ok to delete the entity from the database.
-        /// </summary>
-        protected virtual IEnumerable<ValidationResult> ValidateDelete(TEntity model)
-        {
-            yield break;
-        }
-
-        /// <summary>
-        ///     Validates if it's ok to save the new or updated entity to the database.
-        /// </summary>
-        protected virtual IEnumerable<ValidationResult> ValidateSave(TEntity model)
-        {
-            yield break;
         }
     }
 }

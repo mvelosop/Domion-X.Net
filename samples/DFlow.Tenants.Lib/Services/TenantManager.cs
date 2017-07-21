@@ -13,6 +13,8 @@ using DFlow.Tenants.Core.Services;
 using DFlow.Tenants.Lib.Data;
 using Domion.Core.Services;
 using Domion.Lib.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,98 +23,131 @@ using System.Linq.Expressions;
 
 namespace DFlow.Tenants.Lib.Services
 {
-	public class TenantManager : BaseRepository<Tenant, int>, IQueryManager<Tenant>, IEntityManager<Tenant, int>, ITenantManager
-	{
-		public static string duplicateByOwnerError = @"There's another Tenant with Owner ""{0}"", can't duplicate! (Id={1})";
+    public class TenantManager : BaseRepository<Tenant, int>, IQueryManager<Tenant>, IEntityManager<Tenant, int>, ITenantManager
+    {
+        public static readonly string ConcurrentUpdateError = @"The Tenant was updated by another user, can't update or delete, must refresh first! (Id={0})";
 
-		public TenantManager(TenantsDbContext dbContext)
-			: base(dbContext)
-		{
-		}
+        public static readonly string DuplicateByOwnerError = @"There's another Tenant with Owner ""{0}"", can't duplicate! (Id={1})";
 
-		public Tenant FindDuplicateByOwner(Tenant entity)
-		{
-			if (entity.Id == 0)
-			{
-				return Query(t => t.Owner == entity.Owner.Trim()).SingleOrDefault();
-			}
-			else
-			{
-				return Query(t => t.Owner == entity.Owner.Trim() && t.Id != entity.Id).SingleOrDefault();
-			}
-		}
+        public TenantManager(TenantsDbContext dbContext)
+            : base(dbContext)
+        {
+        }
 
-		public override IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> where)
-		{
-			return base.Query(where);
-		}
+        public Tenant FindDuplicateByOwner(Tenant entity)
+        {
+            if (entity.Id == 0)
+            {
+                return Query(t => t.Owner == entity.Owner.Trim()).SingleOrDefault();
+            }
+            else
+            {
+                return Query(t => t.Owner == entity.Owner.Trim() && t.Id != entity.Id).SingleOrDefault();
+            }
+        }
 
-		public virtual Tenant Refresh(Tenant entity)
-		{
-			base.Detach(entity);
+        public override IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> where)
+        {
+            return base.Query(where);
+        }
 
-			return Find(entity.Id);
-		}
+        public virtual Tenant Refresh(Tenant entity)
+        {
+            base.Detach(entity);
 
-		public new virtual IEnumerable<ValidationResult> TryDelete(Tenant entity)
-		{
-			return base.TryDelete(entity);
-		}
+            return Find(entity.Id);
+        }
 
-		public new virtual IEnumerable<ValidationResult> TryInsert(Tenant entity)
-		{
-			if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
+        public new virtual IEnumerable<ValidationResult> TryDelete(Tenant entity)
+        {
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Delete");
 
-			CommonSaveOperations(entity);
+            var error = ValidateConcurrentUpdate(entity);
 
-			return base.TryInsert(entity);
-		}
+            if (error.Any())
+            {
+                return error;
+            }
 
-		public new virtual IEnumerable<ValidationResult> TryUpdate(Tenant entity)
-		{
-			if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
+            return base.TryDelete(entity);
+        }
 
-			CommonSaveOperations(entity);
+        public new virtual IEnumerable<ValidationResult> TryInsert(Tenant entity)
+        {
+            if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
 
-			return base.TryUpdate(entity);
-		}
+            CommonSaveOperations(entity);
 
-		public virtual IEnumerable<ValidationResult> TryUpsert(Tenant entity)
-		{
-			if (entity.Id == 0)
-			{
-				return TryInsert(entity);
-			}
-			else
-			{
-				return TryUpdate(entity);
-			}
-		}
+            return base.TryInsert(entity);
+        }
 
-		internal virtual void CommonSaveOperations(Tenant entity)
-		{
-			TrimStrings(entity);
-		}
-		protected override IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
-		{
-			yield break;
-		}
+        public new virtual IEnumerable<ValidationResult> TryUpdate(Tenant entity)
+        {
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
 
-		protected override IEnumerable<ValidationResult> ValidateSave(Tenant entity)
-		{
-			Tenant duplicateByOwner = FindDuplicateByOwner(entity);
+            var error = ValidateConcurrentUpdate(entity);
 
-			if (duplicateByOwner != null)
-			{
-				yield return new ValidationResult(string.Format(duplicateByOwnerError, duplicateByOwner.Owner, duplicateByOwner.Id), new[] { "Owner" });
-			}
+            if (error.Any())
+            {
+                return error;
+            }
 
-			yield break;
-		}
+            CommonSaveOperations(entity);
 
-		private void TrimStrings(Tenant entity)
-		{
-			if (entity.Owner != null) entity.Owner = entity.Owner.Trim();
-		}
-	}
+            return base.TryUpdate(entity);
+        }
+
+        public virtual IEnumerable<ValidationResult> TryUpsert(Tenant entity)
+        {
+            if (entity.Id == 0)
+            {
+                return TryInsert(entity);
+            }
+            else
+            {
+                return TryUpdate(entity);
+            }
+        }
+
+        public override IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
+        {
+            yield break;
+        }
+
+        public override IEnumerable<ValidationResult> ValidateSave(Tenant entity)
+        {
+            Tenant duplicateByOwner = FindDuplicateByOwner(entity);
+
+            if (duplicateByOwner != null)
+            {
+                yield return new ValidationResult(string.Format(DuplicateByOwnerError, duplicateByOwner.Owner, duplicateByOwner.Id), new[] { "Owner" });
+            }
+
+            yield break;
+        }
+
+        internal virtual void CommonSaveOperations(Tenant entity)
+        {
+            TrimStrings(entity);
+        }
+
+        private void TrimStrings(Tenant entity)
+        {
+            if (entity.Owner != null) entity.Owner = entity.Owner.Trim();
+        }
+
+        private List<ValidationResult> ValidateConcurrentUpdate(Tenant entity)
+        {
+            EntityEntry<Tenant> entry = DbContext.Entry(entity);
+
+            var error = new List<ValidationResult>();
+
+            if (!entity.RowVersion.SequenceEqual(entry.OriginalValues["RowVersion"] as byte[]))
+            {
+                error.Add(new ValidationResult(string.Format(ConcurrentUpdateError, entity.Id)));
+            };
+
+            return error;
+        }
+    }
 }

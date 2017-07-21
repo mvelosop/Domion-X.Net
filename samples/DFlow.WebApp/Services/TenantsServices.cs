@@ -1,6 +1,7 @@
 ﻿using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using Domion.Lib.Extensions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,17 +12,22 @@ namespace DFlow.WebApp.Services
 {
     public class TenantsServices
     {
-        private readonly Lazy<TenantManager> LazyTenantManager;
+        private readonly Lazy<TenantManager> _lazyTenantManager;
+        readonly ILogger<TenantsServices> _logger;
+        
+        private static readonly List<ValidationResult> NoErrors = new List<ValidationResult>();
 
         public TenantsServices(
+            ILogger<TenantsServices> logger,
             Lazy<TenantManager> lazyTenantManager)
         {
-            LazyTenantManager = lazyTenantManager;
+            _logger = logger;
+            _lazyTenantManager = lazyTenantManager;
         }
 
-        private TenantManager TenantManager => LazyTenantManager.Value;
+        private TenantManager TenantManager => _lazyTenantManager.Value;
 
-        public IEnumerable<ValidationResult> AddTenant(Tenant entity)
+        public List<ValidationResult> AddTenant(Tenant entity)
         {
             var errors = TenantManager.TryInsert(entity).ToList();
 
@@ -29,10 +35,10 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
 
-        public IEnumerable<ValidationResult> DeleteTenant(Tenant entity)
+        public List<ValidationResult> DeleteTenant(Tenant entity)
         {
             var errors = TenantManager.TryDelete(entity).ToList();
 
@@ -40,12 +46,19 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
         }
 
         public Tenant FindTenantById(int? id)
         {
-            return TenantManager.SingleOrDefault(t => t.Id == id);
+            if (id == null)
+            {
+                return null;
+            }
+
+            Tenant entity = TenantManager.SingleOrDefault(t => t.Id == id);
+
+            return entity;
         }
 
         public IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> expression = null)
@@ -53,7 +66,7 @@ namespace DFlow.WebApp.Services
             return TenantManager.Query(expression);
         }
 
-        public IEnumerable<ValidationResult> UpdateTenant(Tenant entity)
+        public List<ValidationResult> UpdateTenant(Tenant entity)
         {
             var errors = TenantManager.TryUpdate(entity).ToList();
 
@@ -61,7 +74,17 @@ namespace DFlow.WebApp.Services
 
             TenantManager.SaveChanges();
 
-            return Enumerable.Empty<ValidationResult>();
+            return NoErrors;
+        }
+        public List<ValidationResult> ValidateDelete(Tenant entity)
+        {
+            var errors = TenantManager.ValidateDelete(entity).ToList();
+
+            if (errors.Any()) return errors;
+
+            TenantManager.SaveChanges();
+
+            return NoErrors;
         }
     }
 }

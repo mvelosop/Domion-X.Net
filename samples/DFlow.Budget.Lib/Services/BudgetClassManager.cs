@@ -130,17 +130,9 @@ namespace DFlow.Budget.Lib.Services
         }
 
         /// <summary>
-        ///     Performs operations that have to be executed both on inserts and updates.
-        /// </summary>
-        internal virtual void CommonSaveOperations(BudgetClass entity)
-        {
-            TrimStrings(entity);
-        }
-
-        /// <summary>
         ///     Returns the validation results for conditions that prevent the entity to be removed.
         /// </summary>
-        protected override IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity)
+        public override IEnumerable<ValidationResult> ValidateDelete(BudgetClass entity)
         {
             yield break;
         }
@@ -148,7 +140,7 @@ namespace DFlow.Budget.Lib.Services
         /// <summary>
         ///     Returns the validation results for conditions that prevent the entity to be added or updated.
         /// </summary>
-        protected override IEnumerable<ValidationResult> ValidateSave(BudgetClass entity)
+        public override IEnumerable<ValidationResult> ValidateSave(BudgetClass entity)
         {
             BudgetClass duplicateByName = FindDuplicateByName(entity);
 
@@ -158,6 +150,14 @@ namespace DFlow.Budget.Lib.Services
             }
 
             yield break;
+        }
+
+        /// <summary>
+        ///     Performs operations that have to be executed both on inserts and updates.
+        /// </summary>
+        internal virtual void CommonSaveOperations(BudgetClass entity)
+        {
+            TrimStrings(entity);
         }
 
         private void TrimStrings(BudgetClass entity)

@@ -4,8 +4,10 @@ using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Helpers;
 using DFlow.Tenants.Setup;
 using Domion.FluentAssertions.Extensions;
+using Domion.Lib.Data;
 using Domion.Lib.Extensions;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,9 +21,8 @@ namespace DFlow.Tenants.Lib.Tests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
-        private static readonly TenantsDbHelper DbHelper;
-
         private static readonly IContainer Container;
+        private static readonly TenantsDbHelper DbHelper;
 
         static TenantManager_IntegrationTests()
         {
@@ -92,7 +93,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
         }
 
         [Fact]
@@ -133,6 +134,131 @@ namespace DFlow.Tenants.Lib.Tests
         }
 
         [Fact]
+        public void TryDelete_Fails_WhenConcurrencyConflict()
+        {
+            IEnumerable<ValidationResult> errors = null;
+
+            // Arrange ---------------------------
+
+            var data = new TenantData("Delete-Error-Concurrency - Inserted");
+            var update = new TenantData("Delete-Error-Concurrency - Updated");
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesDoNotExist(update);
+            });
+
+            // To simulate a ViewModel and second user updating the record
+
+            var viewModel = new Tenant();
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+
+                viewModel = mapper.DuplicateEntity(entity);
+
+                mapper.UpdateEntity(entity, update);
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                errors.Should().BeEmpty();
+
+                manager.SaveChanges();
+            });
+
+            // Act -------------------------------
+
+            UsingManager((scope, manager) =>
+            {
+                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+
+                entity.RowVersion = viewModel.RowVersion;
+
+                errors = manager.TryDelete(entity).ToList();
+
+                manager.SaveChanges();
+            });
+
+            // Assert ----------------------------
+
+            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.AssertEntitiesDoNotExist(data);
+                helper.AssertEntitiesExist(update);
+            });
+        }
+
+        [Fact]
+        public void TryUpdate_Fails_WhenConcurrencyConflict()
+        {
+            IEnumerable<ValidationResult> errors = null;
+
+            // Arrange ---------------------------
+
+            var data = new TenantData("Update-Error-Concurrency - Inserted");
+            var update1 = new TenantData("Update-Error-Concurrency - Updated 1");
+            var update2 = new TenantData("Update-Error-Concurrency - Updated 2");
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.EnsureEntitiesExist(data);
+                helper.EnsureEntitiesDoNotExist(update1, update2);
+            });
+
+            // To simulate a ViewModel and second user updating the record
+
+            var viewModel = new Tenant();
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+
+                viewModel = mapper.DuplicateEntity(entity);
+
+                mapper.UpdateEntity(entity, update2);
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                errors.Should().BeEmpty();
+
+                manager.SaveChanges();
+            });
+
+            // Act -------------------------------
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+
+                entity = mapper.UpdateEntity(entity, update1);
+
+                entity.RowVersion = viewModel.RowVersion;
+
+                errors = manager.TryUpdate(entity).ToList();
+            });
+
+            // Assert ----------------------------
+
+            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
+
+            UsingManagerHelper((scope, helper) =>
+            {
+                helper.AssertEntitiesDoNotExist(data, update1);
+                helper.AssertEntitiesExist(update2);
+            });
+        }
+
+        [Fact]
         public void TryUpdate_Fails_WhenDuplicateKeyData()
         {
             // Arrange ---------------------------
@@ -162,7 +288,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.duplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
         }
 
         [Fact]
@@ -226,6 +352,26 @@ namespace DFlow.Tenants.Lib.Tests
             dbHelper.SetupDatabase();
 
             return dbHelper;
+        }
+
+        private void UpdateOnDifferentDbContext(TenantData data, TenantData update)
+        {
+            IEnumerable<ValidationResult> errors = null;
+
+            UsingManager((scope, manager) =>
+            {
+                var mapper = scope.Resolve<TenantDataMapper>();
+
+                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+
+                entity = mapper.UpdateEntity(entity, update);
+
+                errors = manager.TryUpdate(entity).ToList();
+
+                manager.SaveChanges();
+            });
+
+            errors.Should().BeEmpty();
         }
 
         private void UsingManager(Action<ILifetimeScope, TenantManager> action)
