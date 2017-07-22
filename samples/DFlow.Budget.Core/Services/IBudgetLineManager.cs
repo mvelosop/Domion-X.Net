@@ -18,7 +18,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Budget.Core.Services
 {
-	public interface IBudgetLineManager : IQueryManager<BudgetLine>, IEntityManager<BudgetLine, int>
+	public interface IBudgetLineRepository : IQueryManager<BudgetLine>, IEntityManager<BudgetLine, int>
 	{
 		/// <summary>
 		///     <para>

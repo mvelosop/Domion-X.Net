@@ -21,14 +21,14 @@ using System.Linq.Expressions;
 
 namespace DFlow.Budget.Lib.Services
 {
-    public class BudgetLineManager : BaseRepository<BudgetLine, int>, IQueryManager<BudgetLine>, IEntityManager<BudgetLine, int>, IBudgetLineManager
+    public class BudgetLineRepository : BaseRepository<BudgetLine, int>, IQueryManager<BudgetLine>, IEntityManager<BudgetLine, int>, IBudgetLineRepository
     {
         public static string duplicateByNameError = @"There's another BudgetLine with Name ""{0}"", can't duplicate! (Id={1})";
 
         /// <summary>
         ///     EntityManager for BudgetLine
         /// </summary>
-        public BudgetLineManager(BudgetDbContext dbContext)
+        public BudgetLineRepository(BudgetDbContext dbContext)
             : base(dbContext)
         {
         }
