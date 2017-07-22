@@ -11,9 +11,7 @@
 using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Core.Services;
 using DFlow.Tenants.Lib.Data;
-using Domion.Core.Services;
 using Domion.Lib.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
@@ -23,17 +21,19 @@ using System.Linq.Expressions;
 
 namespace DFlow.Tenants.Lib.Services
 {
-    public class TenantRepository : BaseRepository<Tenant, int>, IRepositoryQuery<Tenant>, IEntityFinder<Tenant, int>, ITenantRepository
+    public class TenantRepository : BaseRepository<Tenant, int>, ITenantRepository
     {
         public static readonly string ConcurrentUpdateError = @"The Tenant was updated by another user, can't update or delete, must refresh first! (Id={0})";
 
         public static readonly string DuplicateByOwnerError = @"There's another Tenant with Owner ""{0}"", can't duplicate! (Id={1})";
 
+        /// <inheritdoc />
         public TenantRepository(TenantsDbContext dbContext)
             : base(dbContext)
         {
         }
 
+        /// <inheritdoc />
         public Tenant FindDuplicateByOwner(Tenant entity)
         {
             if (entity.Id == 0)
@@ -46,50 +46,53 @@ namespace DFlow.Tenants.Lib.Services
             }
         }
 
+        /// <summary>
+        ///     Returns an IQueryable that, when enumerated, will retrieve the objects that satisfy the where condition
+        ///     or all of them if where condition is null.
+        /// </summary>
         public override IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> where)
         {
             return base.Query(where);
         }
 
+        /// <inheritdoc />
         public virtual Tenant Refresh(Tenant entity)
         {
-            base.Detach(entity);
+            Detach(entity);
 
             return Find(entity.Id);
         }
 
+        /// <inheritdoc />
         public new virtual IEnumerable<ValidationResult> TryDelete(Tenant entity)
         {
-            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Delete");
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException($"Missing {nameof(entity.RowVersion)} on Delete");
 
-            var error = ValidateConcurrentUpdate(entity);
+            List<ValidationResult> errors = ValidateConcurrentUpdate(entity);
 
-            if (error.Any())
-            {
-                return error;
-            }
-
-            return base.TryDelete(entity);
+            return errors.Any() ? errors : base.TryDelete(entity);
         }
 
+        /// <inheritdoc />
         public new virtual IEnumerable<ValidationResult> TryInsert(Tenant entity)
         {
-            if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException("RowVersion not empty on Insert");
+            if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException($"Existing {nameof(entity.RowVersion)} on Insert");
 
             CommonSaveOperations(entity);
 
             return base.TryInsert(entity);
         }
 
+        /// <inheritdoc />
         public new virtual IEnumerable<ValidationResult> TryUpdate(Tenant entity)
         {
-            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException("RowVersion empty on Update");
+            if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException($"Missing {nameof(entity.RowVersion)} on Update");
 
-            var error = ValidateConcurrentUpdate(entity);
+            List<ValidationResult> errors = ValidateConcurrentUpdate(entity);
 
-            if (error.Any())
+            if (errors.Any())
             {
-                return error;
+                return errors;
             }
 
             CommonSaveOperations(entity);
@@ -97,6 +100,7 @@ namespace DFlow.Tenants.Lib.Services
             return base.TryUpdate(entity);
         }
 
+        /// <inheritdoc />
         public virtual IEnumerable<ValidationResult> TryUpsert(Tenant entity)
         {
             if (entity.Id == 0)
@@ -109,11 +113,13 @@ namespace DFlow.Tenants.Lib.Services
             }
         }
 
+        /// <inheritdoc />
         public override IEnumerable<ValidationResult> ValidateDelete(Tenant entity)
         {
             yield break;
         }
 
+        /// <inheritdoc />
         public override IEnumerable<ValidationResult> ValidateSave(Tenant entity)
         {
             Tenant duplicateByOwner = FindDuplicateByOwner(entity);
@@ -126,6 +132,9 @@ namespace DFlow.Tenants.Lib.Services
             yield break;
         }
 
+        /// <summary>
+        ///     Performs operations that have to be executed both on inserts and updates.
+        /// </summary>
         internal virtual void CommonSaveOperations(Tenant entity)
         {
             TrimStrings(entity);
@@ -138,14 +147,23 @@ namespace DFlow.Tenants.Lib.Services
 
         private List<ValidationResult> ValidateConcurrentUpdate(Tenant entity)
         {
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
+
             EntityEntry<Tenant> entry = DbContext.Entry(entity);
 
             var error = new List<ValidationResult>();
 
-            if (!entity.RowVersion.SequenceEqual(entry.OriginalValues["RowVersion"] as byte[]))
+            var originalRowVersion = entry.OriginalValues["RowVersion"] as byte[];
+
+            if (originalRowVersion == null || originalRowVersion.Length == 0)
+            {
+                throw new InvalidOperationException($"Invalid {nameof(entity.RowVersion)} on update or delete");
+            }
+
+            if (!entity.RowVersion.SequenceEqual(originalRowVersion))
             {
                 error.Add(new ValidationResult(string.Format(ConcurrentUpdateError, entity.Id)));
-            };
+            }
 
             return error;
         }

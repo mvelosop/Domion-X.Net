@@ -23,7 +23,7 @@ namespace DFlow.Budget.Lib.Services
 {
     public class BudgetLineRepository : BaseRepository<BudgetLine, int>, IRepositoryQuery<BudgetLine>, IEntityFinder<BudgetLine, int>, IBudgetLineRepository
     {
-        public static string duplicateByNameError = @"There's another BudgetLine with Name ""{0}"", can't duplicate! (Id={1})";
+		public const string duplicateByNameError = @"There's another BudgetLine with Name ""{0}"", can't duplicate! (Id={1})";
 
         /// <summary>
         ///     EntityRepository for BudgetLine

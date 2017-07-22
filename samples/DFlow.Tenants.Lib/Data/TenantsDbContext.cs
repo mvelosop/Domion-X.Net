@@ -30,7 +30,7 @@ namespace DFlow.Tenants.Lib.Data
         {
         }
 
-        public DbSet<Tenant> Tenants { get; set; }
+        public virtual DbSet<Tenant> Tenants { get; set; }
 
         public override int SaveChanges()
         {
