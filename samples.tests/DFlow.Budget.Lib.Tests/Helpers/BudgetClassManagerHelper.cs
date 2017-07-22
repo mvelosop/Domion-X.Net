@@ -16,7 +16,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
     ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "BudgetClass" using data class "BudgetClassData" as input
     ///     </para>
     /// </summary>
-    public class BudgetClassManagerHelper
+    public class BudgetClassRepositoryHelper
     {
         private readonly Lazy<BudgetClassDataMapper> LazyBudgetClassDataMapper;
         private readonly Lazy<BudgetClassRepository> LazyBudgetClassRepo;
@@ -25,7 +25,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <summary>
         ///     Creates a Helper for BudgetClassManager to help in the test's Arrange and Assert sections
         /// </summary>
-        public BudgetClassManagerHelper(
+        public BudgetClassRepositoryHelper(
             ILifetimeScope scope,
             Lazy<BudgetClassDataMapper> lazyBudgetClassDataMapper,
             Lazy<BudgetClassRepository> lazyBudgetClassRepo)

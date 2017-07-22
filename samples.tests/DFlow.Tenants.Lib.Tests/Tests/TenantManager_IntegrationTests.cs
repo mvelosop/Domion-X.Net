@@ -17,14 +17,14 @@ using Xunit;
 namespace DFlow.Tenants.Lib.Tests
 {
     [Trait("Type", "Integration")]
-    public class TenantManager_IntegrationTests
+    public class TenantRepository_IntegrationTests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private static readonly IContainer Container;
         private static readonly TenantsDbHelper DbHelper;
 
-        static TenantManager_IntegrationTests()
+        static TenantRepository_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
 
@@ -38,7 +38,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             var data = new TenantData("Delete-Success-Valid - Inserted");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
             });
@@ -47,20 +47,20 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                errors = manager.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesDoNotExist(data);
             });
@@ -73,7 +73,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             var data = new TenantData("Insert-Error-Duplicate - Inserted");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
             });
@@ -82,13 +82,13 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = manager.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity).ToList();
             });
 
             // Assert ----------------------------
@@ -105,29 +105,29 @@ namespace DFlow.Tenants.Lib.Tests
 
             var data = new TenantData("Insert-Success-Valid - Inserted");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesDoNotExist(data);
             });
 
             // Act -------------------------------
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = manager.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesExist(data);
             });
@@ -143,7 +143,7 @@ namespace DFlow.Tenants.Lib.Tests
             var data = new TenantData("Delete-Error-Concurrency - Inserted");
             var update = new TenantData("Delete-Error-Concurrency - Updated");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
                 helper.EnsureEntitiesDoNotExist(update);
@@ -153,41 +153,41 @@ namespace DFlow.Tenants.Lib.Tests
 
             var viewModel = new Tenant();
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 viewModel = mapper.DuplicateEntity(entity);
 
                 mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
 
                 errors.Should().BeEmpty();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Act -------------------------------
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
-                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+                Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = manager.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().ContainErrorMessage(TenantRepository.ConcurrentUpdateError);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesDoNotExist(data);
                 helper.AssertEntitiesExist(update);
@@ -205,7 +205,7 @@ namespace DFlow.Tenants.Lib.Tests
             var update1 = new TenantData("Update-Error-Concurrency - Updated 1");
             var update2 = new TenantData("Update-Error-Concurrency - Updated 2");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
                 helper.EnsureEntitiesDoNotExist(update1, update2);
@@ -215,43 +215,43 @@ namespace DFlow.Tenants.Lib.Tests
 
             var viewModel = new Tenant();
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 viewModel = mapper.DuplicateEntity(entity);
 
                 mapper.UpdateEntity(entity, update2);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
 
                 errors.Should().BeEmpty();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Act -------------------------------
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Id == viewModel.Id);
+                Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
                 entity = mapper.UpdateEntity(entity, update1);
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
             });
 
             // Assert ----------------------------
 
             errors.Should().ContainErrorMessage(TenantRepository.ConcurrentUpdateError);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesDoNotExist(data, update1);
                 helper.AssertEntitiesExist(update2);
@@ -266,7 +266,7 @@ namespace DFlow.Tenants.Lib.Tests
             var data = new TenantData("Update-Error-Duplicate - Inserted first");
             var update = new TenantData("Update-Error-Duplicate - Inserted second");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data, update);
             });
@@ -275,15 +275,15 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 entity = mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
             });
 
             // Assert ----------------------------
@@ -299,7 +299,7 @@ namespace DFlow.Tenants.Lib.Tests
             var data = new TenantData("Update-Success-Valid - Inserted");
             var update = new TenantData("Update-Success-Valid - Updated");
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
                 helper.EnsureEntitiesDoNotExist(update);
@@ -309,24 +309,24 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 entity = mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesExist(update);
             });
@@ -358,23 +358,23 @@ namespace DFlow.Tenants.Lib.Tests
         {
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
-                Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 entity = mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             errors.Should().BeEmpty();
         }
 
-        private void UsingManager(Action<ILifetimeScope, TenantRepository> action)
+        private void UsingRepository(Action<ILifetimeScope, TenantRepository> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
@@ -384,11 +384,11 @@ namespace DFlow.Tenants.Lib.Tests
             }
         }
 
-        private void UsingManagerHelper(Action<ILifetimeScope, TenantManagerHelper> action)
+        private void UsingRepositoryHelper(Action<ILifetimeScope, TenantRepositoryHelper> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var helper = scope.Resolve<TenantManagerHelper>();
+                var helper = scope.Resolve<TenantRepositoryHelper>();
 
                 action.Invoke(scope, helper);
             }

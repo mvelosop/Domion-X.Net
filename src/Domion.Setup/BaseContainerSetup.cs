@@ -49,7 +49,7 @@ namespace Domion.Setup
                     .AsImplementedInterfaces();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(t => t.Name.EndsWith("ManagerHelper"))
+                    .Where(t => t.Name.EndsWith("RepositoryHelper"))
                     .InstancePerLifetimeScope();
             }
         }

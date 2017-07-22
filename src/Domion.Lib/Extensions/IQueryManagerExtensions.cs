@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 namespace Domion.Lib.Extensions
 {
     /// <summary>
-    ///     Extensions for generic IQueryManager < T >.
+    ///     Extensions for generic IRepositoryQuery < T >.
     /// </summary>
-    public static class IQueryManagerExtensions
+    public static class IRepositoryQueryExtensions
     {
         /// <summary>
         ///     Returns the first object that satisfies the condition or raises InvalidOperationException if none.

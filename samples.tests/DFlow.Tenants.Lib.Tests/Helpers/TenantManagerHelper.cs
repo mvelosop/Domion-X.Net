@@ -17,7 +17,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
     ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "Tenant" using data class "TenantData" as input
     ///     </para>
     /// </summary>
-    public class TenantManagerHelper
+    public class TenantRepositoryHelper
     {
         private readonly Lazy<TenantDataMapper> LazyTenantDataMapper;
         private readonly Lazy<TenantRepository> LazyTenantRepo;
@@ -26,7 +26,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         /// <summary>
         ///     Creates a Helper for TenantManager to help in the test's Arrange and Assert sections
         /// </summary>
-        public TenantManagerHelper(
+        public TenantRepositoryHelper(
             ILifetimeScope scope,
             Lazy<TenantDataMapper> lazyTenantDataMapper,
             Lazy<TenantRepository> lazyTenantRepo)

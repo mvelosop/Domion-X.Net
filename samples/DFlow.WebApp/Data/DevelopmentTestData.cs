@@ -36,7 +36,7 @@ namespace DFlow.WebApp.Data
 
             using (var scope = Scope.BeginLifetimeScope())
             {
-                var helper = scope.Resolve<TenantManagerHelper>();
+                var helper = scope.Resolve<TenantRepositoryHelper>();
 
                 helper.EnsureEntitiesExist(tenantDataSet);
             }
