@@ -59,12 +59,7 @@ namespace Domion.Lib.Data
         {
             var entry = DbContext.Entry(entity);
 
-            if (entry == null)
-            {
-                return null;
-            }
-
-            return entry.OriginalValues.ToObject() as TEntity;
+            return entry?.OriginalValues.ToObject() as TEntity;
         }
 
         /// <summary>

@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
+using DFlow.WebApp.Features.Tenants;
 
 namespace DFlow.WebApp
 {
@@ -139,6 +140,11 @@ namespace DFlow.WebApp
 
             // WebApp services
             builder.RegisterType<TenantsServices>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<TenantViewModelMapper>()
+                .AsSelf()
+                .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
         }
 

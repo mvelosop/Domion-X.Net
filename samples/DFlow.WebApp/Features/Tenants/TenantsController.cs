@@ -12,37 +12,58 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Domion.WebApp.ViewModels;
 
 namespace DFlow.WebApp.Features.Tenants
 {
     public class TenantsController : Controller
     {
         public const string AddTitle = "Agregar Cliente";
+
         public const string ControllerExceptionLogMessage = "Controller Exception: {ex}";
+
         public const string CreateSuccessAlert = @"Se agregó correctamente el cliente ""{0}"".";
+
         public const string DbUpdateConcurrencyAlert = @"El cliente ""{0}"" fue modificado o eliminado por otro usuario, verifique los datos actualizados antes de intentarlo de nuevo.";
+
         public const string DeleteSuccessAlert = @"Se eliminó correctamente el cliente ""{0}"".";
+
         public const string DeleteTitle = "Eliminar Cliente";
+
         public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, intentelo de nuevo, por favor.";
+
         public const string DetailsTitle = "Consultar Cliente";
+
         public const string EditTitle = "Modificar Cliente";
+
         public const string EntityNotFoundAlert = "No se pudo encontrar el cliente solicitado, pudo haber sido eliminado por otro usuario. (Id={0})";
+
         public const string EntityNotFoundLogMessage = "Could not find Tenant! (Id={id})";
+
+        public const string IndexTitle = "Índice de Clientes";
+
         public const string UnexpectedErrorAlert = "Ocurrió un error inesperado! se creó un registro para investigar qué pasó.";
+
         public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
+        
 
         private readonly TenantsServices _appServices;
+        private readonly Lazy<IViewModelMapper<TenantViewModel, Tenant>> _lazyViewModelMapper;
+
         private readonly ILogger<TenantsController> _logger;
 
         public TenantsController(
+            ILogger<TenantsController> logger,
             TenantsServices appServices,
-            ILogger<TenantsController> logger)
+            Lazy<IViewModelMapper<TenantViewModel, Tenant>> lazyViewModelMapper)
         {
-            _appServices = appServices;
             _logger = logger;
+            _appServices = appServices;
+            _lazyViewModelMapper = lazyViewModelMapper;
 
             LastIndexRouteDictionary = new Dictionary<string, string>();
             LastIndexRouteValues = new RouteValueDictionary();
@@ -51,6 +72,8 @@ namespace DFlow.WebApp.Features.Tenants
         public Dictionary<string, string> LastIndexRouteDictionary { get; }
 
         public RouteValueDictionary LastIndexRouteValues { get; private set; }
+
+        public IViewModelMapper<TenantViewModel, Tenant> TenantViewModelMapper => _lazyViewModelMapper.Value;
 
         // GET: Tenants/Create
         public IActionResult Create()
@@ -71,13 +94,11 @@ namespace DFlow.WebApp.Features.Tenants
 
             if (ModelState.IsValid)
             {
-                var entity = new Tenant();
-
-                entity.Owner = vm.Owner;
+                Tenant entity = TenantViewModelMapper.CreateEntity(vm);
 
                 try
                 {
-                    var errors = _appServices.AddTenant(entity);
+                    List<ValidationResult> errors = await _appServices.AddTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
@@ -104,7 +125,7 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var entity = FindTenantById(id);
+            var entity = await FindTenantById(id);
 
             if (entity == null)
             {
@@ -113,14 +134,9 @@ namespace DFlow.WebApp.Features.Tenants
 
             try
             {
-                var vm = new TenantViewModel();
+                TenantViewModel vm = TenantViewModelMapper.CreateViewModel(entity);
 
-                vm.Id = entity.Id;
-                vm.Owner = entity.Owner;
-                vm.Notes = "Nota simulada";
-                vm.RowVersion = entity.RowVersion;
-
-                var errors = _appServices.ValidateDelete(entity);
+                List<ValidationResult> errors = await _appServices.ValidateDelete(entity);
 
                 ModelState.ResetModelErrors(errors);
 
@@ -140,7 +156,7 @@ namespace DFlow.WebApp.Features.Tenants
                 this.AlertDanger(UnexpectedErrorAlert);
             }
 
-            return RedirectToAction("Details", new { id = id});
+            return RedirectToAction("Details", new { id });
         }
 
         // POST: Tenants/Delete/5
@@ -148,7 +164,7 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int? id, byte[] rowVersion)
         {
-            var entity = FindTenantById(id);
+            var entity = await FindTenantById(id);
 
             if (entity == null)
             {
@@ -159,7 +175,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 entity.RowVersion = rowVersion;
 
-                var errors = _appServices.DeleteTenant(entity);
+                List<ValidationResult> errors = await _appServices.DeleteTenant(entity);
 
                 ModelState.ResetModelErrors(errors);
 
@@ -193,19 +209,14 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var entity = FindTenantById(id);
+            Tenant entity = await FindTenantById(id);
 
             if (entity == null)
             {
                 return RedirectBackToIndex();
             }
 
-            var vm = new TenantViewModel();
-
-            vm.Id = entity.Id;
-            vm.Owner = entity.Owner;
-            vm.Notes = "Nota simulada";
-            vm.RowVersion = entity.RowVersion;
+            TenantViewModel vm = TenantViewModelMapper.CreateViewModel(entity);
 
             SetupViewModel(vm, DetailsTitle);
 
@@ -215,19 +226,14 @@ namespace DFlow.WebApp.Features.Tenants
         // GET: Tenants/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var entity = FindTenantById(id);
+            Tenant entity = await FindTenantById(id);
 
             if (entity == null)
             {
                 return RedirectBackToIndex();
             }
 
-            var vm = new TenantViewModel();
-
-            vm.Id = entity.Id;
-            vm.Owner = entity.Owner;
-            vm.Notes = "Nota simulada";
-            vm.RowVersion = entity.RowVersion;
+            TenantViewModel vm = TenantViewModelMapper.CreateViewModel(entity);
 
             SetupViewModel(vm, EditTitle);
 
@@ -241,13 +247,6 @@ namespace DFlow.WebApp.Features.Tenants
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int? id, TenantViewModel vm)
         {
-            var entity = FindTenantById(id);
-
-            if (entity == null)
-            {
-                return RedirectBackToIndex();
-            }
-
             if (vm.Id != id)
             {
                 _logger.LogWarning("id={id}, vm={mv}", id, vm);
@@ -257,14 +256,20 @@ namespace DFlow.WebApp.Features.Tenants
                 return RedirectBackToIndex();
             }
 
+            Tenant entity = await FindTenantById(id);
+
+            if (entity == null)
+            {
+                return RedirectBackToIndex();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    entity.Owner = vm.Owner;
-                    entity.RowVersion = vm.RowVersion;
+                    entity = TenantViewModelMapper.UpdateEntity(entity, vm);
 
-                    var errors = _appServices.UpdateTenant(entity);
+                    List<ValidationResult> errors = await _appServices.UpdateTenant(entity);
 
                     ModelState.ResetModelErrors(errors);
 
@@ -293,20 +298,25 @@ namespace DFlow.WebApp.Features.Tenants
         }
 
         // GET: Tenants
-        public async Task<IActionResult> Index(int? p, int? ps)
+        public async Task<IActionResult> Index(int? p, int? ps, string search)
         {
             this.SaveRouteValues();
 
-            var vm = new TenantListViewModel();
+            var vm = new TenantIndexViewModel();
 
-            IQueryable<Tenant> query = _appServices.Query();
+            IQueryable<Tenant> query = await _appServices.Search(search);
 
             // ReSharper disable once PossibleMultipleEnumeration
             var pager = new PagingCalculator(query.Count(), p, ps);
 
             if (pager.OutOfRange)
             {
-                return RedirectToAction("Index", new { p = pager.Page, ps = pager.PageSize });
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    pager.PagingValues.Add("search", search);
+                }
+
+                return RedirectToAction("Index", pager.PagingValues);
             }
 
             // ReSharper disable once PossibleMultipleEnumeration
@@ -318,8 +328,8 @@ namespace DFlow.WebApp.Features.Tenants
                 .ToList();
 
             vm.SetPaging(pager);
-
-            vm.Title = "Índice de Clientes";
+            vm.Title = IndexTitle;
+            vm.Search = search;
 
             return View(vm);
         }
@@ -343,9 +353,9 @@ namespace DFlow.WebApp.Features.Tenants
             return RedirectToAction("Index", LastIndexRouteValues);
         }
 
-        private Tenant FindTenantById(int? id)
+        private async Task<Tenant> FindTenantById(int? id)
         {
-            var entity = _appServices.FindTenantById(id);
+            var entity = await _appServices.FindTenantById(id);
 
             if (entity == null)
             {

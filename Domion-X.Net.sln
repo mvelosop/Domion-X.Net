@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{72A66134
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.WebApp.Tests", "tests\Domion.WebApp.Tests\Domion.WebApp.Tests.csproj", "{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.WebApp.Tests", "samples.tests\DFlow.WebApp.Tests\DFlow.WebApp.Tests.csproj", "{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,10 @@ Global
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,5 +186,6 @@ Global
 		{C3090C52-1AB0-45DE-807B-AC80C237E9C3} = {F921A8A0-C1EE-4CCE-8FF5-983ABDEE7DFA}
 		{7404368C-CD09-44DF-B87D-45A6CEC7DE56} = {6F2DE9E6-30CB-4A00-BCC2-A77F24303702}
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4} = {72A66134-3FA0-43E4-BBF8-E0B828DCB969}
+		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA} = {7CEC1CD1-2D4B-47B2-BFA2-63D6D1F6E110}
 	EndGlobalSection
 EndGlobal

@@ -5,15 +5,17 @@ using System.Collections.Generic;
 
 namespace DFlow.WebApp.Features.Tenants
 {
-    public class TenantListViewModel
+    public class TenantIndexViewModel
     {
-        public TenantListViewModel()
+        public TenantIndexViewModel()
         {
             Paging = new PaginationSettings();
         }
 
         public string Title { get; set; }     
 
+        public string Search { get; set; }
+        
         public List<Tenant> Items { get; set; }
 
         public PaginationSettings Paging { get; set; }

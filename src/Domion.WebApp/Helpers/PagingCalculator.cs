@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Domion.WebApp.Helpers
 {
@@ -8,7 +9,7 @@ namespace Domion.WebApp.Helpers
 
         public PagingCalculator(int itemCount, int? pageNumber, int? pageSize)
         {
-            if (itemCount < 0) throw new ArgumentOutOfRangeException("Must be > 0", nameof(itemCount));
+            if (itemCount < 0) throw new ArgumentOutOfRangeException(nameof(itemCount), "Must be > 0");
 
             ItemCount = itemCount;
 
@@ -30,17 +31,31 @@ namespace Domion.WebApp.Helpers
             }
 
             OutOfRange = (pageNumber.HasValue & Page != pageNumber) | (pageSize.HasValue & PageSize != pageSize);
+            
+            PagingValues = new Dictionary<string, object>();
+
+            if (pageNumber.HasValue)
+            {
+                PagingValues.Add("p", Page);
+            }
+
+            if (pageSize.HasValue & PageSize != DefaultPageSize)
+            {
+                PagingValues.Add("ps", PageSize);
+            }
         }
 
-        public int ItemCount { get; private set; }
+        public Dictionary<string, object> PagingValues { get; }
+        
+        public int ItemCount { get; }
 
-        public bool OutOfRange { get; private set; }
+        public bool OutOfRange { get; }
 
-        public int Page { get; private set; }
+        public int Page { get; }
 
-        public int PageCount { get; private set; }
+        public int PageCount { get; }
 
-        public int PageSize { get; private set; }
+        public int PageSize { get; }
 
         public int Skip => (Page - 1) * PageSize;
 

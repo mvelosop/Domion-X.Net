@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DFlow.WebApp.Services
 {
@@ -27,9 +28,9 @@ namespace DFlow.WebApp.Services
 
         private TenantManager TenantManager => _lazyTenantManager.Value;
 
-        public List<ValidationResult> AddTenant(Tenant entity)
+        public async Task<List<ValidationResult>> AddTenant(Tenant entity)
         {
-            var errors = TenantManager.TryInsert(entity).ToList();
+            List<ValidationResult> errors = TenantManager.TryInsert(entity).ToList();
 
             if (errors.Any()) return errors;
 
@@ -38,9 +39,9 @@ namespace DFlow.WebApp.Services
             return NoErrors;
         }
 
-        public List<ValidationResult> DeleteTenant(Tenant entity)
+        public async Task<List<ValidationResult>> DeleteTenant(Tenant entity)
         {
-            var errors = TenantManager.TryDelete(entity).ToList();
+            List<ValidationResult> errors = TenantManager.TryDelete(entity).ToList();
 
             if (errors.Any()) return errors;
 
@@ -49,7 +50,7 @@ namespace DFlow.WebApp.Services
             return NoErrors;
         }
 
-        public Tenant FindTenantById(int? id)
+        public async Task<Tenant> FindTenantById(int? id)
         {
             if (id == null)
             {
@@ -61,14 +62,22 @@ namespace DFlow.WebApp.Services
             return entity;
         }
 
-        public IQueryable<Tenant> Query(Expression<Func<Tenant, bool>> expression = null)
+        public async Task<IQueryable<Tenant>> Search(string searchText)
         {
-            return TenantManager.Query(expression);
+
+            Expression<Func<Tenant, bool>> queryExpression = null;
+
+            if (!string.IsNullOrWhiteSpace(searchText))
+            {
+                queryExpression = t => t.Owner.Contains(searchText);
+            }
+                
+            return TenantManager.Query(queryExpression);
         }
 
-        public List<ValidationResult> UpdateTenant(Tenant entity)
+        public async Task<List<ValidationResult>> UpdateTenant(Tenant entity)
         {
-            var errors = TenantManager.TryUpdate(entity).ToList();
+            List<ValidationResult> errors = TenantManager.TryUpdate(entity).ToList();
 
             if (errors.Any()) return errors;
 
@@ -76,9 +85,9 @@ namespace DFlow.WebApp.Services
 
             return NoErrors;
         }
-        public List<ValidationResult> ValidateDelete(Tenant entity)
+        public async Task<List<ValidationResult>> ValidateDelete(Tenant entity)
         {
-            var errors = TenantManager.ValidateDelete(entity).ToList();
+            List<ValidationResult> errors = TenantManager.ValidateDelete(entity).ToList();
 
             if (errors.Any()) return errors;
 
