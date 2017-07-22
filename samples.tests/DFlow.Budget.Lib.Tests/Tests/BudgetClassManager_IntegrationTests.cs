@@ -116,7 +116,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
         }
 
         [Fact]
@@ -322,23 +322,23 @@ namespace DFlow.Budget.Lib.Tests.Tests
             return dbHelper;
         }
 
-        private Action<ILifetimeScope, BudgetClassManager> GetTenant(TenantData tenantData)
+        private Action<ILifetimeScope, BudgetClassRepository> GetTenant(TenantData tenantData)
         {
             throw new NotImplementedException();
         }
 
-        private void UsingManager(Action<ILifetimeScope, BudgetClassManager> action)
+        private void UsingManager(Action<ILifetimeScope, BudgetClassRepository> action)
         {
             UsingManager(DefaultTenant, action);
         }
 
-        private void UsingManager(Tenant currenTenant, Action<ILifetimeScope, BudgetClassManager> action)
+        private void UsingManager(Tenant currenTenant, Action<ILifetimeScope, BudgetClassRepository> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope(cb => cb.Register(c => currenTenant)))
             {
-                var manager = scope.Resolve<BudgetClassManager>();
+                var repo = scope.Resolve<BudgetClassRepository>();
 
-                action.Invoke(scope, manager);
+                action.Invoke(scope, repo);
             }
         }
 

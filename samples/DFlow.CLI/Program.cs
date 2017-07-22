@@ -49,15 +49,15 @@ namespace DFlow.CLI
 
             using (var dbContext = _dbHelper.CreateDbContext())
             {
-                var manager = new BudgetClassManager(dbContext, currentTenant);
+                var repo = new BudgetClassRepository(dbContext, currentTenant);
 
                 foreach (var item in _dataSet)
                 {
-                    var entity = manager.SingleOrDefault(bc => bc.Name.StartsWith(item.Name));
+                    var entity = repo.SingleOrDefault(bc => bc.Name.StartsWith(item.Name));
 
                     if (entity == null)
                     {
-                        manager.TryInsert(item);
+                        repo.TryInsert(item);
                     }
                     else
                     {
@@ -74,7 +74,7 @@ namespace DFlow.CLI
                     }
                 }
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             }
         }
 
