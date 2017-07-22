@@ -69,7 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{72A66134
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.WebApp.Tests", "tests\Domion.WebApp.Tests\Domion.WebApp.Tests.csproj", "{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Tenants.WebApp.Tests", "samples.tests\DFlow.Tenants.WebApp.Tests\DFlow.Tenants.WebApp.Tests.csproj", "{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.WebApp.Tests", "samples.tests\DFlow.WebApp.Tests\DFlow.WebApp.Tests.csproj", "{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

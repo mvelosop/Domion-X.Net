@@ -302,7 +302,7 @@ namespace DFlow.WebApp.Features.Tenants
         {
             this.SaveRouteValues();
 
-            var vm = new TenantListViewModel();
+            var vm = new TenantIndexViewModel();
 
             IQueryable<Tenant> query = await _appServices.Search(search);
 

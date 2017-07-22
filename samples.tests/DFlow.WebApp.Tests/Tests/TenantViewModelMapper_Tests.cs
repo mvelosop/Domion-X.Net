@@ -4,7 +4,7 @@ using DFlow.WebApp.Features.Tenants;
 using FluentAssertions;
 using Xunit;
 
-namespace DFlow.Tenants.WebApp.Tests.Tests
+namespace DFlow.WebApp.Tests.Tests
 {
     public class TenantViewModelMapper_Tests
     {
