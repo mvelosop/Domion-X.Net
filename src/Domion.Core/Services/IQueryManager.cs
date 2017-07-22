@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 namespace Domion.Core.Services
 {
     /// <summary>
-    ///     Query Interface for the EntityManager.
+    ///     Query Interface for the EntityRepositories.
     /// </summary>
-    public interface IQueryManager<T> where T : class
+    public interface IRepositoryQuery<T> where T : class
     {
         /// <summary>
         ///     Returns an query expression that, when enumerated, will retrieve all objects from the database.

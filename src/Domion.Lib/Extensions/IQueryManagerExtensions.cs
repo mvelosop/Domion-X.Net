@@ -15,17 +15,17 @@ namespace Domion.Lib.Extensions
         /// <summary>
         ///     Returns the first object that satisfies the condition or raises InvalidOperationException if none.
         /// </summary>
-        public static T First<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where = null) where T : class
+        public static T First<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
-            return manager.Query(where).First();
+            return repo.Query(where).First();
         }
 
         /// <summary>
         ///     Returns the first object that satisfies the condition or null if none.
         /// </summary>
-        public static T FirstOrDefault<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where = null) where T : class
+        public static T FirstOrDefault<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
-            return manager.Query(where).FirstOrDefault<T>();
+            return repo.Query(where).FirstOrDefault<T>();
         }
 
         /// <summary>
@@ -38,25 +38,25 @@ namespace Domion.Lib.Extensions
         ///     </para>
         /// </summary>
         /// <param name="includeExpression">The navigation property to include</param>
-        public static IIncludableQueryable<T, TProperty> Include<T, TProperty>(this IQueryManager<T> manager, Expression<Func<T, TProperty>> includeExpression) where T : class
+        public static IIncludableQueryable<T, TProperty> Include<T, TProperty>(this IRepositoryQuery<T> repo, Expression<Func<T, TProperty>> includeExpression) where T : class
         {
-            return manager.Query().Include(includeExpression);
+            return repo.Query().Include(includeExpression);
         }
 
         /// <summary>
         ///     Returns the single object that satisfies the condition or raises InvalidOperationException if none or more than one.
         /// </summary>
-        public static T Single<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where = null) where T : class
+        public static T Single<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
-            return manager.Query(where).Single<T>();
+            return repo.Query(where).Single<T>();
         }
 
         /// <summary>
         ///     Returns the single object that satisfies the condition or null if none or raises InvalidOperationException if more than one.
         /// </summary>
-        public static T SingleOrDefault<T>(this IQueryManager<T> manager, Expression<Func<T, bool>> where = null) where T : class
+        public static T SingleOrDefault<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
-            return manager.Query(where).SingleOrDefault<T>();
+            return repo.Query(where).SingleOrDefault<T>();
         }
     }
 }

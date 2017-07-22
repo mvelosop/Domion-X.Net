@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 
 namespace DFlow.Tenants.Lib.Services
 {
-    public class TenantRepository : BaseRepository<Tenant, int>, IQueryManager<Tenant>, IEntityManager<Tenant, int>, ITenantRepository
+    public class TenantRepository : BaseRepository<Tenant, int>, IRepositoryQuery<Tenant>, IEntityFinder<Tenant, int>, ITenantRepository
     {
         public static readonly string ConcurrentUpdateError = @"The Tenant was updated by another user, can't update or delete, must refresh first! (Id={0})";
 

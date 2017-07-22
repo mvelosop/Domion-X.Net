@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Tenants.Core.Services
 {
-    public interface ITenantRepository : IQueryManager<Tenant>, IEntityManager<Tenant, int>
+    public interface ITenantRepository : IRepositoryQuery<Tenant>, IEntityFinder<Tenant, int>
     {
         /// <summary>
         ///     Returns another Tenant with the same Owner.

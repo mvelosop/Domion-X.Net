@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DFlow.Budget.Core.Services
 {
-    public interface IBudgetClassRepository : IQueryManager<BudgetClass>, IEntityManager<BudgetClass, int>
+    public interface IBudgetClassRepository : IRepositoryQuery<BudgetClass>, IEntityFinder<BudgetClass, int>
     {
         /// <summary>
         ///     <para>

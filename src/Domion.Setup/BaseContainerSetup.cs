@@ -43,12 +43,6 @@ namespace Domion.Setup
                     .InstancePerLifetimeScope();
 
                 builder.RegisterAssemblyTypes(asm)
-                    .Where(t => t.Name.EndsWith("Manager"))
-                    .InstancePerLifetimeScope()
-                    .AsSelf()
-                    .AsImplementedInterfaces();
-
-                builder.RegisterAssemblyTypes(asm)
                     .Where(t => t.Name.EndsWith("Repository"))
                     .InstancePerLifetimeScope()
                     .AsSelf()
