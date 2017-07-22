@@ -93,7 +93,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantRepository.DuplicateByOwnerError);
         }
 
         [Fact]
@@ -185,7 +185,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
+            errors.Should().ContainErrorMessage(TenantRepository.ConcurrentUpdateError);
 
             UsingManagerHelper((scope, helper) =>
             {
@@ -249,7 +249,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.ConcurrentUpdateError);
+            errors.Should().ContainErrorMessage(TenantRepository.ConcurrentUpdateError);
 
             UsingManagerHelper((scope, helper) =>
             {
@@ -288,7 +288,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantManager.DuplicateByOwnerError);
+            errors.Should().ContainErrorMessage(TenantRepository.DuplicateByOwnerError);
         }
 
         [Fact]
@@ -374,13 +374,13 @@ namespace DFlow.Tenants.Lib.Tests
             errors.Should().BeEmpty();
         }
 
-        private void UsingManager(Action<ILifetimeScope, TenantManager> action)
+        private void UsingManager(Action<ILifetimeScope, TenantRepository> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<TenantManager>();
+                var repo = scope.Resolve<TenantRepository>();
 
-                action.Invoke(scope, manager);
+                action.Invoke(scope, repo);
             }
         }
 

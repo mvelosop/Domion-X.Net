@@ -19,7 +19,7 @@ using Xunit;
 namespace DFlow.Budget.Lib.Tests.Tests
 {
     [Trait("Type", "Integration")]
-    public class BudgetClassManager_IntegrationTests
+    public class BudgetClassRepository_IntegrationTests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
@@ -33,7 +33,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
         private readonly Tenant TenantA;
         private readonly Tenant TenantB;
 
-        static BudgetClassManager_IntegrationTests()
+        static BudgetClassRepository_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
 
@@ -42,15 +42,15 @@ namespace DFlow.Budget.Lib.Tests.Tests
             SeedBaseData(DbHelper);
         }
 
-        public BudgetClassManager_IntegrationTests()
+        public BudgetClassRepository_IntegrationTests()
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<TenantManager>();
+                var repo = scope.Resolve<TenantRepository>();
 
-                DefaultTenant = manager.AssertGetByKeyData(DefaultTenantData.Owner);
-                TenantA = manager.AssertGetByKeyData(TenantAData.Owner);
-                TenantB = manager.AssertGetByKeyData(TenantBData.Owner);
+                DefaultTenant = repo.AssertGetByKeyData(DefaultTenantData.Owner);
+                TenantA = repo.AssertGetByKeyData(TenantAData.Owner);
+                TenantB = repo.AssertGetByKeyData(TenantBData.Owner);
             }
         }
 

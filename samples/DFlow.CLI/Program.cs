@@ -33,17 +33,17 @@ namespace DFlow.CLI
 
             using (TenantsDbContext dbContext = _dbHelper.TenantsDbHelper.CreateDbContext())
             {
-                var manager = new TenantManager(dbContext);
+                var repo = new TenantRepository(dbContext);
 
-                currentTenant = manager.SingleOrDefault(t => t.Owner == _tenant.Owner);
+                currentTenant = repo.SingleOrDefault(t => t.Owner == _tenant.Owner);
 
                 if (currentTenant == null)
                 {
                     currentTenant = new Tenant { Owner = _tenant.Owner };
 
-                    manager.TryInsert(currentTenant);
+                    repo.TryInsert(currentTenant);
 
-                    manager.SaveChanges();
+                    repo.SaveChanges();
                 }
             }
 
