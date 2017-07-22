@@ -9,7 +9,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for BudgetClassManager.
+    ///         Test helper class for BudgetClassRepository.
     ///     </para>
     ///
     ///     <para>
@@ -23,7 +23,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         private readonly ILifetimeScope Scope;
 
         /// <summary>
-        ///     Creates a Helper for BudgetClassManager to help in the test's Arrange and Assert sections
+        ///     Creates a Helper for BudgetClassRepository to help in the test's Arrange and Assert sections
         /// </summary>
         public BudgetClassRepositoryHelper(
             ILifetimeScope scope,

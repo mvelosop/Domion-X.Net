@@ -10,7 +10,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for TenantManager.
+    ///         Test helper class for TenantRepository.
     ///     </para>
     ///
     ///     <para>
@@ -24,7 +24,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         private readonly ILifetimeScope Scope;
 
         /// <summary>
-        ///     Creates a Helper for TenantManager to help in the test's Arrange and Assert sections
+        ///     Creates a Helper for TenantRepository to help in the test's Arrange and Assert sections
         /// </summary>
         public TenantRepositoryHelper(
             ILifetimeScope scope,
