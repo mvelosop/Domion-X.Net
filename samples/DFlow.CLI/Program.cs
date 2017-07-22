@@ -33,31 +33,31 @@ namespace DFlow.CLI
 
             using (TenantsDbContext dbContext = _dbHelper.TenantsDbHelper.CreateDbContext())
             {
-                var manager = new TenantManager(dbContext);
+                var repo = new TenantRepository(dbContext);
 
-                currentTenant = manager.SingleOrDefault(t => t.Owner == _tenant.Owner);
+                currentTenant = repo.SingleOrDefault(t => t.Owner == _tenant.Owner);
 
                 if (currentTenant == null)
                 {
                     currentTenant = new Tenant { Owner = _tenant.Owner };
 
-                    manager.TryInsert(currentTenant);
+                    repo.TryInsert(currentTenant);
 
-                    manager.SaveChanges();
+                    repo.SaveChanges();
                 }
             }
 
             using (var dbContext = _dbHelper.CreateDbContext())
             {
-                var manager = new BudgetClassManager(dbContext, currentTenant);
+                var repo = new BudgetClassRepository(dbContext, currentTenant);
 
                 foreach (var item in _dataSet)
                 {
-                    var entity = manager.SingleOrDefault(bc => bc.Name.StartsWith(item.Name));
+                    var entity = repo.SingleOrDefault(bc => bc.Name.StartsWith(item.Name));
 
                     if (entity == null)
                     {
-                        manager.TryInsert(item);
+                        repo.TryInsert(item);
                     }
                     else
                     {
@@ -74,7 +74,7 @@ namespace DFlow.CLI
                     }
                 }
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             }
         }
 

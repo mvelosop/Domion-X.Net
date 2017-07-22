@@ -13,7 +13,7 @@ namespace Domion.Lib.Data
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <typeparam name="TKey">Key property type</typeparam>
-    public abstract class BaseRepository<TEntity, TKey> : IQueryManager<TEntity>, IEntityManager<TEntity, TKey> where TEntity : class
+    public abstract class BaseRepository<TEntity, TKey> : IRepositoryQuery<TEntity>, IEntityFinder<TEntity, TKey> where TEntity : class
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;

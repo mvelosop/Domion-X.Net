@@ -19,7 +19,7 @@ using Xunit;
 namespace DFlow.Budget.Lib.Tests.Tests
 {
     [Trait("Type", "Integration")]
-    public class BudgetClassManager_IntegrationTests
+    public class BudgetClassRepository_IntegrationTests
     {
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
@@ -33,7 +33,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
         private readonly Tenant TenantA;
         private readonly Tenant TenantB;
 
-        static BudgetClassManager_IntegrationTests()
+        static BudgetClassRepository_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
 
@@ -42,15 +42,15 @@ namespace DFlow.Budget.Lib.Tests.Tests
             SeedBaseData(DbHelper);
         }
 
-        public BudgetClassManager_IntegrationTests()
+        public BudgetClassRepository_IntegrationTests()
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<TenantManager>();
+                var repo = scope.Resolve<TenantRepository>();
 
-                DefaultTenant = manager.AssertGetByKeyData(DefaultTenantData.Owner);
-                TenantA = manager.AssertGetByKeyData(TenantAData.Owner);
-                TenantB = manager.AssertGetByKeyData(TenantBData.Owner);
+                DefaultTenant = repo.AssertGetByKeyData(DefaultTenantData.Owner);
+                TenantA = repo.AssertGetByKeyData(TenantAData.Owner);
+                TenantB = repo.AssertGetByKeyData(TenantBData.Owner);
             }
         }
 
@@ -61,7 +61,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             var data = new BudgetClassData("Delete-Success-Valid - Inserted", TransactionType.Income);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
             });
@@ -70,20 +70,20 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
-                BudgetClass entity = manager.SingleOrDefault(bc => bc.Name == data.Name);
+                BudgetClass entity = repo.SingleOrDefault(bc => bc.Name == data.Name);
 
-                errors = manager.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesDoNotExist(data);
             });
@@ -96,7 +96,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             var data = new BudgetClassData("Insert-Error-Duplicate - Inserted", TransactionType.Income);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
             });
@@ -105,18 +105,18 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 BudgetClass entity = mapper.CreateEntity(data);
 
-                errors = manager.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity).ToList();
             });
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
         }
 
         [Fact]
@@ -128,29 +128,29 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             var data = new BudgetClassData("Insert-Success-Valid - Inserted", TransactionType.Income);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesDoNotExist(data);
             });
 
             // Act -------------------------------
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 BudgetClass entity = mapper.CreateEntity(data);
 
-                errors = manager.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesExist(data);
             });
@@ -166,38 +166,38 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             var data = new BudgetClassData("Insert-Success-Valid - Inserted", TransactionType.Income);
 
-            UsingManagerHelper(TenantA, (scope, helper) =>
+            UsingRepositoryHelper(TenantA, (scope, helper) =>
             {
                 helper.EnsureEntitiesDoNotExist(data);
             });
 
-            UsingManagerHelper(TenantB, (scope, helper) =>
+            UsingRepositoryHelper(TenantB, (scope, helper) =>
             {
                 helper.EnsureEntitiesDoNotExist(data);
             });
 
             // Act -------------------------------
 
-            UsingManager(TenantA, (scope, manager) =>
+            UsingRepository(TenantA, (scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 BudgetClass entity = mapper.CreateEntity(data);
 
-                errorsA = manager.TryInsert(entity).ToList();
+                errorsA = repo.TryInsert(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
-            UsingManager(TenantB, (scope, manager) =>
+            UsingRepository(TenantB, (scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 BudgetClass entity = mapper.CreateEntity(data);
 
-                errorsB = manager.TryInsert(entity).ToList();
+                errorsB = repo.TryInsert(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
@@ -205,12 +205,12 @@ namespace DFlow.Budget.Lib.Tests.Tests
             errorsA.Should().BeEmpty();
             errorsB.Should().BeEmpty();
 
-            UsingManagerHelper(TenantA, (scope, helper) =>
+            UsingRepositoryHelper(TenantA, (scope, helper) =>
             {
                 helper.AssertEntitiesExist(data);
             });
 
-            UsingManagerHelper(TenantA, (scope, helper) =>
+            UsingRepositoryHelper(TenantA, (scope, helper) =>
             {
                 helper.AssertEntitiesExist(data);
             });
@@ -224,7 +224,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
             var data = new BudgetClassData("Update-Error-Duplicate - Inserted first", TransactionType.Income);
             var update = new BudgetClassData("Update-Error-Duplicate - Inserted second", TransactionType.Income);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data, update);
             });
@@ -233,20 +233,20 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
-                BudgetClass entity = manager.SingleOrDefault(bc => bc.Name == data.Name);
+                BudgetClass entity = repo.SingleOrDefault(bc => bc.Name == data.Name);
 
                 entity = mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
             });
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassManager.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
             var data = new BudgetClassData("Update-Success-Valid - Inserted", TransactionType.Income);
             var update = new BudgetClassData("Update-Success-Valid - Updated", TransactionType.Income);
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.EnsureEntitiesExist(data);
                 helper.EnsureEntitiesDoNotExist(update);
@@ -267,24 +267,24 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingManager((scope, manager) =>
+            UsingRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
-                BudgetClass entity = manager.SingleOrDefault(bc => bc.Name == data.Name);
+                BudgetClass entity = repo.SingleOrDefault(bc => bc.Name == data.Name);
 
                 entity = mapper.UpdateEntity(entity, update);
 
-                errors = manager.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity).ToList();
 
-                manager.SaveChanges();
+                repo.SaveChanges();
             });
 
             // Assert ----------------------------
 
             errors.Should().BeEmpty();
 
-            UsingManagerHelper((scope, helper) =>
+            UsingRepositoryHelper((scope, helper) =>
             {
                 helper.AssertEntitiesExist(update);
             });
@@ -294,7 +294,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var helper = scope.Resolve<TenantManagerHelper>();
+                var helper = scope.Resolve<TenantRepositoryHelper>();
 
                 helper.EnsureEntitiesExist(DefaultTenantData, TenantAData, TenantBData);
             }
@@ -322,36 +322,36 @@ namespace DFlow.Budget.Lib.Tests.Tests
             return dbHelper;
         }
 
-        private Action<ILifetimeScope, BudgetClassManager> GetTenant(TenantData tenantData)
+        private Action<ILifetimeScope, BudgetClassRepository> GetTenant(TenantData tenantData)
         {
             throw new NotImplementedException();
         }
 
-        private void UsingManager(Action<ILifetimeScope, BudgetClassManager> action)
+        private void UsingRepository(Action<ILifetimeScope, BudgetClassRepository> action)
         {
-            UsingManager(DefaultTenant, action);
+            UsingRepository(DefaultTenant, action);
         }
 
-        private void UsingManager(Tenant currenTenant, Action<ILifetimeScope, BudgetClassManager> action)
+        private void UsingRepository(Tenant currenTenant, Action<ILifetimeScope, BudgetClassRepository> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope(cb => cb.Register(c => currenTenant)))
             {
-                var manager = scope.Resolve<BudgetClassManager>();
+                var repo = scope.Resolve<BudgetClassRepository>();
 
-                action.Invoke(scope, manager);
+                action.Invoke(scope, repo);
             }
         }
 
-        private void UsingManagerHelper(Action<ILifetimeScope, BudgetClassManagerHelper> action)
+        private void UsingRepositoryHelper(Action<ILifetimeScope, BudgetClassRepositoryHelper> action)
         {
-            UsingManagerHelper(DefaultTenant, action);
+            UsingRepositoryHelper(DefaultTenant, action);
         }
 
-        private void UsingManagerHelper(Tenant currenTenant, Action<ILifetimeScope, BudgetClassManagerHelper> action)
+        private void UsingRepositoryHelper(Tenant currenTenant, Action<ILifetimeScope, BudgetClassRepositoryHelper> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope(cb => cb.Register(c => currenTenant)))
             {
-                var helper = scope.Resolve<BudgetClassManagerHelper>();
+                var helper = scope.Resolve<BudgetClassRepositoryHelper>();
 
                 action.Invoke(scope, helper);
             }

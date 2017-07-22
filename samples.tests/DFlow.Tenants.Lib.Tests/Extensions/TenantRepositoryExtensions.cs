@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace DFlow.Tenants.Lib.Tests.Extensions
 {
-    public static class TenantManagerExtensions
+    public static class TenantRepositoryExtensions
     {
-        public static Tenant AssertGetByKeyData(this TenantManager manager, string owner)
+        public static Tenant AssertGetByKeyData(this TenantRepository repo, string owner)
         {
-            Tenant entity = manager.SingleOrDefault(t => t.Owner == owner);
+            Tenant entity = repo.SingleOrDefault(t => t.Owner == owner);
 
             entity.Should().NotBeNull(@"because Tenant ""{0}"" MUST EXIST!", owner);
 

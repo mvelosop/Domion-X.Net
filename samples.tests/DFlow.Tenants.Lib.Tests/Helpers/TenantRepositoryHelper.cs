@@ -10,34 +10,34 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for TenantManager.
+    ///         Test helper class for TenantRepository.
     ///     </para>
     ///
     ///     <para>
     ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "Tenant" using data class "TenantData" as input
     ///     </para>
     /// </summary>
-    public class TenantManagerHelper
+    public class TenantRepositoryHelper
     {
         private readonly Lazy<TenantDataMapper> LazyTenantDataMapper;
-        private readonly Lazy<TenantManager> LazyTenantManager;
+        private readonly Lazy<TenantRepository> LazyTenantRepo;
         private readonly ILifetimeScope Scope;
 
         /// <summary>
-        ///     Creates a Helper for TenantManager to help in the test's Arrange and Assert sections
+        ///     Creates a Helper for TenantRepository to help in the test's Arrange and Assert sections
         /// </summary>
-        public TenantManagerHelper(
+        public TenantRepositoryHelper(
             ILifetimeScope scope,
             Lazy<TenantDataMapper> lazyTenantDataMapper,
-            Lazy<TenantManager> lazyTenantManager)
+            Lazy<TenantRepository> lazyTenantRepo)
         {
             Scope = scope;
 
-            LazyTenantManager = lazyTenantManager;
+            LazyTenantRepo = lazyTenantRepo;
             LazyTenantDataMapper = lazyTenantDataMapper;
         }
 
-        private TenantManager TenantManager => LazyTenantManager.Value;
+        private TenantRepository TenantRepo => LazyTenantRepo.Value;
 
         private TenantDataMapper TenantMapper => LazyTenantDataMapper.Value;
 
@@ -49,11 +49,11 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         {
             using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<TenantManager>();
+                var repo = scope.Resolve<TenantRepository>();
 
                 foreach (TenantData data in dataSet)
                 {
-                    Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                    Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                     entity.Should().BeNull(@"because Tenant ""{0}"" MUST NOT EXIST!", data.Owner);
                 }
@@ -68,12 +68,12 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         {
             using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<TenantManager>();
+                var repo = scope.Resolve<TenantRepository>();
                 var mapper = scope.Resolve<TenantDataMapper>();
 
                 foreach (TenantData data in dataSet)
                 {
-                    Tenant entity = manager.SingleOrDefault(e => e.Owner == data.Owner);
+                    Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
                     entity.Should().NotBeNull(@"because Tenant ""{0}"" MUST EXIST!", data.Owner);
 
@@ -92,16 +92,16 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         {
             foreach (TenantData data in dataSet)
             {
-                Tenant entity = TenantManager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = TenantRepo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 if (entity == null) continue;
 
-                var errors = TenantManager.TryDelete(entity);
+                var errors = TenantRepo.TryDelete(entity);
 
                 errors.Should().BeEmpty(@"because Tenant ""{0}"" has to be removed!", data.Owner);
             }
 
-            TenantManager.SaveChanges();
+            TenantRepo.SaveChanges();
 
             AssertEntitiesDoNotExist(dataSet);
         }
@@ -115,16 +115,16 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         {
             foreach (TenantData data in dataSet)
             {
-                Tenant entity = TenantManager.SingleOrDefault(e => e.Owner == data.Owner);
+                Tenant entity = TenantRepo.SingleOrDefault(e => e.Owner == data.Owner);
 
                 entity = entity == null ? TenantMapper.CreateEntity(data) : TenantMapper.UpdateEntity(entity, data);
 
-                var errors = TenantManager.TryUpsert(entity);
+                var errors = TenantRepo.TryUpsert(entity);
 
                 errors.Should().BeEmpty(@"because Tenant ""{0}"" has to be added!", data.Owner);
             }
 
-            TenantManager.SaveChanges();
+            TenantRepo.SaveChanges();
 
             AssertEntitiesExist(dataSet);
         }

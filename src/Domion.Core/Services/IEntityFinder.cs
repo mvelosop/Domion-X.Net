@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TKey">Key value(s)</typeparam>
-    public interface IEntityManager<T, TKey> where T : class
+    public interface IEntityFinder<T, TKey> where T : class
     {
         /// <summary>
         ///     Finds an entity with the given primary key values.

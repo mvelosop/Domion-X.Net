@@ -9,34 +9,34 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for BudgetClassManager.
+    ///         Test helper class for BudgetClassRepository.
     ///     </para>
     ///
     ///     <para>
     ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "BudgetClass" using data class "BudgetClassData" as input
     ///     </para>
     /// </summary>
-    public class BudgetClassManagerHelper
+    public class BudgetClassRepositoryHelper
     {
         private readonly Lazy<BudgetClassDataMapper> LazyBudgetClassDataMapper;
-        private readonly Lazy<BudgetClassManager> LazyBudgetClassManager;
+        private readonly Lazy<BudgetClassRepository> LazyBudgetClassRepo;
         private readonly ILifetimeScope Scope;
 
         /// <summary>
-        ///     Creates a Helper for BudgetClassManager to help in the test's Arrange and Assert sections
+        ///     Creates a Helper for BudgetClassRepository to help in the test's Arrange and Assert sections
         /// </summary>
-        public BudgetClassManagerHelper(
+        public BudgetClassRepositoryHelper(
             ILifetimeScope scope,
             Lazy<BudgetClassDataMapper> lazyBudgetClassDataMapper,
-            Lazy<BudgetClassManager> lazyBudgetClassManager)
+            Lazy<BudgetClassRepository> lazyBudgetClassRepo)
         {
             Scope = scope;
 
-            LazyBudgetClassManager = lazyBudgetClassManager;
+            LazyBudgetClassRepo = lazyBudgetClassRepo;
             LazyBudgetClassDataMapper = lazyBudgetClassDataMapper;
         }
 
-        private BudgetClassManager BudgetClassManager => LazyBudgetClassManager.Value;
+        private BudgetClassRepository BudgetClassRepo => LazyBudgetClassRepo.Value;
 
         private BudgetClassDataMapper BudgetClassMapper => LazyBudgetClassDataMapper.Value;
 
@@ -48,11 +48,11 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<BudgetClassManager>();
+                var repo = scope.Resolve<BudgetClassRepository>();
 
                 foreach (BudgetClassData data in dataSet)
                 {
-                    BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
+                    BudgetClass entity = repo.SingleOrDefault(e => e.Name == data.Name);
 
                     entity.Should().BeNull(@"because BudgetClass ""{0}"" MUST NOT EXIST!", data.Name);
                 }
@@ -67,12 +67,12 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<BudgetClassManager>();
+                var repo = scope.Resolve<BudgetClassRepository>();
                 var mapper = scope.Resolve<BudgetClassDataMapper>();
 
                 foreach (BudgetClassData data in dataSet)
                 {
-                    BudgetClass entity = manager.SingleOrDefault(e => e.Name == data.Name);
+                    BudgetClass entity = repo.SingleOrDefault(e => e.Name == data.Name);
 
                     entity.Should().NotBeNull(@"because BudgetClass ""{0}"" MUST EXIST!", data.Name);
 
@@ -91,16 +91,16 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (BudgetClassData data in dataSet)
             {
-                BudgetClass entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
+                BudgetClass entity = BudgetClassRepo.SingleOrDefault(e => e.Name == data.Name);
 
                 if (entity == null) continue;
 
-                var errors = BudgetClassManager.TryDelete(entity);
+                var errors = BudgetClassRepo.TryDelete(entity);
 
                 errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be removed!", data.Name);
             }
 
-            BudgetClassManager.SaveChanges();
+            BudgetClassRepo.SaveChanges();
 
             AssertEntitiesDoNotExist(dataSet);
         }
@@ -114,16 +114,16 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             foreach (BudgetClassData data in dataSet)
             {
-                BudgetClass entity = BudgetClassManager.SingleOrDefault(e => e.Name == data.Name);
+                BudgetClass entity = BudgetClassRepo.SingleOrDefault(e => e.Name == data.Name);
 
                 entity = entity == null ? BudgetClassMapper.CreateEntity(data) : BudgetClassMapper.UpdateEntity(entity, data);
 
-                var errors = BudgetClassManager.TryUpsert(entity);
+                var errors = BudgetClassRepo.TryUpsert(entity);
 
                 errors.Should().BeEmpty(@"because BudgetClass ""{0}"" has to be added!", data.Name);
             }
 
-            BudgetClassManager.SaveChanges();
+            BudgetClassRepo.SaveChanges();
 
             AssertEntitiesExist(dataSet);
         }
