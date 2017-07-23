@@ -14,8 +14,12 @@
 
   <ItemGroup>
     <Compile Remove="logs\**" />
+    <Compile Remove="Views\Tenants\**" />
     <Content Remove="logs\**" />
+    <Content Remove="Views\Tenants\**" />
     <EmbeddedResource Remove="logs\**" />
+    <EmbeddedResource Remove="Views\Tenants\**" />
+    <None Remove="Views\Tenants\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,9 +62,6 @@
     <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Tenants\" />
   </ItemGroup>
 
 </Project>

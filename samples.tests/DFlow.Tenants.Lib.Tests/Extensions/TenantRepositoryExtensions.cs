@@ -2,7 +2,6 @@
 using DFlow.Tenants.Lib.Services;
 using Domion.Lib.Extensions;
 using FluentAssertions;
-using System.Linq;
 
 namespace DFlow.Tenants.Lib.Tests.Extensions
 {

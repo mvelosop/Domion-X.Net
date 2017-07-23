@@ -19,9 +19,9 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
     /// </summary>
     public class TenantRepositoryHelper
     {
-        private readonly Lazy<TenantDataMapper> LazyTenantDataMapper;
-        private readonly Lazy<TenantRepository> LazyTenantRepo;
-        private readonly ILifetimeScope Scope;
+        private readonly Lazy<TenantDataMapper> _lazyTenantDataMapper;
+        private readonly Lazy<TenantRepository> _lazyTenantRepo;
+        private readonly ILifetimeScope _scope;
 
         /// <summary>
         ///     Creates a Helper for TenantRepository to help in the test's Arrange and Assert sections
@@ -31,15 +31,15 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
             Lazy<TenantDataMapper> lazyTenantDataMapper,
             Lazy<TenantRepository> lazyTenantRepo)
         {
-            Scope = scope;
+            _scope = scope;
 
-            LazyTenantRepo = lazyTenantRepo;
-            LazyTenantDataMapper = lazyTenantDataMapper;
+            _lazyTenantRepo = lazyTenantRepo;
+            _lazyTenantDataMapper = lazyTenantDataMapper;
         }
 
-        private TenantRepository TenantRepo => LazyTenantRepo.Value;
+        private TenantRepository TenantRepo => _lazyTenantRepo.Value;
 
-        private TenantDataMapper TenantMapper => LazyTenantDataMapper.Value;
+        private TenantDataMapper TenantMapper => _lazyTenantDataMapper.Value;
 
         /// <summary>
         ///     Asserts that entities with the supplied key data values do not exist. This method DOES NOT DELETE entities, use EnsureEntitiesDoNotExist for that.
@@ -47,7 +47,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesDoNotExist(params TenantData[] dataSet)
         {
-            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
+            using (ILifetimeScope scope = _scope.BeginLifetimeScope())
             {
                 var repo = scope.Resolve<TenantRepository>();
 
@@ -66,7 +66,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesExist(params TenantData[] dataSet)
         {
-            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
+            using (ILifetimeScope scope = _scope.BeginLifetimeScope())
             {
                 var repo = scope.Resolve<TenantRepository>();
                 var mapper = scope.Resolve<TenantDataMapper>();
