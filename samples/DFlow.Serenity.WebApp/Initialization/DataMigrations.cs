@@ -15,9 +15,6 @@
     { 
         private static string[] databaseKeys = new[] {
             "Default"
-            //<if:Northwind>
-            , "Northwind"
-            //</if:Northwind>
         };
 
         public static void Initialize()
