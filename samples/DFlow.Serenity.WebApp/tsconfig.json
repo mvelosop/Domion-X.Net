@@ -1,0 +1,22 @@
+﻿{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "declaration": true,
+    "emitBOM": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "outFile": "wwwroot/Scripts/site/SereneDemo.Web.js",
+    "target": "es5",
+    "allowJs": false
+  },
+  "exclude": [
+    ".vs/",
+    "obj/",
+    "App_Data/",
+    "Views/",
+    "node_modules/",
+    "wwwroot/"
+  ]
+}
