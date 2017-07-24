@@ -16,6 +16,7 @@ using Serenity.Web.Middleware;
 using System;
 using System.Data.SqlClient;
 using System.IO;
+using Autofac;
 
 namespace SereneDemo
 {
@@ -29,10 +30,21 @@ namespace SereneDemo
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile($"appsettings.machine.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+            {
+                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets<Startup>();
+            }
+
+            builder.AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; }
+
+        //public TenantsDbHelper DbHelper { get; private set; }
 
         public static void RegisterDataProviders()
         {
@@ -50,7 +62,7 @@ namespace SereneDemo
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILifetimeScope scope)
         {
             Serenity.Extensibility.ExtensibilityHelper.SelfAssemblies = new System.Reflection.Assembly[]
             {
@@ -90,6 +102,8 @@ namespace SereneDemo
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                //app.UseBrowserLink();
             }
             else
             {
@@ -113,8 +127,18 @@ namespace SereneDemo
             });
 
             DataMigrations.Initialize();
+
         }
 
+        // ConfigureContainer is where you can register things directly
+        // with Autofac. This runs after ConfigureServices so the things
+        // here will override registrations made in ConfigureServices.
+        // Don't build the container; that gets done for you. If you
+        // need a reference to the container, you need to use the
+        // "Without ConfigureContainer" mechanism shown later.
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
@@ -136,6 +160,8 @@ namespace SereneDemo
             services.AddSingleton<IAuthorizationService, Administration.AuthorizationService>();
             services.AddSingleton<IUserRetrieveService, Administration.UserRetrieveService>();
             services.AddSingleton<IPermissionService, Administration.PermissionService>();
+            
+            
         }
     }
 }

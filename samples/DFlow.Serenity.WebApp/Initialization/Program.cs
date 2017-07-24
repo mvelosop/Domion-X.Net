@@ -1,5 +1,6 @@
-﻿using System.IO;
+﻿using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace SereneDemo
 {
@@ -9,6 +10,7 @@ namespace SereneDemo
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .ConfigureServices(services => services.AddAutofac())
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
