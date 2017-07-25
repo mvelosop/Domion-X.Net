@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>SereneDemo.Web</AssemblyName>
+    <!--<AssemblyName>SereneDemo.Web</AssemblyName>-->
     <OutputType>Exe</OutputType>
-    <PackageId>SereneDemo.Web</PackageId>
+    <!--<PackageId>SereneDemo.Web</PackageId>-->
     <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <PropertyGroup>
-    <UserSecretsId>aspnet-DFlow.WebApp-98245af6-7234-45a6-b507-4951581de125</UserSecretsId>
+    <UserSecretsId>aspnet-DFlow.Serenity.WebApp-0f35230c-5021-4133-9f64-af7dca994a46</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +45,8 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
     <PackageReference Include="Serenity.FluentMigrator.Runner" Version="1.6.904" />
     <PackageReference Include="Serenity.Web" Version="2.10.0" />
+    <PackageReference Include="Serilog" Version="2.5.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" Version="3.3.3" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
@@ -62,5 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,10 @@ using System;
 using System.Data.SqlClient;
 using System.IO;
 using Autofac;
+using Serilog;
+using DFlow.Tenants.Setup;
+
+using Log = Serilog.Log;
 
 namespace SereneDemo
 {
@@ -40,11 +44,17 @@ namespace SereneDemo
             builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Seq("http://localhost:5341")
+                //.WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log.txt"))
+                .CreateLogger();
         }
 
         public IConfigurationRoot Configuration { get; }
 
-        //public TenantsDbHelper DbHelper { get; private set; }
+        public TenantsDbHelper DbHelper { get; private set; }
 
         public static void RegisterDataProviders()
         {
@@ -104,6 +114,8 @@ namespace SereneDemo
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 //app.UseBrowserLink();
+
+                LoadDevelopmentTestData(scope);
             }
             else
             {
@@ -127,7 +139,8 @@ namespace SereneDemo
             });
 
             DataMigrations.Initialize();
-
+            
+            ConfigureDbLogging(scope);
         }
 
         // ConfigureContainer is where you can register things directly
@@ -138,7 +151,21 @@ namespace SereneDemo
         // "Without ConfigureContainer" mechanism shown later.
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            var containerSetup = new TenantsContainerSetup(DbHelper);
+
+            // Register application module's services
+            containerSetup.RegisterTypes(builder);
+
+            // DFlow services
+            builder.RegisterType<TenantsServices>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<TenantViewModelMapper>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
         }
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(options =>
@@ -160,8 +187,50 @@ namespace SereneDemo
             services.AddSingleton<IAuthorizationService, Administration.AuthorizationService>();
             services.AddSingleton<IUserRetrieveService, Administration.UserRetrieveService>();
             services.AddSingleton<IPermissionService, Administration.PermissionService>();
-            
-            
+
+            SetupDatabase();
+        }
+
+        private void ConfigureDbLogging(ILifetimeScope scope)
+        {
+            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
+            {
+                var dbContext = subScope.Resolve<TenantsDbContext>();
+
+                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+
+                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                dbLoggerFactory.AddSerilog();
+            }
+        }
+
+        private void LoadDevelopmentTestData(ILifetimeScope scope)
+        {
+            var testData = new DevelopmentTestData(scope);
+
+            testData.Load();
+        }
+
+        private void SetupDatabase()
+        {
+            SetupIdentityDatabase();
+
+            DbHelper = new TenantsDbHelper(Configuration.GetConnectionString("DefaultConnection"));
+
+            DbHelper.SetupDatabase();
+        }
+
+        private void SetupIdentityDatabase()
+        {
+            var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+
+            optionBuilder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+
+            using (var dbContext = new ApplicationDbContext(optionBuilder.Options))
+            {
+                dbContext.Database.Migrate();
+            }
         }
     }
 }
