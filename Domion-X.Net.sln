@@ -73,8 +73,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.WebApp.Tests", "sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Serenity.WebApp", "samples\DFlow.Serenity.WebApp\DFlow.Serenity.WebApp.csproj", "{6A0CA047-A940-4EFD-A591-D1E5698A49D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DFlow.Serenity.NetFramework.WebApp", "samples\DFlow.Serenity.NetFramework.WebApp\DFlow.Serenity.NetFramework.WebApp.csproj", "{83CA1B7D-C271-442C-8385-CEB6C87A3D35}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -169,10 +167,6 @@ Global
 		{6A0CA047-A940-4EFD-A591-D1E5698A49D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A0CA047-A940-4EFD-A591-D1E5698A49D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A0CA047-A940-4EFD-A591-D1E5698A49D5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83CA1B7D-C271-442C-8385-CEB6C87A3D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83CA1B7D-C271-442C-8385-CEB6C87A3D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83CA1B7D-C271-442C-8385-CEB6C87A3D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83CA1B7D-C271-442C-8385-CEB6C87A3D35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +194,5 @@ Global
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4} = {72A66134-3FA0-43E4-BBF8-E0B828DCB969}
 		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA} = {7CEC1CD1-2D4B-47B2-BFA2-63D6D1F6E110}
 		{6A0CA047-A940-4EFD-A591-D1E5698A49D5} = {F921A8A0-C1EE-4CCE-8FF5-983ABDEE7DFA}
-		{83CA1B7D-C271-442C-8385-CEB6C87A3D35} = {F921A8A0-C1EE-4CCE-8FF5-983ABDEE7DFA}
 	EndGlobalSection
 EndGlobal
