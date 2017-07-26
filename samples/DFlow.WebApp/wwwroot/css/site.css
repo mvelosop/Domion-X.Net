@@ -41,25 +41,20 @@ textarea {
     margin: 0;
 }
 
-table.table {
-    /*margin-bottom: 10px;*/
-    /*border-bottom: 2px solid #ddd;*/
+table .index-ops {
+    text-align: right;
+    white-space: nowrap;
+    width: 1%;
+    font-size: larger;
 }
 
-    table .index-ops {
-        text-align: right;
-        white-space: nowrap;
-        width: 1%;
-        font-size: larger;
-    }
+table.table-hover .index-ops > .icons {
+    visibility: hidden;
+}
 
-    table.table-hover .index-ops > .icons {
-        visibility: hidden;
-    }
-
-    table.table-hover tr:hover .index-ops > .icons {
-        visibility: visible;
-    }
+table.table-hover tr:hover .index-ops > .icons {
+    visibility: visible;
+}
 
 .alert {
     margin: 10px 0;
