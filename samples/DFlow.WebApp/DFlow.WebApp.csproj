@@ -57,6 +57,9 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Features\Shared\_Layout.original.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\samples.tests\DFlow.Tenants.Lib.Tests\DFlow.Tenants.Lib.Tests.csproj" />
     <ProjectReference Include="..\..\src\Domion.WebApp\Domion.WebApp.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
