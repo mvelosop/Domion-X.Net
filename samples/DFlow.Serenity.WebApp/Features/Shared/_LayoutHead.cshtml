@@ -5,29 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <link rel="home" id="ApplicationPath" href="~/" />
 <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-@Html.Stylesheet("~/Content/font-open-sans.css")
-@Html.Stylesheet("~/Content/font-awesome.css")
-@Html.Stylesheet("~/Content/simple-line-icons.css")
-@Html.Stylesheet("~/Content/ionicons.css")
-@Html.Stylesheet("~/Content/aristo/aristo.css")
-@Html.Stylesheet("~/Content/bootstrap.css")
-@Html.Stylesheet("~/Content/colorbox/jquery.colorbox.css")
-@Html.Stylesheet("~/Content/jquery.fileupload.css")
-@Html.Stylesheet("~/Content/pace.css")
-@Html.Stylesheet("~/Content/slick.grid.css")
-@Html.Stylesheet("~/Content/css/select2.css")
-@Html.Stylesheet("~/Content/toastr.css")
-@Html.Stylesheet("~/Content/serenity/serenity.css")
-@Html.Stylesheet("~/Content/site/site.css")
+<link rel="stylesheet" href="~/Content/font-open-sans.css" />
+<link rel="stylesheet" href="~/Content/font-open-sans.css" />
+<link rel="stylesheet" href="~/Content/font-awesome.css" />
+<link rel="stylesheet" href="~/Content/simple-line-icons.css" />
+<link rel="stylesheet" href="~/Content/ionicons.css" />
+<link rel="stylesheet" href="~/Content/aristo/aristo.css" />
+<link rel="stylesheet" href="~/Content/bootstrap.css" />
+<link rel="stylesheet" href="~/Content/colorbox/jquery.colorbox.css" />
+<link rel="stylesheet" href="~/Content/jquery.fileupload.css" />
+<link rel="stylesheet" href="~/Content/pace.css" />
+<link rel="stylesheet" href="~/Content/slick.grid.css" />
+<link rel="stylesheet" href="~/Content/css/select2.css" />
+<link rel="stylesheet" href="~/Content/toastr.css" />
+<link rel="stylesheet" href="~/Content/serenity/serenity.css" />
+<link rel="stylesheet" href="~/Content/site/site.css" />
+
 @if (System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft)
 {
-    @Html.Stylesheet("~/Content/site/site.rtl.css")
+    <link rel="stylesheet" href="~/Content/site/site.rtl.css" />
 }
+
 @*{var cookie = Request.Cookies["ThemePreference"]; var theme = cookie != null && !cookie.Value.IsEmptyOrNull() ? cookie.Value : "default"; *}*@
+
 <script type="application/json" id="ScriptCulture">
     @Html.Raw(Serenity.JSON.Stringify(new ScriptCulture()))
 </script>
+
 <script type="text/javascript">window.paceOptions = { minTime: 250, ghostTime: 250, restartOnRequestAfter: 250, ajax: { trackMethods: ['GET', 'POST'], trackWebSockets: true, ignoreURLs: [] } };</script>
+
 @Html.Script("~/Scripts/pace.js")
 @foreach (var x in CommonIncludes.Scripts)
 { @Html.Script(x) }

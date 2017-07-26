@@ -1,14 +1,17 @@
-﻿using Autofac;
+﻿using System;
+using System.Data.SqlClient;
+using Autofac;
 using cloudscribe.Web.Common;
+using DFlow.Serenity.WebApp.Services;
 using DFlow.Tenants.Lib.Data;
 using DFlow.Tenants.Setup;
-using DFlow.WebApp.Data;
-using DFlow.WebApp.Models;
-using DFlow.WebApp.Services;
+using DFlow.Serenity.WebApp.Data;
+using DFlow.Serenity.WebApp.Models;
 using Domion.WebApp.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -17,12 +20,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using Serilog;
-using System;
-using System.IO;
-using DFlow.WebApp.Features.Tenants;
+//using Serenity.Extensions.DependencyInjection;
+//using Serenity.Web.Middleware;
 
-namespace DFlow.WebApp
+namespace DFlow.Serenity.WebApp
 {
     public class Startup
     {
@@ -30,8 +33,10 @@ namespace DFlow.WebApp
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"appsettings.machine.json", optional: true)
+                .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
             {
@@ -54,12 +59,59 @@ namespace DFlow.WebApp
 
         public TenantsDbHelper DbHelper { get; private set; }
 
+        //public static void RegisterDataProviders()
+        //{
+        //    //DbProviderFactories.RegisterFactory("System.Data.SqlClient", SqlClientFactory.Instance);
+        //    //DbProviderFactories.RegisterFactory("Microsoft.Data.Sqlite", Microsoft.Data.Sqlite.SqliteFactory.Instance);
+
+        //    // to enable FIREBIRD: add FirebirdSql.Data.FirebirdClient reference, set connections, and uncomment line below
+        //    // DbProviderFactories.RegisterFactory("FirebirdSql.Data.FirebirdClient", FirebirdSql.Data.FirebirdClient.FirebirdClientFactory.Instance);
+
+        //    // to enable MYSQL: add MySql.Data reference, set connections, and uncomment line below
+        //    // DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySql.Data.MySqlClient.MySqlClientFactory.Instance);
+
+        //    // to enable POSTGRES: add Npgsql reference, set connections, and uncomment line below
+        //    // DbProviderFactories.RegisterFactory("Npgsql", Npgsql.NpgsqlFactory.Instance);
+        //}
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILifetimeScope scope)
         {
+            //Serenity.Extensibility.ExtensibilityHelper.SelfAssemblies = new System.Reflection.Assembly[]
+            //{
+            //    typeof(LocalTextRegistry).GetAssembly(),
+            //    typeof(SqlConnections).GetAssembly(),
+            //    typeof(Row).GetAssembly(),
+            //    typeof(SaveRequestHandler<>).GetAssembly(),
+            //    typeof(WebSecurityHelper).GetAssembly(),
+            //    typeof(Startup).GetAssembly()
+            //};
+
+            //SqlSettings.AutoQuotedIdentifiers = true;
+            //RegisterDataProviders();
+
+            //Dependency.SetResolver(new AppServices.DependencyResolver(app.ApplicationServices));
+
+            //var textRegistry = app.ApplicationServices.GetRequiredService<ILocalTextRegistry>();
+            //textRegistry.AddNestedTexts();
+            //textRegistry.AddNestedPermissions();
+            //textRegistry.AddEnumTexts();
+            //textRegistry.AddRowTexts();
+            var contentRoot = env.ContentRootPath;
+            //textRegistry.AddJsonTexts(System.IO.Path.Combine(env.WebRootPath, "Scripts/serenity/texts".Replace('/', Path.DirectorySeparatorChar)));
+            //textRegistry.AddJsonTexts(System.IO.Path.Combine(env.WebRootPath, "Scripts/site/texts".Replace('/', Path.DirectorySeparatorChar)));
+            //textRegistry.AddJsonTexts(System.IO.Path.Combine(env.ContentRootPath, "App_Data/texts".Replace('/', Path.DirectorySeparatorChar)));
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
             loggerFactory.AddSerilog();
+
+            //var reqLocOpt = new RequestLocalizationOptions();
+            //reqLocOpt.SupportedUICultures = UserCultureProvider.SupportedCultures;
+            //reqLocOpt.SupportedCultures = UserCultureProvider.SupportedCultures;
+            //reqLocOpt.RequestCultureProviders.Clear();
+            //reqLocOpt.RequestCultureProviders.Add(new UserCultureProvider());
+            //app.UseRequestLocalization(reqLocOpt);
 
             if (env.IsDevelopment())
             {
@@ -75,14 +127,25 @@ namespace DFlow.WebApp
             }
 
             app.UseStaticFiles();
+            
+            //app.UseCookieAuthentication(new CookieAuthenticationOptions
+            //{
+            //    AuthenticationScheme = "CookieAuthenticationScheme",
+            //    CookieName = ".AspNetAuth",
+            //    LoginPath = new PathString("/Account/Login/"),
+            //    AccessDeniedPath = new PathString("/Account/AccessDenied"),
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true
+            //});
+
             app.UseIdentity();
             app.UseSession();
             app.UseMvcWithDefaultRoute();
 
             app.UseCloudscribeCommonStaticFiles();
 
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-
+            //app.UseDynamicScripts();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -90,16 +153,9 @@ namespace DFlow.WebApp
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
-            {
-                var dbContext = subScope.Resolve<TenantsDbContext>();
-
-                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
-
-                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-                dbLoggerFactory.AddSerilog();
-            }
+            //DataMigrations.Initialize();
+            
+            ConfigureDbLogging(scope);
         }
 
         // ConfigureContainer is where you can register things directly
@@ -110,8 +166,6 @@ namespace DFlow.WebApp
         // "Without ConfigureContainer" mechanism shown later.
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            //builder.RegisterModule(new AutofacModule());
-
             var containerSetup = new TenantsContainerSetup(DbHelper);
 
             // cloudscribe configuration
@@ -137,14 +191,14 @@ namespace DFlow.WebApp
             // Register application module's services
             containerSetup.RegisterTypes(builder);
 
-            // WebApp services
+            // DFlow services
             builder.RegisterType<TenantsServices>()
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<TenantViewModelMapper>()
-                .AsSelf()
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            //builder.RegisterType<TenantViewModelMapper>()
+            //    .AsSelf()
+            //    .AsImplementedInterfaces()
+            //    .InstancePerLifetimeScope();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -165,14 +219,28 @@ namespace DFlow.WebApp
                     options.AddCloudscribeCommonEmbeddedViews();
                 });
 
-            // Adds a default in-memory implementation of IDistributedCache.
-            services.AddDistributedMemoryCache();
+            //services.AddMvc(options =>
+            //{
+            //    options.ModelBinderProviders.Insert(0, new ServiceEndpointModelBinderProvider());
+            //    options.Conventions.Add(new ServiceEndpointActionModelConvention());
+            //})
+            //.AddJsonOptions(options =>
+            //{
+            //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            //});
 
+            services.AddDistributedMemoryCache();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSession();
 
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+            //services.AddConfig(Configuration);
+            //services.AddCaching();
+            //services.AddTextRegistry();
+            //services.AddFileLogging();
+            //services.AddSingleton<IAuthenticationService, Administration.AuthenticationService>();
+            //services.AddSingleton<IAuthorizationService, Administration.AuthorizationService>();
+            //services.AddSingleton<IUserRetrieveService, Administration.UserRetrieveService>();
+            //services.AddSingleton<IPermissionService, Administration.PermissionService>();
 
             // cloudScribe services
             services.AddCloudscribePagination();
@@ -180,8 +248,21 @@ namespace DFlow.WebApp
 
             // I chose "GlobalResources" as the folder name where the .resx files will go, but it can be whatever you choose.
             services.AddLocalization(options => options.ResourcesPath = "GlobalResources");
-
             SetupDatabase();
+        }
+
+        private void ConfigureDbLogging(ILifetimeScope scope)
+        {
+            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
+            {
+                var dbContext = subScope.Resolve<TenantsDbContext>();
+
+                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+
+                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                dbLoggerFactory.AddSerilog();
+            }
         }
 
         private void LoadDevelopmentTestData(ILifetimeScope scope)

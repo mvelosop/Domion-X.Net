@@ -1,0 +1,217 @@
+﻿@*@model SereneDemo.Navigation.NavigationModel
+
+@functions {
+    public HtmlString renderItem(Serenity.Navigation.NavigationItem item, int depth, int[] path) {
+
+        var isactive = true;
+        for (var i = 0; i <= depth; i++)
+        {
+            if (path[i] != Model.ActivePath[i])
+            {
+                isactive = false;
+                break;
+            }
+        }
+
+        var klass = (isactive ? "active" : "") + (item.Children.IsEmptyOrNull() ? "" : " treeview");
+        var icon = (item.IconClass ?? (item.Children.Count > 0 ? "icon-layers" : (depth == 0 ? "icon-link" : "fa-circle-o")));
+        var title = (LocalText.TryGet("Navigation." + item.FullPath) ?? item.Title);
+        var sectionUrl = (item.Url ?? "javascript:;");
+        var target = item.Target; if (target != null) { target += " target=" + target; }
+
+        var sb = new System.Text.StringBuilder();
+        sb.Append("<li class='" + klass + "'><a href='" + HtmlEncoder.Encode(sectionUrl) + "' " + target + ">" +
+        "<i class='fa " + icon + "'></i><span>" + HtmlEncoder.Encode(title) + "</span>" + (!item.Children.IsEmptyOrNull() ? "<i class='fa fa-angle-left pull-right'></i>" : "") + "</a>");
+
+        if (item.Children.Count > 0) {
+            sb.Append("<ul class='treeview-menu'>");
+            path[depth + 1] = 0;
+            foreach (var child in item.Children)
+            {
+                sb.Append(renderItem(child, depth + 1, path).ToString());
+
+            }
+            sb.Append("</ul>");
+        }
+        sb.Append("</li>");
+        path[depth]++;
+        return new HtmlString(sb.ToString());
+    }
+}*@
+
+@*@{var path = new int[10]; }
+@foreach (var item in Model.Items)
+{
+    @renderItem(item, 0, path);
+}*@
+
+<li class='active'>
+    <a href='/'><i class='fa icon-speedometer'></i><span>Dashboard</span></a>
+</li>
+<li class=' treeview'>
+    <a href='javascript:;'>
+        <i class='fa icon-diamond'></i><span>Theme Samples</span><i class='fa fa-angle-left pull-right'></i>
+    </a>
+    <ul class='treeview-menu'>
+        <li class=''>
+            <a href='/AdminLTE/DashboardV2'><i class='fa icon-speedometer'></i><span>Dashboard v2</span></a>
+        </li>
+        <li class=''>
+            <a href='/AdminLTE/Widgets'><i class='fa fa-th'></i><span>Widgets</span></a>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-pie-chart'></i><span>Charts</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/Charts/ChartJS'><i class='fa fa-circle-o'></i><span>ChartJS</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Charts/Morris'><i class='fa fa-circle-o'></i><span>Morris</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Charts/Flot'><i class='fa fa-circle-o'></i><span>Flot</span></a>
+                </li>
+            </ul>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-laptop'></i><span>UI Elements</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/General'><i class='fa fa-circle-o'></i><span>General</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/Icons'><i class='fa fa-circle-o'></i><span>Icons</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/Buttons'><i class='fa fa-circle-o'></i><span>Buttons</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/Sliders'><i class='fa fa-circle-o'></i><span>Sliders</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/Timeline'><i class='fa fa-circle-o'></i><span>Timeline</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/UIElements/Modals'><i class='fa fa-circle-o'></i><span>Modals</span></a>
+                </li>
+            </ul>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-edit'></i><span>Forms</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/Forms/GeneralElements'><i class='fa fa-circle-o'></i><span>General Elements</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Forms/AdvancedElements'><i class='fa fa-circle-o'></i><span>Advanced Elements</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Forms/TextEditors'><i class='fa fa-circle-o'></i><span>Text Editors</span></a>
+                </li>
+            </ul>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-table'></i><span>Tables</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/Tables/SimpleTables'><i class='fa fa-circle-o'></i><span>Simple Tables</span></a>
+                </li>
+            </ul>
+        </li>
+        <li class=''>
+            <a href='/AdminLTE/Calendar'><i class='fa fa-calendar'></i><span>Calendar</span></a>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-envelope'></i><span>Mailbox</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/Mailbox/Inbox'><i class='fa fa-circle-o'></i><span>Inbox</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Mailbox/Compose'><i class='fa fa-circle-o'></i><span>Compose</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Mailbox/Read'><i class='fa fa-circle-o'></i><span>Read</span></a>
+                </li>
+            </ul>
+        </li>
+        <li class=' treeview'>
+            <a href='javascript:;'>
+                <i class='fa fa-folder'></i><span>Examples</span><i class='fa fa-angle-left pull-right'></i>
+            </a>
+            <ul class='treeview-menu'>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Invoice'><i class='fa fa-circle-o'></i><span>Invoice</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Profile'><i class='fa fa-circle-o'></i><span>Profile</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Login'><i class='fa fa-circle-o'></i><span>Login</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Register'><i class='fa fa-circle-o'></i><span>Register</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Lockscreen'><i class='fa fa-circle-o'></i><span>Lockscreen</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Error404'><i class='fa fa-circle-o'></i><span>Error 404</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/Error500'><i class='fa fa-circle-o'></i><span>Error 500</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/BlankPage'><i class='fa fa-circle-o'></i><span>Blank Page</span></a>
+                </li>
+                <li class=''>
+                    <a href='/AdminLTE/Examples/PacePage'><i class='fa fa-circle-o'></i><span>Pace Page</span></a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+<li class=' treeview'>
+    <a href='javascript:;'>
+        <i class='fa icon-screen-desktop'></i><span>Administration</span><i class='fa fa-angle-left pull-right'></i>
+    </a>
+    <ul class='treeview-menu'>
+        <li class=''>
+            <a href='/Administration/Language'><i class='fa icon-bubbles'></i><span>Languages</span></a>
+        </li>
+        <li class=''>
+            <a href='/Administration/Translation'><i class='fa icon-speech'></i><span>Translations</span></a>
+        </li>
+        <li class=''>
+            <a href='/Administration/Sergen'><i class='fa icon-magic-wand'></i><span>Sergen</span></a>
+        </li>
+        <li class=''>
+            <a href='/Administration/Role'><i class='fa icon-lock'></i><span>Roles</span></a>
+        </li>
+        <li class=''>
+            <a href='/Administration/User'><i class='fa icon-people'></i><span>User Management</span></a>
+        </li>
+    </ul>
+</li>
+
+
+<script type="text/javascript">
+    function openWindow(url, width, height) {
+        height = height || (screen.availHeight - 60);
+        width = width || (screen.availWidth - 10);
+        var x = (screen.availWidth - width) / 2 - 5; if (x < 0) x = 0;
+        var y = (screen.availHeight - height) / 2 - 25; if (y < 0) y = 0;
+        var winPopup = window.open(url, "", "status=0, toolbar=0, width=" + width + ", height=" + height +
+            ", scrollbars=1, resizable=yes, left=" + x + ", top=" + y);
+    }
+</script>

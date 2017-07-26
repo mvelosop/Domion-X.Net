@@ -1,26 +1,33 @@
 ﻿<!DOCTYPE html>
 @{
-    Func<string, HtmlString> json = x => new HtmlString(Serenity.JSON.Stringify(x));
+    //Func<string, HtmlString> json = x => new HtmlString(Serenity.JSON.Stringify(x));
     var hideNav = (string)Context.Request.Query["hideNav"] == "1";
-    var logged = Serenity.Authorization.Username;
+    //var logged = Serenity.Authorization.Username;
     var themeCookie = Context.Request.Cookies["ThemePreference"];
-    var theme = !themeCookie.IsEmptyOrNull() ? themeCookie : "blue";
+    var theme = !string.IsNullOrEmpty(themeCookie) ? themeCookie : "blue";
     var rtl = System.Globalization.CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
-    var user = (UserDefinition)Serenity.Authorization.UserDefinition;
-    var userImage = System.Web.VirtualPathUtility.ToAbsolute(
-        (user == null || string.IsNullOrEmpty(user.UserImage)) ? "~/Content/adminlte/img/avatar04.png" :
-        "~/upload/" + user.UserImage);
+    //var user = (UserDefinition)Serenity.Authorization.UserDefinition;
+    var user = "";
+    
+    //var userImage = System.Web.VirtualPathUtility.ToAbsolute(
+    //    (user == null || string.IsNullOrEmpty(user.UserImage)) ? "~/Content/adminlte/img/avatar04.png" :
+    //        "~/upload/" + user.UserImage);
+    var userImage = "~/Content/adminlte/img/avatar04.png";
+    
 }
 <!--[if IE 8]> <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name" class="no-js@(hideNav ? " no-navigation" : "")">
 <!--<![endif]-->
+
 <head>
-    @{Html.RenderPartial(MVC.Views.Shared._LayoutHead);}
+    @{Html.RenderPartial("_LayoutHead");}
+    
     @RenderSection("Head", false)
     <title>@(ViewData["Title"]) - SereneDemo</title>
 </head>
+
 <body id="s-@(ViewData["PageId"])Page" class="@(ViewData["BodyClass"]) fixed sidebar-mini hold-transition skin-@theme@(hideNav ? " no-navigation" : " has-layout-event")@(rtl ? " rtl" : "")">
 
 @if (hideNav)
@@ -42,7 +49,7 @@ else
         <header class="main-header">
             <a href="~/" class="logo">
                 <span class="logo-mini"><i></i></span>
-                <span class="logo-lg"><i></i><b>@LocalText.Get("Navigation.SiteTitle")</b></span>
+                <span class="logo-lg"><i></i><b>Quizzer</b></span>
             </a>
             <nav class="navbar navbar-static-top" role="navigation">
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -54,7 +61,7 @@ else
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="@userImage" class="user-image" alt="User Image">
-                                <span class="hidden-xs">@Serenity.Authorization.Username</span>
+                                <span class="hidden-xs">Usuario</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
@@ -62,17 +69,18 @@ else
                                     <img src="@userImage" class="img-circle" alt="User Image">
 
                                     <p>
-                                        @(user != null ? user.DisplayName : "")
+                                        @*@(user != null ? user.DisplayName : "")*@
+                                        Usuario-Conectado
                                     </p>
                                 </li>
 
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="~/Account/ChangePassword" class="btn btn-default btn-flat"><i class="fa fa-lock fa-fw"></i> @Texts.Forms.Membership.ChangePassword.FormTitle</a>
+                                        <a href="~/Account/ChangePassword" class="btn btn-default btn-flat"><i class="fa fa-lock fa-fw"></i> @("Change password")</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="~/Account/Signout" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i> @LocalText.Get("Navigation.LogoutLink")</a>
+                                        <a href="~/Account/Signout" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i> @("Logout")</a>
                                     </div>
                                 </li>
                             </ul>
@@ -97,7 +105,7 @@ else
                     </div>
                 </form>
                 <ul class="sidebar-menu" id="SidebarMenu">
-                    @{Html.RenderPartial(MVC.Views.Shared.LeftNavigation, new SereneDemo.Navigation.NavigationModel()); }
+                    @{Html.RenderPartial("LeftNavigation"); }
                 </ul>
             </section>
         </aside>
@@ -116,24 +124,24 @@ else
 
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-                @Texts.Site.Layout.FooterInfo
+                @("Serenity Platform")
             </div>
-            <strong>@Texts.Site.Layout.FooterCopyright</strong> @Texts.Site.Layout.FooterRights
+            <strong>@("Copyright (c) 2015.")</strong> @("All rights reserved.")
         </footer>
 
         <aside class="control-sidebar control-sidebar-dark">
             <div class="tab-content">
                 <div class="tab-pane active" id="control-sidebar-settings-tab">
                     <form method="post">
-                        <h3 class="control-sidebar-heading">@Texts.Site.Layout.GeneralSettings</h3>
+                        <h3 class="control-sidebar-heading">@("General Settings")</h3>
 
                         <div class="form-group">
-                            <label class="control-sidebar-subheading">@Texts.Site.Layout.Language</label>
+                            <label class="control-sidebar-subheading">@("Language")</label>
                             <select id="LanguageSelect" class="form-control"></select>
                         </div>
 
                         <div class="form-group" style="margin-top: 15px;">
-                            <label class="control-sidebar-subheading">@Texts.Site.Layout.Theme</label>
+                            <label class="control-sidebar-subheading">@("Theme")</label>
                             <select id="ThemeSelect" class="form-control"></select>
                         </div>
                     </form>

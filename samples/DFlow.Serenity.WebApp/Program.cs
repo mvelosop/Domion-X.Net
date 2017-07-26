@@ -1,6 +1,7 @@
 ﻿using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using DFlow.Serenity.WebApp;
 
 namespace SereneDemo
 {

@@ -1,10 +1,10 @@
 ﻿
 namespace SereneDemo.AdminLTE
 {
-    using Serenity.Web;
+    //using Serenity.Web;
     using Microsoft.AspNetCore.Mvc;
 
-    [PageAuthorize, Route("AdminLTE/Charts/[action]")]
+    //[PageAuthorize, Route("AdminLTE/Charts/[action]")]
     public class ChartsController : Controller
     {
         public ActionResult ChartJS()
