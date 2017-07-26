@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = Model.Title;
 
-    Func<dynamic, object> Links =
+    Func<dynamic, object> links =
 
         @<div class="links">
             <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary"><i class="fa fa-list" aria-hidden="true"></i> Índice</a>
@@ -11,35 +11,38 @@
 
 }
 
-<h2>@Model.Title</h2>
-
-@Links(Model)
+@section PageHeader{
+    <h2>@Model.Title</h2>
+    @links(Model)
+}
 
 @Html.Partial("AlertsPartial")
 
-<h4 style="color:red">¿Realmente quiere eliminar este cliente?</h4>
+<h4 class="delete-confirmation" style="color:red">¿Realmente quiere eliminar este cliente?</h4>
 
-<h3 style="color: #404040; font-weight: bold">@Model.Owner</h3>
+<div class="box box-data-card">
+    <form asp-action="Delete">
 
-<div class="row">
-    <div class="col-sm-9">
+        <div class="box-header with-border">
+            <h3>@Model.Owner</h3>
+        </div>
 
-        <form asp-action="Delete">
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="RowVersion" />
+        <div class="box-body">
+            <div class="row">
 
-            @Html.Partial("_DisplayPartial", Model)
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="RowVersion" />
 
-            <hr />
+                @Html.Partial("_DisplayPartial", Model)
 
+            </div>
+        </div>
+
+        <div class="box-footer with-border">
             @Html.Partial("_DeleteButtonPartial")
+        </div>
 
-        </form>
-    </div>
-
-    <div class="col-sm-3">
-    </div>
-
+    </form>
 </div>
 
-@Links(Model)
+@links(Model)

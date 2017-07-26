@@ -20,6 +20,7 @@ namespace DFlow.WebApp.Features.Tenants
 
         [Display(Name = "Nombre")]
         [MaxLength(250)]
+        [Required(ErrorMessage = "Debe indicar el nombre del cliente.")]
         public string Owner { get; set; }
 
         [Display(Name = "Notas")]

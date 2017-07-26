@@ -35,7 +35,8 @@
 }
 
 table thead th {
-    background-color: #d2d6de;
+    background-color: #52749d;
+    color: white;
 }
 
 table .index-ops {
@@ -53,8 +54,23 @@ table.table-hover tr:hover .index-ops > .icons {
     visibility: visible;
 }
 
+.table-hover > tbody > tr:hover {
+    background-color: #ecf0f5;
+}
+
+.table-hover > tbody > tr .icons > a {
+    border-radius: 3px;
+    padding: 3px;
+}
+
+    .table-hover > tbody > tr .icons > a:hover {
+        background-color: #6d8cb2;
+        color: white;
+    }
+
 .alert {
-    margin: 10px 0;
+    margin: 0 0 10px 0;
+    max-width: fit-content;
 }
 
 .box.box-data-card {
@@ -78,7 +94,7 @@ table.table-hover tr:hover .index-ops > .icons {
 
 .box-body > .row {
     margin-left: 0;
-    margin-right:0;
+    margin-right: 0;
 }
 
 form .box-footer .form-group {
@@ -93,3 +109,30 @@ form .box-footer.with-border {
     border-top: 1px solid #e4e4e4;
     min-height: 55px;
 }
+
+.delete-confirmation {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    background-color: #f8fbff;
+}
+
+    .pagination > li > a:hover,
+    .pagination > li > span:hover,
+    .pagination > li > a:focus,
+    .pagination > li > span:focus {
+        background-color: #ecf0f5;
+    }
+
+.links > a {
+    padding: 3px 5px;
+    background-color: #fafbfc;
+}
+
+    .links > a:hover {
+        background-color: #6d8cb2;
+        color: white;
+    }
