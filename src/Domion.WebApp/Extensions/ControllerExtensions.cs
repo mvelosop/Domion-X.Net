@@ -11,22 +11,22 @@ namespace Domion.WebApp.Extensions
     {
         public static void AlertDanger(this Controller controller, string message, params object[] args)
         {
-            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertDanger(controller, string.Format(message, args));
+            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertDanger(controller, string.Format(message, args), true);
         }
 
         public static void AlertInformation(this Controller controller, string message, params object[] args)
         {
-            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertInformation(controller, string.Format(message, args));
+            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertInformation(controller, string.Format(message, args), true);
         }
 
         public static void AlertSuccess(this Controller controller, string message, params object[] args)
         {
-            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertSuccess(controller, string.Format(message, args));
+            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertSuccess(controller, string.Format(message, args), true);
         }
 
         public static void AlertWarning(this Controller controller, string message, params object[] args)
         {
-            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertWarning(controller, string.Format(message, args));
+            cloudscribe.Web.Common.Extensions.ControllerExtensions.AlertWarning(controller, string.Format(message, args), true);
         }
 
 
