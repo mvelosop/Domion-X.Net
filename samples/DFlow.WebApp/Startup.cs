@@ -3,6 +3,7 @@ using cloudscribe.Web.Common;
 using DFlow.Tenants.Lib.Data;
 using DFlow.Tenants.Setup;
 using DFlow.WebApp.Data;
+using DFlow.WebApp.Features.Tenants;
 using DFlow.WebApp.Models;
 using DFlow.WebApp.Services;
 using Domion.WebApp.Helpers;
@@ -14,13 +15,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
-using System.IO;
-using DFlow.WebApp.Features.Tenants;
 
 namespace DFlow.WebApp
 {
@@ -91,16 +89,7 @@ namespace DFlow.WebApp
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
-            {
-                var dbContext = subScope.Resolve<TenantsDbContext>();
-
-                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
-
-                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
-
-                dbLoggerFactory.AddSerilog();
-            }
+            ConfigureDbLogging(scope);
         }
 
         // ConfigureContainer is where you can register things directly
@@ -138,7 +127,7 @@ namespace DFlow.WebApp
             // Register application module's services
             containerSetup.RegisterTypes(builder);
 
-            // WebApp services
+            // DFlow services
             builder.RegisterType<TenantsServices>()
                 .InstancePerLifetimeScope();
 
@@ -183,6 +172,20 @@ namespace DFlow.WebApp
             services.AddLocalization(options => options.ResourcesPath = "GlobalResources");
 
             SetupDatabase();
+        }
+
+        private void ConfigureDbLogging(ILifetimeScope scope)
+        {
+            using (ILifetimeScope subScope = scope.BeginLifetimeScope())
+            {
+                var dbContext = subScope.Resolve<TenantsDbContext>();
+
+                var serviceProvider = dbContext.GetInfrastructure<IServiceProvider>();
+
+                var dbLoggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                dbLoggerFactory.AddSerilog();
+            }
         }
 
         private void LoadDevelopmentTestData(ILifetimeScope scope)
