@@ -129,11 +129,6 @@ namespace Domion.WebApp.Tests.Tests
             return services.BuildServiceProvider();
         }
 
-        private RouteData CreateRouteData(string action, string controller, string area = null)
-        {
-            return NavigationTestHelper.CreateRouteData(action, controller, area);
-        }
-
         //--------------------------------------------------------------------------------------------------------------------------
         // Taken from https://github.com/aspnet/Mvc/blob/rel/1.1.3/test/Microsoft.AspNetCore.Mvc.Core.Test/Routing/UrlHelperTest.cs
         //--------------------------------------------------------------------------------------------------------------------------

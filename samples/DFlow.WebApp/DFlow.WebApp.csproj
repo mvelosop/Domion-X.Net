@@ -14,12 +14,8 @@
 
   <ItemGroup>
     <Compile Remove="logs\**" />
-    <Compile Remove="Views\Tenants\**" />
     <Content Remove="logs\**" />
-    <Content Remove="Views\Tenants\**" />
     <EmbeddedResource Remove="logs\**" />
-    <EmbeddedResource Remove="Views\Tenants\**" />
-    <None Remove="Views\Tenants\**" />
   </ItemGroup>
 
   <ItemGroup>
