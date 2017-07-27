@@ -9,6 +9,7 @@ using DFlow.WebApp.Services;
 using Domion.WebApp.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
+using Domion.WebApp.Alerts;
 
 namespace DFlow.WebApp
 {
@@ -104,6 +106,15 @@ namespace DFlow.WebApp
 
             var containerSetup = new TenantsContainerSetup(DbHelper);
 
+            builder.RegisterType<HttpContextAccessor>()
+                .AsImplementedInterfaces()
+                .SingleInstance();
+
+            builder.RegisterType<AlertsManager>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+                
             // cloudscribe configuration
             builder.RegisterType<CookieTempDataProvider>()
                 .As<ITempDataProvider>()

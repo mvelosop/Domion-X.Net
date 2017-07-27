@@ -5,6 +5,7 @@ using Domion.WebApp.Extensions;
 using Domion.WebApp.Helpers;
 using Domion.WebApp.Logging;
 using Domion.WebApp.Navigation;
+using Domion.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
@@ -16,7 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Domion.WebApp.ViewModels;
+using Domion.WebApp.Alerts;
 
 namespace DFlow.WebApp.Features.Tenants
 {
@@ -49,19 +50,21 @@ namespace DFlow.WebApp.Features.Tenants
         public const string UnexpectedErrorAlert = "Ocurrió un error inesperado! se creó un registro para investigar qué pasó.";
 
         public const string UpdateSuccessAlert = @"Se guardaron correctamente los cambios del cliente ""{0}"".";
-        
 
         private readonly TenantsServices _appServices;
         private readonly Lazy<IViewModelMapper<TenantViewModel, Tenant>> _lazyViewModelMapper;
 
         private readonly ILogger<TenantsController> _logger;
+        private readonly IAlertsManager _alerts;
 
         public TenantsController(
             ILogger<TenantsController> logger,
+            IAlertsManager alerts,
             TenantsServices appServices,
             Lazy<IViewModelMapper<TenantViewModel, Tenant>> lazyViewModelMapper)
         {
             _logger = logger;
+            _alerts = alerts;
             _appServices = appServices;
             _lazyViewModelMapper = lazyViewModelMapper;
 
@@ -104,7 +107,7 @@ namespace DFlow.WebApp.Features.Tenants
 
                     if (ModelState.IsValid)
                     {
-                        this.AlertSuccess(CreateSuccessAlert, vm.Owner);
+                        _alerts.Success(CreateSuccessAlert, vm.Owner);
 
                         return RedirectToAction("Details", new { id = entity.Id });
                     }
@@ -113,7 +116,7 @@ namespace DFlow.WebApp.Features.Tenants
                 {
                     _logger.LogError(WebAppEvents.CREATE_POST, ex, ControllerExceptionLogMessage, ex);
 
-                    this.AlertDanger(UnexpectedErrorAlert);
+                    _alerts.Danger(UnexpectedErrorAlert);
                 }
             }
 
@@ -153,7 +156,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 _logger.LogError(WebAppEvents.DELETE_GET, ex, ControllerExceptionLogMessage, ex);
 
-                this.AlertDanger(UnexpectedErrorAlert);
+                _alerts.Danger(UnexpectedErrorAlert);
             }
 
             return RedirectToAction("Details", new { id });
@@ -181,18 +184,18 @@ namespace DFlow.WebApp.Features.Tenants
 
                 if (ModelState.IsValid)
                 {
-                    this.AlertSuccess(DeleteSuccessAlert, entity.Owner);
+                    _alerts.Success(DeleteSuccessAlert, entity.Owner);
                 }
                 else
                 {
-                    this.AlertWarning(DeleteValidationAlert, entity.Owner);
+                    _alerts.Warning(DeleteValidationAlert, entity.Owner);
 
                     return RedirectToAction("Delete", new { id = entity.Id });
                 }
             }
             catch (DbUpdateConcurrencyException)
             {
-                this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+                _alerts.Danger(DbUpdateConcurrencyAlert, entity.Owner);
 
                 return RedirectToAction("Delete", new { id = entity.Id });
             }
@@ -200,7 +203,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 _logger.LogError(WebAppEvents.DELETE_POST, ex, ControllerExceptionLogMessage, ex);
 
-                this.AlertDanger(UnexpectedErrorAlert);
+                _alerts.Danger(UnexpectedErrorAlert);
             }
 
             return RedirectBackToIndex();
@@ -251,7 +254,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 _logger.LogWarning("id={id}, vm={mv}", id, vm);
 
-                this.AlertWarning(UnexpectedErrorAlert);
+                _alerts.Warning(UnexpectedErrorAlert);
 
                 return RedirectBackToIndex();
             }
@@ -275,20 +278,20 @@ namespace DFlow.WebApp.Features.Tenants
 
                     if (ModelState.IsValid)
                     {
-                        this.AlertSuccess(UpdateSuccessAlert, entity.Owner);
+                        _alerts.Success(UpdateSuccessAlert, entity.Owner);
 
                         return RedirectToAction("Details", new { id = entity.Id });
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    this.AlertDanger(DbUpdateConcurrencyAlert, entity.Owner);
+                    _alerts.Danger(DbUpdateConcurrencyAlert, entity.Owner);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(WebAppEvents.EDIT_POST, ex, ControllerExceptionLogMessage, ex);
 
-                    this.AlertDanger(UnexpectedErrorAlert);
+                    _alerts.Danger(UnexpectedErrorAlert);
                 }
             }
 
@@ -361,7 +364,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 _logger.LogWarning(EntityNotFoundLogMessage, id);
 
-                this.AlertWarning(EntityNotFoundAlert, id);
+                _alerts.Warning(EntityNotFoundAlert, id);
             }
 
             return entity;
