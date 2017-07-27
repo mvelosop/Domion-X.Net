@@ -4,12 +4,16 @@
     <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
-  </PropertyGroup>
+  </PropertyGroup>-->
 
   <PropertyGroup>
     <UserSecretsId>aspnet-DFlow.WebApp-98245af6-7234-45a6-b507-4951581de125</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\samples.tests\DFlow.Tenants.Lib.Tests\DFlow.Tenants.Lib.Tests.csproj" />
+    <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj" />
     <ProjectReference Include="..\..\src\Domion.WebApp\Domion.WebApp.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
     <ProjectReference Include="..\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />

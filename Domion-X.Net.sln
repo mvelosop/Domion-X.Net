@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{67F50FE3-1E2E-41BC-A644-1BD21A70FC12}"
 	ProjectSection(SolutionItems) = preProject
 		scripts\add-migration.cmd = scripts\add-migration.cmd
+		scripts\publish-nuget.cmd = scripts\publish-nuget.cmd
 		scripts\remove-migration.cmd = scripts\remove-migration.cmd
 	EndProjectSection
 EndProject
