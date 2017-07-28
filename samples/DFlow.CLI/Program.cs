@@ -23,7 +23,7 @@ namespace DFlow.CLI
             new BudgetClass { Name = "Investments", Order = 3, TransactionType = TransactionType.Investment },
         };
 
-        private static BudgetDbHelper _dbHelper;
+        private static BudgetDatabaseHelper _dbHelper;
 
         private static void LoadSeedData()
         {
@@ -84,7 +84,7 @@ namespace DFlow.CLI
 
             Console.WriteLine("EF Core App\n");
 
-            SetupDb();
+            ConfigureDb();
 
             LoadSeedData();
 
@@ -112,15 +112,15 @@ namespace DFlow.CLI
             }
         }
 
-        private static void SetupDb()
+        private static void ConfigureDb()
         {
             string connectionString = "Data Source=localhost;Initial Catalog=DFlow.CLI;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
             Console.WriteLine($"Setting up database\n ({connectionString})...\n");
 
-            _dbHelper = new BudgetDbHelper(connectionString);
+            _dbHelper = new BudgetDatabaseHelper(connectionString);
 
-            _dbHelper.SetupDatabase();
+            _dbHelper.ConfigureDatabase();
         }
     }
 }

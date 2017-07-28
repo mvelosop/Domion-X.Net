@@ -7,7 +7,7 @@ using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Extensions;
 using DFlow.Tenants.Lib.Tests.Helpers;
-using Domion.FluentAssertions.Extensions;
+using Domion.Test.Extensions;
 using Domion.Lib.Extensions;
 using FluentAssertions;
 using System;
@@ -24,7 +24,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Budget.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private static readonly IContainer Container;
-        private static readonly BudgetDbHelper DbHelper;
+        private static readonly BudgetDatabaseHelper DbHelper;
         private static readonly TenantData DefaultTenantData = new TenantData("Default tenant");
         private static readonly TenantData TenantAData = new TenantData("Tenant A");
         private static readonly TenantData TenantBData = new TenantData("Tenant B");
@@ -290,7 +290,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
             });
         }
 
-        private static void SeedBaseData(BudgetDbHelper budgetDbHelper)
+        private static void SeedBaseData(BudgetDatabaseHelper budgetDbHelper)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
@@ -300,24 +300,24 @@ namespace DFlow.Budget.Lib.Tests.Tests
             }
         }
 
-        private static IContainer SetupContainer(BudgetDbHelper dbHelper)
+        private static IContainer SetupContainer(BudgetDatabaseHelper dbHelper)
         {
-            var containerSetup = new BudgetContainerSetup(dbHelper);
+            var containerHelper = new BudgetContainerHelper(dbHelper);
 
             var builder = new ContainerBuilder();
 
-            containerSetup.RegisterTypes(builder);
+            containerHelper.RegisterTypes(builder);
 
             IContainer container = builder.Build();
 
             return container;
         }
 
-        private static BudgetDbHelper SetupDatabase(string connectionString)
+        private static BudgetDatabaseHelper SetupDatabase(string connectionString)
         {
-            var dbHelper = new BudgetDbHelper(connectionString);
+            var dbHelper = new BudgetDatabaseHelper(connectionString);
 
-            dbHelper.SetupDatabase();
+            dbHelper.ConfigureDatabase();
 
             return dbHelper;
         }

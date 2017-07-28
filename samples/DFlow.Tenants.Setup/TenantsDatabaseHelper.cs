@@ -5,15 +5,15 @@ using System;
 
 namespace DFlow.Tenants.Setup
 {
-    public class TenantsDbHelper
+    public class TenantsDatabaseHelper
     {
-        private readonly string ConnectionString;
+        private readonly string _connectionString;
 
         private DbContextOptions<TenantsDbContext> _options;
 
-        public TenantsDbHelper(string connectionString)
+        public TenantsDatabaseHelper(string connectionString)
         {
-            ConnectionString = connectionString;
+            _connectionString = connectionString;
         }
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace DFlow.Tenants.Setup
         /// <returns></returns>
         public TenantsDbContext CreateDbContext()
         {
-            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TenantsDbHelper)}.{nameof(SetupDatabase)} first!");
+            if (_options == null) throw new InvalidOperationException($"Must run {nameof(TenantsDatabaseHelper)}.{nameof(ConfigureDatabase)} first!");
 
             return new TenantsDbContext(_options);
         }
@@ -30,18 +30,21 @@ namespace DFlow.Tenants.Setup
         /// <summary>
         /// Creates the database and applies pending migrations.
         /// </summary>
-        public void SetupDatabase()
+        public void ConfigureDatabase()
         {
             var optionBuilder = new DbContextOptionsBuilder<TenantsDbContext>();
 
-            optionBuilder.UseSqlServer(ConnectionString);
-            optionBuilder.EnableSensitiveDataLogging();
-
-            _options = optionBuilder.Options;
-
-            using (var dbContext = CreateDbContext())
+            lock (_connectionString)
             {
-                dbContext.Database.Migrate();
+                optionBuilder.UseSqlServer(_connectionString);
+                //optionBuilder.EnableSensitiveDataLogging();
+
+                _options = optionBuilder.Options;
+
+                using (var dbContext = CreateDbContext())
+                {
+                    dbContext.Database.Migrate();
+                }
             }
         }
     }

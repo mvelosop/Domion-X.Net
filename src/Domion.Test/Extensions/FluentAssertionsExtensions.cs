@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Domion.FluentAssertions.Extensions
+namespace Domion.Test.Extensions
 {
     public static class FluentAssertionsExtensions
     {

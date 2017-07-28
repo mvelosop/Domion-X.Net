@@ -5,15 +5,15 @@ using System;
 
 namespace DFlow.Tenants.Setup
 {
-    public class TenantsContainerSetup : BaseContainerSetup
+    public class TenantsContainerHelper : BaseContainerHelper
     {
-        private const string _modulePrefix = "DFlow.Tenants";
+        private const string ModulePrefix = "DFlow.Tenants";
 
-        private readonly TenantsDbHelper DbHelper;
+        private readonly TenantsDatabaseHelper _dbHelper;
 
-        public TenantsContainerSetup(TenantsDbHelper dbHelper)
+        public TenantsContainerHelper(TenantsDatabaseHelper dbHelper)
         {
-            DbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
+            _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
         }
 
         /// <summary>
@@ -23,10 +23,10 @@ namespace DFlow.Tenants.Setup
         public void RegisterTypes(ContainerBuilder builder)
         {
             // This defers instance registration until it is actually needed
-            builder.Register<TenantsDbContext>((c) => DbHelper.CreateDbContext())
+            builder.Register<TenantsDbContext>((c) => _dbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
-            RegisterCommonModuleTypes(builder, _modulePrefix);
+            RegisterCommonModuleTypes(builder, ModulePrefix);
         }
     }
 }
