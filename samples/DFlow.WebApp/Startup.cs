@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using Domion.WebApp.Alerts;
+using System.IO;
 
 namespace DFlow.WebApp
 {
@@ -43,16 +44,26 @@ namespace DFlow.WebApp
 
             Configuration = builder.Build();
 
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.Seq("http://localhost:5341")
-                //.WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log.txt"))
-                .CreateLogger();
+            if (env.IsDevelopment())
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Information()
+                    .WriteTo.Seq("http://localhost:5341")
+                    .CreateLogger();
+            }
+            else
+            {
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Information()
+                    .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log.log"))
+                    .CreateLogger();
+            }
+
         }
 
         public IConfigurationRoot Configuration { get; }
 
-        public TenantsDbHelper DbHelper { get; private set; }
+        public TenantsDatabaseHelper DbHelper { get; private set; }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ILifetimeScope scope)
@@ -104,7 +115,7 @@ namespace DFlow.WebApp
         {
             //builder.RegisterModule(new AutofacModule());
 
-            var containerSetup = new TenantsContainerSetup(DbHelper);
+            var containerHelper = new TenantsContainerHelper(DbHelper);
 
             builder.RegisterType<HttpContextAccessor>()
                 .AsImplementedInterfaces()
@@ -136,7 +147,7 @@ namespace DFlow.WebApp
                 .InstancePerLifetimeScope();
 
             // Register application module's services
-            containerSetup.RegisterTypes(builder);
+            containerHelper.RegisterTypes(builder);
 
             // DFlow services
             builder.RegisterType<TenantsServices>()
@@ -182,7 +193,7 @@ namespace DFlow.WebApp
             // I chose "GlobalResources" as the folder name where the .resx files will go, but it can be whatever you choose.
             services.AddLocalization(options => options.ResourcesPath = "GlobalResources");
 
-            SetupDatabase();
+            ConfigureDatabase();
         }
 
         private void ConfigureDbLogging(ILifetimeScope scope)
@@ -206,16 +217,16 @@ namespace DFlow.WebApp
             testData.Load();
         }
 
-        private void SetupDatabase()
+        private void ConfigureDatabase()
         {
-            SetupIdentityDatabase();
+            ConfigureIdentityDatabase();
 
-            DbHelper = new TenantsDbHelper(Configuration.GetConnectionString("DefaultConnection"));
+            DbHelper = new TenantsDatabaseHelper(Configuration.GetConnectionString("DefaultConnection"));
 
-            DbHelper.SetupDatabase();
+            DbHelper.ConfigureDatabase();
         }
 
-        private void SetupIdentityDatabase()
+        private void ConfigureIdentityDatabase()
         {
             var optionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 

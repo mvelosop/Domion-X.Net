@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyModel;
 
 namespace Domion.Setup
 {
-    public class BaseContainerSetup
+    public class BaseContainerHelper
     {
         protected static Assembly[] LoadModuleAssemblies(string modulePrefix)
         {

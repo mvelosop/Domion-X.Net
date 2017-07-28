@@ -6,15 +6,15 @@ using System;
 
 namespace DFlow.Budget.Setup
 {
-    public class BudgetContainerSetup : BaseContainerSetup
+    public class BudgetContainerHelper : BaseContainerHelper
     {
         private const string ModulePrefix = "DFlow.Budget";
 
-        private readonly BudgetDbHelper DbHelper;
+        private readonly BudgetDatabaseHelper _dbHelper;
 
-        public BudgetContainerSetup(BudgetDbHelper dbHelper)
+        public BudgetContainerHelper(BudgetDatabaseHelper dbHelper)
         {
-            DbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
+            _dbHelper = dbHelper ?? throw new ArgumentNullException(nameof(dbHelper));
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace DFlow.Budget.Setup
             RegisterExternalTypes(builder);
 
             // This defers instance registration until it is actually needed
-            builder.Register<BudgetDbContext>((c) => DbHelper.CreateDbContext())
+            builder.Register<BudgetDbContext>((c) => _dbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
             RegisterCommonModuleTypes(builder, ModulePrefix);
@@ -34,9 +34,9 @@ namespace DFlow.Budget.Setup
 
         private void RegisterExternalTypes(ContainerBuilder builder)
         {
-            var tenantContainerSetup = new TenantsContainerSetup(DbHelper.TenantsDbHelper);
+            var containerHelper = new TenantsContainerHelper(_dbHelper.TenantsDbHelper);
 
-            tenantContainerSetup.RegisterTypes(builder);
+            containerHelper.RegisterTypes(builder);
         }
     }
 }
