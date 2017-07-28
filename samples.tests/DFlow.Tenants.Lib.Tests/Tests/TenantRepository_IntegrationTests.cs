@@ -3,7 +3,7 @@ using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Helpers;
 using DFlow.Tenants.Setup;
-using Domion.FluentAssertions.Extensions;
+using Domion.Test.Extensions;
 using Domion.Lib.Data;
 using Domion.Lib.Extensions;
 using FluentAssertions;

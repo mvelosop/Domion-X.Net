@@ -16,7 +16,6 @@
     <ProjectReference Include="..\..\samples\DFlow.Tenants.Core\DFlow.Tenants.Core.csproj" />
     <ProjectReference Include="..\..\samples\DFlow.Tenants.Lib\DFlow.Tenants.Lib.csproj" />
     <ProjectReference Include="..\..\samples\DFlow.Tenants.Setup\DFlow.Tenants.Setup.csproj" />
-    <ProjectReference Include="..\..\src\Domion.FluentAssertions\Domion.FluentAssertions.csproj" />
     <ProjectReference Include="..\..\src\Domion.Test\Domion.Test.csproj" />
   </ItemGroup>
 
