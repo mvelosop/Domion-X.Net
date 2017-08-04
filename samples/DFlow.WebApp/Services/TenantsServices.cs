@@ -14,9 +14,7 @@ namespace DFlow.WebApp.Services
     public class TenantsServices
     {
         private readonly Lazy<TenantRepository> _lazyTenantRepo;
-        readonly ILogger<TenantsServices> _logger;
-        
-        private static readonly List<ValidationResult> NoErrors = new List<ValidationResult>();
+        private readonly ILogger<TenantsServices> _logger;
 
         public TenantsServices(
             ILogger<TenantsServices> logger,
@@ -30,24 +28,24 @@ namespace DFlow.WebApp.Services
 
         public async Task<List<ValidationResult>> AddTenant(Tenant entity)
         {
-            List<ValidationResult> errors = TenantRepo.TryInsert(entity).ToList();
+            List<ValidationResult> errors = TenantRepo.TryInsert(entity);
 
             if (errors.Any()) return errors;
 
-            TenantRepo.SaveChanges();
+            await TenantRepo.SaveChangesAsync();
 
-            return NoErrors;
+            return errors;
         }
 
         public async Task<List<ValidationResult>> DeleteTenant(Tenant entity)
         {
-            List<ValidationResult> errors = TenantRepo.TryDelete(entity).ToList();
+            List<ValidationResult> errors = TenantRepo.TryDelete(entity);
 
             if (errors.Any()) return errors;
 
-            TenantRepo.SaveChanges();
+            await TenantRepo.SaveChangesAsync();
 
-            return NoErrors;
+            return errors;
         }
 
         public async Task<Tenant> FindTenantById(int? id)
@@ -57,43 +55,43 @@ namespace DFlow.WebApp.Services
                 return null;
             }
 
-            Tenant entity = TenantRepo.SingleOrDefault(t => t.Id == id);
+            Tenant entity = await TenantRepo.SingleOrDefaultAsync(t => t.Id == id);
 
             return entity;
         }
 
-        public async Task<IQueryable<Tenant>> Search(string searchText)
+        public IQueryable<Tenant> Search(string searchText)
         {
-
             Expression<Func<Tenant, bool>> queryExpression = null;
 
             if (!string.IsNullOrWhiteSpace(searchText))
             {
                 queryExpression = t => t.Owner.Contains(searchText);
             }
-                
+
             return TenantRepo.Query(queryExpression);
         }
 
         public async Task<List<ValidationResult>> UpdateTenant(Tenant entity)
         {
-            List<ValidationResult> errors = TenantRepo.TryUpdate(entity).ToList();
+            List<ValidationResult> errors = TenantRepo.TryUpdate(entity);
 
             if (errors.Any()) return errors;
 
-            TenantRepo.SaveChanges();
+            await TenantRepo.SaveChangesAsync();
 
-            return NoErrors;
+            return errors;
         }
+
         public async Task<List<ValidationResult>> ValidateDelete(Tenant entity)
         {
             List<ValidationResult> errors = TenantRepo.ValidateDelete(entity).ToList();
 
             if (errors.Any()) return errors;
 
-            TenantRepo.SaveChanges();
+            await TenantRepo.SaveChangesAsync();
 
-            return NoErrors;
+            return errors;
         }
     }
 }
