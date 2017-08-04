@@ -18,6 +18,7 @@
         <ProjectReference Include="..\..\samples\DFlow.Budget.Lib\DFlow.Budget.Lib.csproj" />
         <ProjectReference Include="..\..\samples\DFlow.Budget.Setup\DFlow.Budget.Setup.csproj" />
         <ProjectReference Include="..\..\src\Domion.Core\Domion.Core.csproj" />
+        <ProjectReference Include="..\..\src\Domion.DataTools\Domion.DataTools.csproj" />
         <ProjectReference Include="..\..\src\Domion.Lib\Domion.Lib.csproj" />
         <ProjectReference Include="..\..\src\Domion.Test\Domion.Test.csproj" />
         <ProjectReference Include="..\DFlow.Tenants.Lib.Tests\DFlow.Tenants.Lib.Tests.csproj" />

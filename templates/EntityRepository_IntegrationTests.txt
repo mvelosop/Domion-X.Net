@@ -1,8 +1,17 @@
-﻿using Autofac;
-using DFlow.Tenants.Core.Model;
-using DFlow.Tenants.Lib.Services;
-using DFlow.Tenants.Lib.Tests.Helpers;
-using DFlow.Tenants.Setup;
+//----------------------------------------
+// $APP$               (e.g. DFlow)
+// $MODULE$            (e.g. Budget)
+// $ENTITY$            (e.g. BudgetClass)
+// $KEYENTITYPROPERTY$ (e.g. Name)
+// $KEYDATAPROPERTY$   (e.g. Name)
+//----------------------------------------
+
+
+using Autofac;
+using $APP$.$MODULE$.Core.Model;
+using $APP$.$MODULE$.Lib.Services;
+using $APP$.$MODULE$.Lib.Tests.Helpers;
+using $APP$.$MODULE$.Setup;
 using Domion.Lib.Extensions;
 using Domion.Test.Extensions;
 using FluentAssertions;
@@ -12,17 +21,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Xunit;
 
-namespace DFlow.Tenants.Lib.Tests
+namespace $APP$.$MODULE$.Lib.Tests
 {
     [Trait("Type", "Integration")]
-    public class TenantRepository_IntegrationTests
+    public class $ENTITY$Repository_IntegrationTests
     {
-        private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
+        private const string ConnectionString = "Data Source=localhost;Initial Catalog=$APP$.$MODULE$.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private static readonly IContainer Container;
-        private static readonly TenantsDatabaseHelper DbHelper;
+        private static readonly $MODULE$DatabaseHelper DbHelper;
 
-        static TenantRepository_IntegrationTests()
+        static $ENTITY$Repository_IntegrationTests()
         {
             DbHelper = SetupDatabase(ConnectionString);
 
@@ -34,7 +43,7 @@ namespace DFlow.Tenants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TenantData("Delete-Success-Valid - Inserted");
+            var data = new $ENTITY$Data("Delete-Success-Valid - Inserted");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -47,7 +56,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 errors = repo.TryDelete(entity).ToList();
 
@@ -71,8 +80,8 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Arrange ---------------------------
 
-            var data = new TenantData("Delete-Error-Concurrency - Inserted");
-            var update = new TenantData("Delete-Error-Concurrency - Updated");
+            var data = new $ENTITY$Data("Delete-Error-Concurrency - Inserted");
+            var update = new $ENTITY$Data("Delete-Error-Concurrency - Updated");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -82,13 +91,13 @@ namespace DFlow.Tenants.Lib.Tests
 
             // To simulate a ViewModel and second user updating the record
 
-            var viewModel = new Tenant();
+            var viewModel = new $ENTITY$();
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 viewModel = mapper.DuplicateEntity(entity);
 
@@ -105,7 +114,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
                 entity.RowVersion = viewModel.RowVersion;
 
@@ -116,7 +125,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantRepository.ConcurrentUpdateError);
+            errors.Should().ContainErrorMessage($ENTITY$Repository.ConcurrentUpdateError);
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -130,7 +139,7 @@ namespace DFlow.Tenants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TenantData("Insert-Error-Duplicate - Inserted");
+            var data = new $ENTITY$Data("Insert-Error-Duplicate - Inserted");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -143,16 +152,16 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = mapper.CreateEntity(data);
+                $ENTITY$ entity = mapper.CreateEntity(data);
 
                 errors = repo.TryInsert(entity).ToList();
             });
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantRepository.DuplicateByOwnerError);
+            errors.Should().ContainErrorMessage($ENTITY$Repository.DuplicateBy$KEYENTITYPROPERTY$Error);
         }
 
         [Fact]
@@ -162,7 +171,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Arrange ---------------------------
 
-            var data = new TenantData("Insert-Success-Valid - Inserted");
+            var data = new $ENTITY$Data("Insert-Success-Valid - Inserted");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -173,9 +182,9 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = mapper.CreateEntity(data);
+                $ENTITY$ entity = mapper.CreateEntity(data);
 
                 errors = repo.TryInsert(entity).ToList();
 
@@ -199,9 +208,9 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Arrange ---------------------------
 
-            var data = new TenantData("Update-Error-Concurrency - Inserted");
-            var update1 = new TenantData("Update-Error-Concurrency - Updated 1");
-            var update2 = new TenantData("Update-Error-Concurrency - Updated 2");
+            var data = new $ENTITY$Data("Update-Error-Concurrency - Inserted");
+            var update1 = new $ENTITY$Data("Update-Error-Concurrency - Updated 1");
+            var update2 = new $ENTITY$Data("Update-Error-Concurrency - Updated 2");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -211,13 +220,13 @@ namespace DFlow.Tenants.Lib.Tests
 
             // To simulate a ViewModel and second user updating the record
 
-            var viewModel = new Tenant();
+            var viewModel = new $ENTITY$();
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 viewModel = mapper.DuplicateEntity(entity);
 
@@ -261,8 +270,8 @@ namespace DFlow.Tenants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TenantData("Update-Error-Duplicate - Inserted first");
-            var update = new TenantData("Update-Error-Duplicate - Inserted second");
+            var data = new $ENTITY$Data("Update-Error-Duplicate - Inserted first");
+            var update = new $ENTITY$Data("Update-Error-Duplicate - Inserted second");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -275,9 +284,9 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 entity = mapper.UpdateEntity(entity, update);
 
@@ -286,7 +295,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(TenantRepository.DuplicateByOwnerError);
+            errors.Should().ContainErrorMessage($ENTITY$Repository.DuplicateBy$KEYENTITYPROPERTY$Error);
         }
 
         [Fact]
@@ -294,8 +303,8 @@ namespace DFlow.Tenants.Lib.Tests
         {
             // Arrange ---------------------------
 
-            var data = new TenantData("Update-Success-Valid - Inserted");
-            var update = new TenantData("Update-Success-Valid - Updated");
+            var data = new $ENTITY$Data("Update-Success-Valid - Inserted");
+            var update = new $ENTITY$Data("Update-Success-Valid - Updated");
 
             UsingRepositoryHelper((scope, helper) =>
             {
@@ -309,9 +318,9 @@ namespace DFlow.Tenants.Lib.Tests
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 entity = mapper.UpdateEntity(entity, update);
 
@@ -330,9 +339,9 @@ namespace DFlow.Tenants.Lib.Tests
             });
         }
 
-        private static IContainer SetupContainer(TenantsDatabaseHelper dbHelper)
+        private static IContainer SetupContainer($MODULE$DbHelper dbHelper)
         {
-            var containerSetup = new TenantsContainerHelper(dbHelper);
+            var containerSetup = new $MODULE$ContainerSetup(dbHelper);
 
             var builder = new ContainerBuilder();
 
@@ -343,24 +352,24 @@ namespace DFlow.Tenants.Lib.Tests
             return container;
         }
 
-        private static TenantsDatabaseHelper SetupDatabase(string connectionString)
+        private static $MODULE$DatabaseHelper SetupDatabase(string connectionString)
         {
-            var dbHelper = new TenantsDatabaseHelper(connectionString);
+            var dbHelper = new $MODULE$DatabaseHelper(connectionString);
 
             dbHelper.ConfigureDatabase();
 
             return dbHelper;
         }
 
-        private void UpdateOnDifferentDbContext(TenantData data, TenantData update)
+        private void UpdateOnDifferentDbContext($ENTITY$Data data, $ENTITY$Data update)
         {
             IEnumerable<ValidationResult> errors = null;
 
             UsingRepository((scope, repo) =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
+                $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 entity = mapper.UpdateEntity(entity, update);
 
@@ -372,21 +381,21 @@ namespace DFlow.Tenants.Lib.Tests
             errors.Should().BeEmpty();
         }
 
-        private void UsingRepository(Action<ILifetimeScope, TenantRepository> action)
+        private void UsingRepository(Action<ILifetimeScope, $ENTITY$Repository> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var repo = scope.Resolve<TenantRepository>();
+                var repo = scope.Resolve<$ENTITY$Repository>();
 
                 action.Invoke(scope, repo);
             }
         }
 
-        private void UsingRepositoryHelper(Action<ILifetimeScope, TenantRepositoryHelper> action)
+        private void UsingRepositoryHelper(Action<ILifetimeScope, $ENTITY$RepositoryHelper> action)
         {
             using (ILifetimeScope scope = Container.BeginLifetimeScope())
             {
-                var helper = scope.Resolve<TenantRepositoryHelper>();
+                var helper = scope.Resolve<$ENTITY$RepositoryHelper>();
 
                 action.Invoke(scope, helper);
             }

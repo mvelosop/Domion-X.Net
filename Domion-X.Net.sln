@@ -51,9 +51,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.Tenants.Lib.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{67E81C65-5C13-42B4-AA23-6FD8D05D973E}"
 	ProjectSection(SolutionItems) = preProject
+		templates\EntityDataMapper.txt = templates\EntityDataMapper.txt
 		templates\EntityManager_IntegrationTests.txt = templates\EntityManager_IntegrationTests.txt
 		templates\EntityManagerExtensions.txt = templates\EntityManagerExtensions.txt
 		templates\EntityManagerHelper.txt = templates\EntityManagerHelper.txt
+		templates\EntityRepository_IntegrationTests.txt = templates\EntityRepository_IntegrationTests.txt
+		templates\EntityRepositoryExtensions.txt = templates\EntityRepositoryExtensions.txt
+		templates\EntityRepositoryHelper.txt = templates\EntityRepositoryHelper.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Test", "src\Domion.Test\Domion.Test.csproj", "{EEEECED4-F1BD-482B-8CC8-2B49D4F301E3}"
@@ -69,6 +73,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.WebApp.Tests", "tests\Domion.WebApp.Tests\Domion.WebApp.Tests.csproj", "{8DCE2109-2637-4CBD-925E-4C6480AAE6E4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.WebApp.Tests", "samples.tests\DFlow.WebApp.Tests\DFlow.WebApp.Tests.csproj", "{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domion.DataTools", "src\Domion.DataTools\Domion.DataTools.csproj", "{D836E5B7-3674-41FF-B60A-39FF31D1C144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +162,10 @@ Global
 		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D836E5B7-3674-41FF-B60A-39FF31D1C144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D836E5B7-3674-41FF-B60A-39FF31D1C144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D836E5B7-3674-41FF-B60A-39FF31D1C144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D836E5B7-3674-41FF-B60A-39FF31D1C144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,5 +191,6 @@ Global
 		{7404368C-CD09-44DF-B87D-45A6CEC7DE56} = {6F2DE9E6-30CB-4A00-BCC2-A77F24303702}
 		{8DCE2109-2637-4CBD-925E-4C6480AAE6E4} = {72A66134-3FA0-43E4-BBF8-E0B828DCB969}
 		{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA} = {7CEC1CD1-2D4B-47B2-BFA2-63D6D1F6E110}
+		{D836E5B7-3674-41FF-B60A-39FF31D1C144} = {6F2DE9E6-30CB-4A00-BCC2-A77F24303702}
 	EndGlobalSection
 EndGlobal

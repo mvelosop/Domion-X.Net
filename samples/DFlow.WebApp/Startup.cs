@@ -58,7 +58,6 @@ namespace DFlow.WebApp
                     .WriteTo.RollingFile(Path.Combine(env.ContentRootPath, "logs", "log.log"))
                     .CreateLogger();
             }
-
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -125,7 +124,7 @@ namespace DFlow.WebApp
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-                
+
             // cloudscribe configuration
             builder.RegisterType<CookieTempDataProvider>()
                 .As<ITempDataProvider>()

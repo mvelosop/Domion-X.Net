@@ -4,17 +4,17 @@
     <TargetFramework>net462</TargetFramework>
   </PropertyGroup>
 
-  <!--<PropertyGroup>
+  <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
-  </PropertyGroup>-->
+  </PropertyGroup>
 
   <PropertyGroup>
     <UserSecretsId>aspnet-DFlow.WebApp-98245af6-7234-45a6-b507-4951581de125</UserSecretsId>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
+  </PropertyGroup>-->
 
   <ItemGroup>
     <Compile Remove="logs\**" />

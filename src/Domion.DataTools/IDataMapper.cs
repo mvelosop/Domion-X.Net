@@ -1,4 +1,4 @@
-﻿namespace Domion.Test.Helpers
+﻿namespace Domion.DataTools
 {
     public interface IDataMapper<TData, TEntity> where TData : class where TEntity : class
     {

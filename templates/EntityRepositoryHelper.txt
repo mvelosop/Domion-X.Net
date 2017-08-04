@@ -19,36 +19,36 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
 {
     /// <summary>
     ///     <para>
-    ///         Test helper class for $ENTITY$Manager.
+    ///         Test helper class for $ENTITY$Repository.
     ///     </para>
     ///
     ///     <para>
     ///         Has to be used within an Autofac ILifetimeScope. Manages entity class "$ENTITY$" using data class "$ENTITY$Data" as input
     ///     </para>
     /// </summary>
-    public class $ENTITY$ManagerHelper
+    public class $ENTITY$RepositoryHelper
     {
-        private readonly Lazy<$ENTITY$DataMapper> Lazy$ENTITY$DataMapper;
-        private readonly Lazy<$ENTITY$Manager> Lazy$ENTITY$Manager;
-        private readonly ILifetimeScope Scope;
+        private readonly Lazy<$ENTITY$DataMapper> _lazy$ENTITY$DataMapper;
+        private readonly Lazy<$ENTITY$Repository> _lazy$ENTITY$Repository;
+        private readonly ILifetimeScope _scope;
 
         /// <summary>
-        ///     Creates a Helper for $ENTITY$Manager to help in the test's Arrange and Assert sections
+        ///     Creates a Helper for $ENTITY$Repository to help in the test's Arrange and Assert sections
         /// </summary>
-        public $ENTITY$ManagerHelper(
+        public $ENTITY$RepositoryHelper(
             ILifetimeScope scope,
             Lazy<$ENTITY$DataMapper> lazy$ENTITY$DataMapper,
-            Lazy<$ENTITY$Manager> lazy$ENTITY$Manager)
+            Lazy<$ENTITY$Repository> lazy$ENTITY$Repository)
         {
-            Scope = scope;
+            _scope = scope;
 
-            Lazy$ENTITY$Manager = lazy$ENTITY$Manager;
-            Lazy$ENTITY$DataMapper = lazy$ENTITY$DataMapper;
+            _lazy$ENTITY$Repository = lazy$ENTITY$Repository;
+            _lazy$ENTITY$DataMapper = lazy$ENTITY$DataMapper;
         }
 
-        private $ENTITY$Manager $ENTITY$Manager => Lazy$ENTITY$Manager.Value;
+        private $ENTITY$Repository $ENTITY$Repo => _lazy$ENTITY$Repository.Value;
 
-        private $ENTITY$DataMapper $ENTITY$Mapper => Lazy$ENTITY$DataMapper.Value;
+        private $ENTITY$DataMapper $ENTITY$Mapper => _lazy$ENTITY$DataMapper.Value;
 
         /// <summary>
         ///     Asserts that entities with the supplied key data values do not exist. This method DOES NOT DELETE entities, use EnsureEntitiesDoNotExist for that.
@@ -56,13 +56,13 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesDoNotExist(params $ENTITY$Data[] dataSet)
         {
-            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
+            using (ILifetimeScope scope = _scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<$ENTITY$Manager>();
+                var repo = scope.Resolve<$ENTITY$Repository>();
 
                 foreach ($ENTITY$Data data in dataSet)
                 {
-                    $ENTITY$ entity = manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+                    $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                     entity.Should().BeNull(@"because $ENTITY$ ""{0}"" MUST NOT EXIST!", data.$KEYDATAPROPERTY$);
                 }
@@ -77,12 +77,12 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
         {
             using (ILifetimeScope scope = Scope.BeginLifetimeScope())
             {
-                var manager = scope.Resolve<$ENTITY$Manager>();
+                var repo = scope.Resolve<$ENTITY$Repository>();
                 var mapper = scope.Resolve<$ENTITY$DataMapper>();
 
                 foreach ($ENTITY$Data data in dataSet)
                 {
-                    $ENTITY$ entity = manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+                    $ENTITY$ entity = repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                     entity.Should().NotBeNull(@"because $ENTITY$ ""{0}"" MUST EXIST!", data.$KEYDATAPROPERTY$);
 
@@ -101,16 +101,16 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
         {
             foreach ($ENTITY$Data data in dataSet)
             {
-                $ENTITY$ entity = $ENTITY$Manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+                $ENTITY$ entity = $ENTITY$Repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 if (entity == null) continue;
 
-                var errors = $ENTITY$Manager.TryDelete(entity);
+                var errors = $ENTITY$Repo.TryDelete(entity);
 
                 errors.Should().BeEmpty(@"because $ENTITY$ ""{0}"" has to be removed!", data.$KEYDATAPROPERTY$);
             }
 
-            $ENTITY$Manager.SaveChanges();
+            $ENTITY$Repo.SaveChanges();
 
             AssertEntitiesDoNotExist(dataSet);
         }
@@ -124,16 +124,16 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
         {
             foreach ($ENTITY$Data data in dataSet)
             {
-                $ENTITY$ entity = $ENTITY$Manager.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
+                $ENTITY$ entity = $ENTITY$Repo.SingleOrDefault(e => e.$KEYENTITYPROPERTY$ == data.$KEYDATAPROPERTY$);
 
                 entity = entity == null ? $ENTITY$Mapper.CreateEntity(data) : $ENTITY$Mapper.UpdateEntity(entity, data);
 
-                var errors = $ENTITY$Manager.TryUpsert(entity);
+                var errors = $ENTITY$Repo.TryUpsert(entity);
 
                 errors.Should().BeEmpty(@"because $ENTITY$ ""{0}"" has to be added!", data.$KEYDATAPROPERTY$);
             }
 
-            $ENTITY$Manager.SaveChanges();
+            $ENTITY$Repo.SaveChanges();
 
             AssertEntitiesExist(dataSet);
         }

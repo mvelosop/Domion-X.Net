@@ -13,7 +13,7 @@ using FluentAssertions;
 
 namespace $APP$.$MODULE$.Lib.Tests.Helpers
 {
-    public static class $ENTITY$ManagerExtensions
+    public static class $ENTITY$RepositoryExtensions
     {
         /// <summary>
         /// Gets the entity by key data value or fails the assertion.
@@ -21,9 +21,9 @@ namespace $APP$.$MODULE$.Lib.Tests.Helpers
         /// <param name="manager"></param>
         /// <param name="$KEYENTITYPARAM$">Key data value</param>
         /// <returns>The entity</returns>
-        public static $ENTITY$ AssertGetByKeyData(this $ENTITY$Manager manager, string $KEYENTITYPARAM$)
+        public static $ENTITY$ AssertGetByKeyData(this $ENTITY$Repository repo, string $KEYENTITYPARAM$)
         {
-            $ENTITY$ entity = manager.SingleOrDefault(c => c.$KEYENTITYPROPERTY$ == $KEYENTITYPARAM$);
+            $ENTITY$ entity = repo.SingleOrDefault(c => c.$KEYENTITYPROPERTY$ == $KEYENTITYPARAM$);
 
             entity.Should().NotBeNull(@"because $ENTITY$ ""{0}"" MUST EXIST!", $KEYENTITYPARAM$);
 
