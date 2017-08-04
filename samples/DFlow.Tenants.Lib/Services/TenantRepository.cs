@@ -12,12 +12,14 @@ using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Core.Services;
 using DFlow.Tenants.Lib.Data;
 using Domion.Lib.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace DFlow.Tenants.Lib.Services
 {
@@ -33,16 +35,21 @@ namespace DFlow.Tenants.Lib.Services
         {
         }
 
-        /// <inheritdoc />
         public Tenant FindDuplicateByOwner(Tenant entity)
+        {
+            return FindDuplicateByOwnerAsync(entity).Result;
+        }
+
+        /// <inheritdoc />
+        public async Task<Tenant> FindDuplicateByOwnerAsync(Tenant entity)
         {
             if (entity.Id == 0)
             {
-                return Query(t => t.Owner == entity.Owner.Trim()).SingleOrDefault();
+                return await Query(t => t.Owner == entity.Owner.Trim()).SingleOrDefaultAsync();
             }
             else
             {
-                return Query(t => t.Owner == entity.Owner.Trim() && t.Id != entity.Id).SingleOrDefault();
+                return await Query(t => t.Owner == entity.Owner.Trim() && t.Id != entity.Id).SingleOrDefaultAsync();
             }
         }
 
@@ -58,13 +65,19 @@ namespace DFlow.Tenants.Lib.Services
         /// <inheritdoc />
         public virtual Tenant Refresh(Tenant entity)
         {
-            Detach(entity);
-
-            return Find(entity.Id);
+            return RefreshAsync(entity).Result;
         }
 
         /// <inheritdoc />
-        public new virtual IEnumerable<ValidationResult> TryDelete(Tenant entity)
+        public virtual async Task<Tenant> RefreshAsync(Tenant entity)
+        {
+            Detach(entity);
+
+            return await FindAsync(entity.Id);
+        }
+
+        /// <inheritdoc />
+        public new virtual List<ValidationResult> TryDelete(Tenant entity)
         {
             if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException($"Missing {nameof(entity.RowVersion)} on Delete");
 
@@ -74,7 +87,7 @@ namespace DFlow.Tenants.Lib.Services
         }
 
         /// <inheritdoc />
-        public new virtual IEnumerable<ValidationResult> TryInsert(Tenant entity)
+        public new virtual List<ValidationResult> TryInsert(Tenant entity)
         {
             if (entity.RowVersion != null && entity.RowVersion.Length > 0) throw new InvalidOperationException($"Existing {nameof(entity.RowVersion)} on Insert");
 
@@ -84,7 +97,7 @@ namespace DFlow.Tenants.Lib.Services
         }
 
         /// <inheritdoc />
-        public new virtual IEnumerable<ValidationResult> TryUpdate(Tenant entity)
+        public new virtual List<ValidationResult> TryUpdate(Tenant entity)
         {
             if (entity.RowVersion == null || entity.RowVersion.Length == 0) throw new InvalidOperationException($"Missing {nameof(entity.RowVersion)} on Update");
 
@@ -101,16 +114,9 @@ namespace DFlow.Tenants.Lib.Services
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<ValidationResult> TryUpsert(Tenant entity)
+        public virtual List<ValidationResult> TryUpsert(Tenant entity)
         {
-            if (entity.Id == 0)
-            {
-                return TryInsert(entity);
-            }
-            else
-            {
-                return TryUpdate(entity);
-            }
+            return entity.Id == 0 ? TryInsert(entity) : TryUpdate(entity);
         }
 
         /// <inheritdoc />

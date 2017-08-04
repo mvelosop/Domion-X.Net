@@ -78,6 +78,11 @@ namespace DFlow.Budget.Lib.Services
             return Find(entity.Id);
         }
 
+        public override void SaveChanges()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         ///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.
         /// </summary>

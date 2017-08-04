@@ -12,6 +12,7 @@ using DFlow.Tenants.Core.Model;
 using Domion.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace DFlow.Tenants.Core.Services
 {
@@ -23,6 +24,13 @@ namespace DFlow.Tenants.Core.Services
         /// <param name="entity"></param>
         /// <returns>The duplicate Tenant or null if none</returns>
         Tenant FindDuplicateByOwner(Tenant entity);
+
+        /// <summary>
+        ///     Returns another Tenant with the same Owner.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>The duplicate Tenant or null if none</returns>
+        Task<Tenant> FindDuplicateByOwnerAsync(Tenant entity);
 
         /// <summary>
         ///     <para>
@@ -37,31 +45,48 @@ namespace DFlow.Tenants.Core.Services
         Tenant Refresh(Tenant entity);
 
         /// <summary>
+        ///     <para>
+        ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
+        ///     </para>
+        ///     <para>
+        ///         Important, this only refreshes the passed entity. It does not refresh the related entities
+        ///         (navigation or collection properties). If needed yo have to modify this method and call the
+        ///         method on each one.
+        ///     </para>
+        /// </summary>
+        Task<Tenant> RefreshAsync(Tenant entity);
+
+        /// <summary>
         ///     Saves changes from the DbContext's change tracker to the database.
         /// </summary>
         void SaveChanges();
 
         /// <summary>
+        ///     Saves changes from the DbContext's change tracker to the database.
+        /// </summary>
+        Task SaveChangesAsync();
+
+        /// <summary>
         ///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.
         /// </summary>
-        IEnumerable<ValidationResult> TryDelete(Tenant entity);
+        List<ValidationResult> TryDelete(Tenant entity);
 
         /// <summary>
         ///     Adds an entity for insertion in the DbContext's change tracker if no errors are found in the ValidateSave method.
         ///     This method also checks that the concurrency token (RowVersion) is EMPTY.
         /// </summary>
-        IEnumerable<ValidationResult> TryInsert(Tenant entity);
+        List<ValidationResult> TryInsert(Tenant entity);
 
         /// <summary>
         ///     Marks an entity for update in the DbContext's change tracker if no errors are found in the ValidateSave method.
         ///     This method also checks that the concurrency token (RowVersion) is NOT EMPTY.
         /// </summary>
-        IEnumerable<ValidationResult> TryUpdate(Tenant entity);
+        List<ValidationResult> TryUpdate(Tenant entity);
 
         /// <summary>
         ///     Calls TryInsert or TryUpdate accordingly, based on the value of the Id property;
         /// </summary>
-        IEnumerable<ValidationResult> TryUpsert(Tenant entity);
+        List<ValidationResult> TryUpsert(Tenant entity);
 
         /// <summary>
         ///     Validates if it's ok to delete the entity from the database.

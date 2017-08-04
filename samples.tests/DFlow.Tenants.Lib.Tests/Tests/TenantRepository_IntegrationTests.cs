@@ -1,4 +1,8 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Autofac;
 using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Helpers;
@@ -6,13 +10,9 @@ using DFlow.Tenants.Setup;
 using Domion.Lib.Extensions;
 using Domion.Test.Extensions;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Xunit;
 
-namespace DFlow.Tenants.Lib.Tests
+namespace DFlow.Tenants.Lib.Tests.Tests
 {
     [Trait("Type", "Integration")]
     public class TenantRepository_IntegrationTests
@@ -20,13 +20,12 @@ namespace DFlow.Tenants.Lib.Tests
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private static readonly IContainer Container;
-        private static readonly TenantsDatabaseHelper DbHelper;
 
         static TenantRepository_IntegrationTests()
         {
-            DbHelper = SetupDatabase(ConnectionString);
+            TenantsDatabaseHelper dbHelper = SetupDatabase(ConnectionString);
 
-            Container = SetupContainer(DbHelper);
+            Container = SetupContainer(dbHelper);
         }
 
         [Fact]
@@ -49,7 +48,7 @@ namespace DFlow.Tenants.Lib.Tests
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                errors = repo.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity);
 
                 repo.SaveChanges();
             });
@@ -94,7 +93,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 errors.Should().BeEmpty();
 
@@ -109,7 +108,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = repo.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity);
 
                 repo.SaveChanges();
             });
@@ -147,7 +146,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = repo.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity);
             });
 
             // Assert ----------------------------
@@ -177,7 +176,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = repo.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity);
 
                 repo.SaveChanges();
             });
@@ -223,7 +222,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 mapper.UpdateEntity(update2, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 errors.Should().BeEmpty();
 
@@ -242,7 +241,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
             });
 
             // Assert ----------------------------
@@ -281,7 +280,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity = mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
             });
 
             // Assert ----------------------------
@@ -315,7 +314,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity = mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 repo.SaveChanges();
             });
@@ -350,26 +349,6 @@ namespace DFlow.Tenants.Lib.Tests
             dbHelper.ConfigureDatabase();
 
             return dbHelper;
-        }
-
-        private void UpdateOnDifferentDbContext(TenantData data, TenantData update)
-        {
-            IEnumerable<ValidationResult> errors = null;
-
-            UsingRepository((scope, repo) =>
-            {
-                var mapper = scope.Resolve<TenantDataMapper>();
-
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
-
-                entity = mapper.UpdateEntity(update, entity);
-
-                errors = repo.TryUpdate(entity).ToList();
-
-                repo.SaveChanges();
-            });
-
-            errors.Should().BeEmpty();
         }
 
         private void UsingRepository(Action<ILifetimeScope, TenantRepository> action)
