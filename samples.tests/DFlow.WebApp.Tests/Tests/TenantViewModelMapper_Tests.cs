@@ -26,7 +26,7 @@ namespace DFlow.WebApp.Tests.Tests
             
             // Act -------------------------------
 
-            Action action = () => mapper.UpdateEntity(entity, vm);
+            Action action = () => mapper.UpdateEntity(vm, entity);
 
             // Assert ----------------------------
 

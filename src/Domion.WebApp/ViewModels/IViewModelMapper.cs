@@ -6,6 +6,6 @@
 
         TViewModel CreateViewModel(TEntity entity);
 
-        TEntity UpdateEntity(TEntity entity, TViewModel vm);
+        TEntity UpdateEntity(TViewModel vm, TEntity entity);
     }
 }
