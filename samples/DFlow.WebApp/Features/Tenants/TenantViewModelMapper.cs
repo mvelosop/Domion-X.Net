@@ -28,7 +28,7 @@ namespace DFlow.WebApp.Features.Tenants
             return vm;
         }
 
-        public Tenant UpdateEntity(Tenant entity, TenantViewModel vm)
+        public Tenant UpdateEntity(TenantViewModel vm, Tenant entity)
         {
             if (vm.RowVersion == null || vm.RowVersion.Length == 0)
                 throw new InvalidOperationException($"{nameof(UpdateEntity)} requires a valid {nameof(vm.RowVersion)}.");

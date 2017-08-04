@@ -270,7 +270,7 @@ namespace DFlow.WebApp.Features.Tenants
             {
                 try
                 {
-                    entity = TenantViewModelMapper.UpdateEntity(entity, vm);
+                    entity = TenantViewModelMapper.UpdateEntity(vm, entity);
 
                     List<ValidationResult> errors = await _appServices.UpdateTenant(entity);
 

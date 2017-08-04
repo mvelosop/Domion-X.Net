@@ -117,7 +117,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
             {
                 Tenant entity = TenantRepo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                entity = entity == null ? TenantMapper.CreateEntity(data) : TenantMapper.UpdateEntity(entity, data);
+                entity = entity == null ? TenantMapper.CreateEntity(data) : TenantMapper.UpdateEntity(data, entity);
 
                 var errors = TenantRepo.TryUpsert(entity);
 

@@ -6,6 +6,6 @@
 
         TEntity CreateEntity(TData data);
 
-        TEntity UpdateEntity(TEntity entity, TData data);
+        TEntity UpdateEntity(TData data, TEntity entity);
     }
 }
