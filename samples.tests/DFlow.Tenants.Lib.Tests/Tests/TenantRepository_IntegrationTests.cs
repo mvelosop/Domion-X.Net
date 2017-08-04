@@ -92,7 +92,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 viewModel = mapper.DuplicateEntity(entity);
 
-                mapper.UpdateEntity(entity, update);
+                mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
 
@@ -221,7 +221,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 viewModel = mapper.DuplicateEntity(entity);
 
-                mapper.UpdateEntity(entity, update2);
+                mapper.UpdateEntity(update2, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
 
@@ -238,7 +238,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
-                entity = mapper.UpdateEntity(entity, update1);
+                entity = mapper.UpdateEntity(update1, entity);
 
                 entity.RowVersion = viewModel.RowVersion;
 
@@ -279,7 +279,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                entity = mapper.UpdateEntity(entity, update);
+                entity = mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
             });
@@ -313,7 +313,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                entity = mapper.UpdateEntity(entity, update);
+                entity = mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
 
@@ -362,7 +362,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                entity = mapper.UpdateEntity(entity, update);
+                entity = mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
 

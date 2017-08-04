@@ -16,10 +16,10 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         {
             var entity = new BudgetClass();
 
-            return UpdateEntity(entity, data);
+            return UpdateEntity(data, entity);
         }
 
-        public BudgetClass UpdateEntity(BudgetClass entity, BudgetClassData data)
+        public BudgetClass UpdateEntity(BudgetClassData data, BudgetClass entity)
         {
             entity.Name = data.Name;
             entity.TransactionType = data.TransactionType;

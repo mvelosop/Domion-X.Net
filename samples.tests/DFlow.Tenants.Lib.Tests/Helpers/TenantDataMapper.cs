@@ -12,7 +12,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
 
         public Tenant CreateEntity(TenantData data)
         {
-            return UpdateEntity(new Tenant(), data);
+            return UpdateEntity(data, new Tenant());
         }
 
         public Tenant DuplicateEntity(Tenant entity)
@@ -27,7 +27,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
             return duplicate;
         }
 
-        public Tenant UpdateEntity(Tenant entity, TenantData data)
+        public Tenant UpdateEntity(TenantData data, Tenant entity)
         {
             entity.Owner = data.Owner;
 

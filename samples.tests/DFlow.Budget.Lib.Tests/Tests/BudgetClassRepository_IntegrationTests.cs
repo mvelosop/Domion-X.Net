@@ -239,7 +239,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
                 BudgetClass entity = repo.SingleOrDefault(bc => bc.Name == data.Name);
 
-                entity = mapper.UpdateEntity(entity, update);
+                entity = mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
             });
@@ -273,7 +273,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
                 BudgetClass entity = repo.SingleOrDefault(bc => bc.Name == data.Name);
 
-                entity = mapper.UpdateEntity(entity, update);
+                entity = mapper.UpdateEntity(update, entity);
 
                 errors = repo.TryUpdate(entity).ToList();
 

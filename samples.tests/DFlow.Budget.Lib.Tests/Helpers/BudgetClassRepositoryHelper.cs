@@ -116,7 +116,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             {
                 BudgetClass entity = BudgetClassRepo.SingleOrDefault(e => e.Name == data.Name);
 
-                entity = entity == null ? BudgetClassMapper.CreateEntity(data) : BudgetClassMapper.UpdateEntity(entity, data);
+                entity = entity == null ? BudgetClassMapper.CreateEntity(data) : BudgetClassMapper.UpdateEntity(data, entity);
 
                 var errors = BudgetClassRepo.TryUpsert(entity);
 
