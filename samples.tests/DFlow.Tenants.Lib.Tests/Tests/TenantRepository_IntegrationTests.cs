@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using DFlow.Tenants.Core.Model;
 using DFlow.Tenants.Lib.Services;
 using DFlow.Tenants.Lib.Tests.Helpers;
@@ -10,6 +6,11 @@ using DFlow.Tenants.Setup;
 using Domion.Lib.Extensions;
 using Domion.Test.Extensions;
 using FluentAssertions;
+using Nito.AsyncEx;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Xunit;
 
 namespace DFlow.Tenants.Lib.Tests.Tests
@@ -44,7 +45,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
@@ -66,7 +67,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
         [Fact]
         public void TryDelete_Fails_WhenConcurrencyConflict()
         {
-            IEnumerable<ValidationResult> errors = null;
+            List<ValidationResult> errors = null;
 
             // Arrange ---------------------------
 
@@ -83,7 +84,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -102,7 +103,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
@@ -140,7 +141,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -170,7 +171,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -212,7 +213,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -231,7 +232,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -272,7 +273,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -306,7 +307,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingRepositoryAsyncContext((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -351,14 +352,18 @@ namespace DFlow.Tenants.Lib.Tests.Tests
             return dbHelper;
         }
 
-        private void UsingRepository(Action<ILifetimeScope, TenantRepository> action)
+        private void UsingRepositoryAsyncContext(Action<ILifetimeScope, TenantRepository> action)
         {
-            using (ILifetimeScope scope = Container.BeginLifetimeScope())
+            // This emulates the request thread to test async methods
+            AsyncContext.Run(() =>
             {
-                var repo = scope.Resolve<TenantRepository>();
+                using (ILifetimeScope scope = Container.BeginLifetimeScope())
+                {
+                    var repo = scope.Resolve<TenantRepository>();
 
-                action.Invoke(scope, repo);
-            }
+                    action.Invoke(scope, repo);
+                }
+            });
         }
 
         private void UsingRepositoryHelper(Action<ILifetimeScope, TenantRepositoryHelper> action)

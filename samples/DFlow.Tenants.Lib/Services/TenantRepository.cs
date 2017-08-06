@@ -35,22 +35,19 @@ namespace DFlow.Tenants.Lib.Services
         {
         }
 
+        /// <inheritdoc />
         public Tenant FindDuplicateByOwner(Tenant entity)
         {
-            return FindDuplicateByOwnerAsync(entity).Result;
-        }
+            Expression<Func<Tenant, bool>> where = t => t.Owner == entity.Owner.Trim();
 
-        /// <inheritdoc />
-        public async Task<Tenant> FindDuplicateByOwnerAsync(Tenant entity)
-        {
-            if (entity.Id == 0)
+            IQueryable<Tenant> query = Query().Where(where);
+
+            if (entity.Id != 0)
             {
-                return await Query(t => t.Owner == entity.Owner.Trim()).SingleOrDefaultAsync();
+                query = query.Where(t => t.Id != entity.Id);
             }
-            else
-            {
-                return await Query(t => t.Owner == entity.Owner.Trim() && t.Id != entity.Id).SingleOrDefaultAsync();
-            }
+
+            return query.SingleOrDefault();
         }
 
         /// <summary>
@@ -65,13 +62,15 @@ namespace DFlow.Tenants.Lib.Services
         /// <inheritdoc />
         public virtual Tenant Refresh(Tenant entity)
         {
-            return RefreshAsync(entity).Result;
+            DetachInternal(entity);
+
+            return Find(entity.Id);
         }
 
         /// <inheritdoc />
         public virtual async Task<Tenant> RefreshAsync(Tenant entity)
         {
-            Detach(entity);
+            DetachInternal(entity);
 
             return await FindAsync(entity.Id);
         }
@@ -144,6 +143,11 @@ namespace DFlow.Tenants.Lib.Services
         internal virtual void CommonSaveOperations(Tenant entity)
         {
             TrimStrings(entity);
+        }
+
+        private void DetachInternal(Tenant entity)
+        {
+            Detach(entity);
         }
 
         private void TrimStrings(Tenant entity)

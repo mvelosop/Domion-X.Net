@@ -26,13 +26,6 @@ namespace DFlow.Tenants.Core.Services
         Tenant FindDuplicateByOwner(Tenant entity);
 
         /// <summary>
-        ///     Returns another Tenant with the same Owner.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns>The duplicate Tenant or null if none</returns>
-        Task<Tenant> FindDuplicateByOwnerAsync(Tenant entity);
-
-        /// <summary>
         ///     <para>
         ///         Refreshes the entity in the DbContext's change tracker, requerying the database.
         ///     </para>

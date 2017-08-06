@@ -358,16 +358,17 @@ namespace DFlow.WebApp.Features.Tenants
 
         private async Task<Tenant> FindTenantById(int? id)
         {
-            var entity = await _appServices.FindTenantById(id);
+            Task<Tenant> task = _appServices.FindTenantById(id);
 
-            if (entity == null)
-            {
-                _logger.LogWarning(EntityNotFoundLogMessage, id);
+            Tenant entity = await task;
 
-                _alerts.Warning(EntityNotFoundAlert, id);
-            }
+            if (entity != null) return entity;
+            
+            _logger.LogWarning(EntityNotFoundLogMessage, id);
 
-            return entity;
+            _alerts.Warning(EntityNotFoundAlert, id);
+
+            return null;
         }
 
         private void SetupViewModel(TenantViewModel vm, string title)
