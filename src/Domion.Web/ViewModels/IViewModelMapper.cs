@@ -1,4 +1,4 @@
-﻿namespace Domion.WebApp.ViewModels
+﻿namespace Domion.Web.ViewModels
 {
     public interface IViewModelMapper<TViewModel, TEntity> where TViewModel : class where TEntity : class
     {

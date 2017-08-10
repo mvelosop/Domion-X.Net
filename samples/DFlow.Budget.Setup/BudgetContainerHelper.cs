@@ -29,7 +29,7 @@ namespace DFlow.Budget.Setup
             builder.Register<BudgetDbContext>((c) => _dbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
-            RegisterCommonModuleTypes(builder, ModulePrefix);
+            RegisterCommonModuleTypes(builder, ModulePrefix, new []{ "DataHelper", "DataMapper", "Manager", "ManagerHelper", "Repository", "RepositoryHelper" });
         }
 
         private void RegisterExternalTypes(ContainerBuilder builder)

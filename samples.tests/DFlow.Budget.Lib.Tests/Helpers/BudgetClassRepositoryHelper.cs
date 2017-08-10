@@ -18,9 +18,9 @@ namespace DFlow.Budget.Lib.Tests.Helpers
     /// </summary>
     public class BudgetClassRepositoryHelper
     {
-        private readonly Lazy<BudgetClassDataMapper> LazyBudgetClassDataMapper;
-        private readonly Lazy<BudgetClassRepository> LazyBudgetClassRepo;
-        private readonly ILifetimeScope Scope;
+        private readonly Lazy<BudgetClassDataMapper> _lazyBudgetClassDataMapper;
+        private readonly Lazy<BudgetClassRepository> _lazyBudgetClassRepo;
+        private readonly ILifetimeScope _scope;
 
         /// <summary>
         ///     Creates a Helper for BudgetClassRepository to help in the test's Arrange and Assert sections
@@ -30,15 +30,15 @@ namespace DFlow.Budget.Lib.Tests.Helpers
             Lazy<BudgetClassDataMapper> lazyBudgetClassDataMapper,
             Lazy<BudgetClassRepository> lazyBudgetClassRepo)
         {
-            Scope = scope;
+            _scope = scope;
 
-            LazyBudgetClassRepo = lazyBudgetClassRepo;
-            LazyBudgetClassDataMapper = lazyBudgetClassDataMapper;
+            _lazyBudgetClassRepo = lazyBudgetClassRepo;
+            _lazyBudgetClassDataMapper = lazyBudgetClassDataMapper;
         }
 
-        private BudgetClassRepository BudgetClassRepo => LazyBudgetClassRepo.Value;
+        private BudgetClassRepository BudgetClassRepo => _lazyBudgetClassRepo.Value;
 
-        private BudgetClassDataMapper BudgetClassMapper => LazyBudgetClassDataMapper.Value;
+        private BudgetClassDataMapper BudgetClassMapper => _lazyBudgetClassDataMapper.Value;
 
         /// <summary>
         ///     Asserts that entities with the supplied key data values do not exist. This method DOES NOT DELETE entities, use EnsureEntitiesDoNotExist for that.
@@ -46,7 +46,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesDoNotExist(params BudgetClassData[] dataSet)
         {
-            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
+            using (ILifetimeScope scope = _scope.BeginLifetimeScope())
             {
                 var repo = scope.Resolve<BudgetClassRepository>();
 
@@ -65,7 +65,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
         /// <param name="dataSet">Data for the entities to be searched for</param>
         public void AssertEntitiesExist(params BudgetClassData[] dataSet)
         {
-            using (ILifetimeScope scope = Scope.BeginLifetimeScope())
+            using (ILifetimeScope scope = _scope.BeginLifetimeScope())
             {
                 var repo = scope.Resolve<BudgetClassRepository>();
                 var mapper = scope.Resolve<BudgetClassDataMapper>();

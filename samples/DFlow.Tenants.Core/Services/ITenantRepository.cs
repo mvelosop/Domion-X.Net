@@ -52,12 +52,12 @@ namespace DFlow.Tenants.Core.Services
         /// <summary>
         ///     Saves changes from the DbContext's change tracker to the database.
         /// </summary>
-        void SaveChanges();
+        int SaveChanges();
 
         /// <summary>
         ///     Saves changes from the DbContext's change tracker to the database.
         /// </summary>
-        Task SaveChangesAsync();
+        Task<int> SaveChangesAsync();
 
         /// <summary>
         ///     Marks an entity for deletion in the DbContext's change tracker if no errors are found in the ValidateDelete method.

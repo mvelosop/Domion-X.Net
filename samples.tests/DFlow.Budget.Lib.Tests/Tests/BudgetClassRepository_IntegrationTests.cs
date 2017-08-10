@@ -116,7 +116,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.DuplicateByNameError);
         }
 
         [Fact]
@@ -246,7 +246,7 @@ namespace DFlow.Budget.Lib.Tests.Tests
 
             // Assert ----------------------------
 
-            errors.Should().ContainErrorMessage(BudgetClassRepository.duplicateByNameError);
+            errors.Should().ContainErrorMessage(BudgetClassRepository.DuplicateByNameError);
         }
 
         [Fact]

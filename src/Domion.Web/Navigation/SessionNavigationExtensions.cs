@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 
-namespace Domion.WebApp.Navigation
+namespace Domion.Web.Navigation
 {
     public static class SessionNavigationExtensions
     {

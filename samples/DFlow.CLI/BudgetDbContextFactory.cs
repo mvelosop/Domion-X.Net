@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Demo.Cli
+namespace DFlow.CLI
 {
     public class BudgetDbContextFactory : IDbContextFactory<BudgetDbContext>
     {

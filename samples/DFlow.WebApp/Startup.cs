@@ -6,7 +6,6 @@ using DFlow.WebApp.Data;
 using DFlow.WebApp.Features.Tenants;
 using DFlow.WebApp.Models;
 using DFlow.WebApp.Services;
-using Domion.WebApp.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,8 +19,9 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
-using Domion.WebApp.Alerts;
 using System.IO;
+using Domion.Web.Alerts;
+using Domion.Web.Helpers;
 
 namespace DFlow.WebApp
 {

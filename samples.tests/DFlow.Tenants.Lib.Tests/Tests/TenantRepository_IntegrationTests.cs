@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using Nito.AsyncEx.Synchronous;
 using Xunit;
 
 namespace DFlow.Tenants.Lib.Tests.Tests
@@ -45,7 +47,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
@@ -84,7 +86,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -103,7 +105,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
@@ -141,7 +143,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -171,7 +173,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -180,6 +182,11 @@ namespace DFlow.Tenants.Lib.Tests.Tests
                 errors = repo.TryInsert(entity);
 
                 repo.SaveChanges();
+
+                //int written = await repo.SaveChangesAsync();
+
+                //Console.WriteLine($"Se escribieron {written} objetos.");
+                //await task.ConfigureAwait(false);//.WaitAndUnwrapException();//.GetAwaiter().GetResult();
             });
 
             // Assert ----------------------------
@@ -213,7 +220,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -232,7 +239,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             // Act -------------------------------
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -273,7 +280,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -307,7 +314,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepositoryAsyncContext((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -352,7 +359,7 @@ namespace DFlow.Tenants.Lib.Tests.Tests
             return dbHelper;
         }
 
-        private void UsingRepositoryAsyncContext(Action<ILifetimeScope, TenantRepository> action)
+        private void UsingAsyncContextRepository(Action<ILifetimeScope, TenantRepository> action)
         {
             // This emulates the request thread to test async methods
             AsyncContext.Run(() =>

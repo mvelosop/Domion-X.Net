@@ -1,12 +1,12 @@
-﻿using Domion.WebApp.Extensions;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Domion.Web.Extensions;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xunit;
 
-namespace Domion.WebApp.Tests.Tests
+namespace Domion.Web.Tests.Tests
 {
     [Trait("Type", "Unit")]
     public class ModelStateDictionaryExtensions_Tests

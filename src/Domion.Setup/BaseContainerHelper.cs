@@ -65,39 +65,42 @@ namespace Domion.Setup
             return loadedAssemblies.ToArray();
         }
 
-        protected static void RegisterCommonModuleTypes(ContainerBuilder builder, string modulePrefix)
+        protected static void RegisterCommonModuleTypes(ContainerBuilder builder, string modulePrefix, string[] classSuffixes)
         {
             Assembly[] appAssemblies = LoadModuleAssemblies(modulePrefix);
 
             foreach (Assembly assembly in appAssemblies)
             {
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("DataHelper"))
-                    .InstancePerLifetimeScope();
+                //builder.RegisterAssemblyTypes(assembly)
+                //    .Where(t => t.Name.EndsWith("DataHelper"))
+                //    .InstancePerLifetimeScope();
 
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("DataMapper"))
-                    .InstancePerLifetimeScope();
+                //builder.RegisterAssemblyTypes(assembly)
+                //    .Where(t => t.Name.EndsWith("DataMapper"))
+                //    .InstancePerLifetimeScope();
 
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("Manager"))
-                    .InstancePerLifetimeScope()
-                    .AsSelf()
-                    .AsImplementedInterfaces();
+                foreach (var classSuffix in classSuffixes)
+                {
+                    builder.RegisterAssemblyTypes(assembly)
+                        .Where(t => t.Name.EndsWith(classSuffix))
+                        .InstancePerLifetimeScope()
+                        .AsSelf()
+                        .AsImplementedInterfaces();
+                }
 
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("ManagerHelper"))
-                    .InstancePerLifetimeScope();
+                //builder.RegisterAssemblyTypes(assembly)
+                //    .Where(t => t.Name.EndsWith("ManagerHelper"))
+                //    .InstancePerLifetimeScope();
 
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("Repository"))
-                    .InstancePerLifetimeScope()
-                    .AsSelf()
-                    .AsImplementedInterfaces();
+                //builder.RegisterAssemblyTypes(assembly)
+                //    .Where(t => t.Name.EndsWith("Repository"))
+                //    .InstancePerLifetimeScope()
+                //    .AsSelf()
+                //    .AsImplementedInterfaces();
 
-                builder.RegisterAssemblyTypes(assembly)
-                    .Where(t => t.Name.EndsWith("RepositoryHelper"))
-                    .InstancePerLifetimeScope();
+                //builder.RegisterAssemblyTypes(assembly)
+                //    .Where(t => t.Name.EndsWith("RepositoryHelper"))
+                //    .InstancePerLifetimeScope();
             }
         }
     }

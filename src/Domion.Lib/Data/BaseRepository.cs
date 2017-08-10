@@ -84,17 +84,19 @@ namespace Domion.Lib.Data
         /// <summary>
         ///     Saves changes from the DbContext's change tracker to the database.
         /// </summary>
-        public virtual void SaveChanges()
+        /// <returns>The number of objects written to the underlying database</returns>
+        public virtual int SaveChanges()
         {
-            _dbContext.SaveChanges();
+            return _dbContext.SaveChanges();
         }
 
         /// <summary>
-        ///     Saves changes from the DbContext's change tracker to the database.
+        ///     Saves changes asynchronously from the DbContext's change tracker to the database.
         /// </summary>
-        public virtual async Task SaveChangesAsync()
+        /// <returns>The number of objects written to the underlying database</returns>
+        public virtual async Task<int> SaveChangesAsync()
         {
-            await _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>

@@ -1,11 +1,11 @@
-﻿using Domion.WebApp.Navigation;
-using Domion.WebApp.Tests.Helpers;
+﻿using Domion.Web.Navigation;
+using Domion.Web.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Xunit;
 
-namespace Domion.WebApp.Tests.Tests
+namespace Domion.Web.Tests.Tests
 {
     [Trait("Type", "Unit")]
     public class SessionNavigationExtensions_Tests

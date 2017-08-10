@@ -1,5 +1,8 @@
-﻿using Domion.WebApp.Navigation;
-using Domion.WebApp.Tests.Helpers;
+﻿using System;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Domion.Web.Navigation;
+using Domion.Web.Tests.Helpers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +14,6 @@ using Microsoft.AspNetCore.Session;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using NSubstitute;
-using System;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Xunit;
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ using Xunit;
 // Release 1.1.3
 //------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace Domion.WebApp.Tests.Tests
+namespace Domion.Web.Tests.Tests
 {
     [Trait("Type", "Unit")]
     public class NavigationHelper_Tests

@@ -1,11 +1,6 @@
 using cloudscribe.Web.Common.Extensions;
 using DFlow.Tenants.Core.Model;
 using DFlow.WebApp.Services;
-using Domion.WebApp.Extensions;
-using Domion.WebApp.Helpers;
-using Domion.WebApp.Logging;
-using Domion.WebApp.Navigation;
-using Domion.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
@@ -17,7 +12,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Domion.WebApp.Alerts;
+using Domion.Web.Alerts;
+using Domion.Web.Extensions;
+using Domion.Web.Helpers;
+using Domion.Web.Logging;
+using Domion.Web.Navigation;
+using Domion.Web.ViewModels;
 
 namespace DFlow.WebApp.Features.Tenants
 {

@@ -1,6 +1,6 @@
 ﻿using DFlow.Tenants.Core.Model;
-using Domion.WebApp.ViewModels;
 using System;
+using Domion.Web.ViewModels;
 
 namespace DFlow.WebApp.Features.Tenants
 {

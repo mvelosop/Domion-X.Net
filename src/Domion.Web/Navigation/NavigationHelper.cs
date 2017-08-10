@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
-using System;
-using System.Collections.Generic;
 
-namespace Domion.WebApp.Navigation
+namespace Domion.Web.Navigation
 {
     public class NavigationHelper
     {

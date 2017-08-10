@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Domion.WebApp\Domion.WebApp.csproj" />
+    <ProjectReference Include="..\..\src\Domion.Web\Domion.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
