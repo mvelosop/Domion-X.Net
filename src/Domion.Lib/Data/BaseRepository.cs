@@ -5,62 +5,73 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Domion.Lib.Data
 {
-    public class BaseRepository<T, TKey> : IEntityManager<T, TKey> where T : class
+    /// <summary>
+    ///     Generic repository implementation.
+    /// </summary>
+    /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <typeparam name="TKey">Key property type</typeparam>
+    public abstract class BaseRepository<TEntity, TKey> : IRepositoryQuery<TEntity>, IEntityFinder<TEntity, TKey> where TEntity : class
     {
         private readonly DbContext _dbContext;
-        private readonly DbSet<T> _dbSet;
+        private readonly DbSet<TEntity> _dbSet;
 
-        public BaseRepository(DbContext dbContext)
+        /// <summary>
+        ///     Creates the generic repository instance.
+        /// </summary>
+        /// <param name="dbContext">The DbContext to get the Entity Type from.</param>
+        protected BaseRepository(DbContext dbContext)
         {
             _dbContext = dbContext;
-            _dbSet = _dbContext.Set<T>();
+            _dbSet = _dbContext.Set<TEntity>();
         }
 
-        public virtual DbContext DbContext => _dbContext;
+        protected virtual DbContext DbContext => _dbContext;
 
-        public void Detach(T entity)
+        /// <summary>
+        ///     Detaches the entity from the DbContext's change tracker.
+        /// </summary>
+        public void Detach(TEntity entity)
         {
             DbContext.Entry(entity).State = EntityState.Detached;
         }
 
-        public virtual T Find(TKey key)
+        /// <inheritdoc />
+        public virtual TEntity Find(TKey key)
         {
-            return _dbContext.Find<T>(key);
+            return FindAsync(key).Result;
         }
 
-        public virtual T First(Expression<Func<T, bool>> where)
+        /// <inheritdoc />
+        public virtual async Task<TEntity> FindAsync(TKey key)
         {
-            return Query(where).First();
+            return await _dbContext.FindAsync<TEntity>(key);
         }
 
-        public virtual T FirstOrDefault(Expression<Func<T, bool>> where)
-        {
-            return Query(where).FirstOrDefault<T>();
-        }
-
-        public virtual T GetOriginalEntity(T entity)
+        /// <summary>
+        ///     Returns an entity object with the original values when it was last read from the database.
+        ///     Does not include any navigation properties, not even collections.
+        /// </summary>
+        public virtual TEntity GetOriginalEntity(TEntity entity)
         {
             var entry = DbContext.Entry(entity);
 
-            if (entry == null)
-            {
-                return null;
-            }
-
-            return entry.OriginalValues.ToObject() as T;
+            return entry?.OriginalValues.ToObject() as TEntity;
         }
 
-        public virtual IQueryable<T> Query()
+        /// <inheritdoc />
+        public virtual IQueryable<TEntity> Query()
         {
             return Query(null);
         }
 
-        public virtual IQueryable<T> Query(Expression<Func<T, bool>> where)
+        /// <inheritdoc />
+        public virtual IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> where)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<TEntity> query = _dbSet;
 
             if (where != null)
             {
@@ -70,71 +81,89 @@ namespace Domion.Lib.Data
             return query;
         }
 
-        public virtual void SaveChanges()
+        /// <summary>
+        ///     Saves changes from the DbContext's change tracker to the database.
+        /// </summary>
+        /// <returns>The number of objects written to the underlying database</returns>
+        public virtual int SaveChanges()
         {
-            _dbContext.SaveChanges();
+            return _dbContext.SaveChanges();
         }
 
-        public virtual T Single(Expression<Func<T, bool>> where)
+        /// <summary>
+        ///     Saves changes asynchronously from the DbContext's change tracker to the database.
+        /// </summary>
+        /// <returns>The number of objects written to the underlying database</returns>
+        public virtual async Task<int> SaveChangesAsync()
         {
-            return Query(where).Single<T>();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public virtual T SingleOrDefault(Expression<Func<T, bool>> where)
+        /// <summary>
+        ///     Validates if it's ok to delete the entity from the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateDelete(TEntity model)
         {
-            return Query(where).SingleOrDefault<T>();
+            yield break;
         }
 
-        public virtual IEnumerable<ValidationResult> ValidateDelete(T model)
+        /// <summary>
+        ///     Validates if it's ok to save the new or updated entity to the database.
+        /// </summary>
+        public virtual IEnumerable<ValidationResult> ValidateSave(TEntity model)
         {
-            return Enumerable.Empty<ValidationResult>();
+            yield break;
         }
 
-        public virtual IEnumerable<ValidationResult> ValidateSave(T model)
+        /// <summary>
+        ///     Marks an entity for deletion in the DbContext's change tracker if it passes the ValidateDelete method.
+        /// </summary>
+        protected virtual List<ValidationResult> TryDelete(TEntity entity)
         {
-            return Enumerable.Empty<ValidationResult>();
-        }
+            List<ValidationResult> errors = ValidateDelete(entity).ToList();
 
-        protected virtual IEnumerable<ValidationResult> TryDelete(T entity)
-        {
-            var deleteErrors = ValidateDelete(entity);
-
-            if (deleteErrors.Any())
+            if (errors.Count > 0)
             {
-                return deleteErrors;
+                return errors;
             }
 
             _dbSet.Remove(entity);
 
-            return Enumerable.Empty<ValidationResult>();
+            return errors;
         }
 
-        protected virtual IEnumerable<ValidationResult> TryInsert(T entity)
+        /// <summary>
+        ///     Adds an entity for insertion in the DbContext's change tracker if it passes the ValidateSave method.
+        /// </summary>
+        protected virtual List<ValidationResult> TryInsert(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            List<ValidationResult> errors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (errors.Count > 0)
             {
-                return saveErrors;
+                return errors;
             }
 
             _dbSet.Add(entity);
 
-            return Enumerable.Empty<ValidationResult>();
+            return errors;
         }
 
-        protected virtual IEnumerable<ValidationResult> TryUpdate(T entity)
+        /// <summary>
+        ///     Marks an entity for update in the DbContext's change tracker if it passes the ValidateSave method.
+        /// </summary>
+        protected virtual List<ValidationResult> TryUpdate(TEntity entity)
         {
-            var saveErrors = ValidateSave(entity);
+            List<ValidationResult> errors = ValidateSave(entity).ToList();
 
-            if (saveErrors.Any())
+            if (errors.Count > 0)
             {
-                return saveErrors;
+                return errors;
             }
 
             _dbSet.Update(entity);
 
-            return Enumerable.Empty<ValidationResult>();
+            return errors;
         }
     }
 }

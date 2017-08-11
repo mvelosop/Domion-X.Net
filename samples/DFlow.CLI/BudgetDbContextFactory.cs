@@ -1,16 +1,18 @@
 ﻿using DFlow.Budget.Lib.Data;
-using DFlow.Budget.Lib.Tests.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Demo.Cli
+namespace DFlow.CLI
 {
     public class BudgetDbContextFactory : IDbContextFactory<BudgetDbContext>
     {
         public BudgetDbContext Create(DbContextFactoryOptions options)
         {
-            var dbSetup = new BudgetDbSetupHelper();
+            var optionBuilder = new DbContextOptionsBuilder<BudgetDbContext>();
 
-            return dbSetup.GetDbContext();
+            optionBuilder.UseSqlServer("x");
+
+            return new BudgetDbContext(optionBuilder.Options);
         }
     }
 }

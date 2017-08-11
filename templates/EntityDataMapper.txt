@@ -1,0 +1,54 @@
+//--------------------------------------------------------------------------------------------------------------
+// $APP$               (e.g. DFlow)       - Name of the App if multi-module, use XXX to remove if single module 
+// $MODULE$            (e.g. Budget)      - Name of the Module 
+// $ENTITY$            (e.g. BudgetClass) - Name of the Entity
+// $KEYENTITYPROPERTY$ (e.g. Name)        - Name of the KeyData property of the Entity
+// $KEYDATAPROPERTY$   (e.g. Name)        - Name of the KeyData property of the EntityData class
+//--------------------------------------------------------------------------------------------------------------
+
+using $APP$.$MODULE$.Core.Model;
+using Domion.Test.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace $APP$.$MODULE$.Lib.Tests.Helpers
+{
+    public class $ENTITY$DataMapper : IDataMapper<$ENTITY$Data, $ENTITY$>
+    {
+        public $ENTITY$Data CreateData($ENTITY$ entity)
+        {
+            return new $ENTITY$Data(entity.$KEYENTITYPROPERTY$);
+        }
+
+        public $ENTITY$ CreateEntity($ENTITY$Data data)
+        {
+            return UpdateEntity(new $ENTITY$(), data);
+        }
+
+        public $ENTITY$ DuplicateEntity($ENTITY$ entity)
+        {
+            var duplicate = new $ENTITY$
+            {
+                Id = entity.Id,
+                $KEYENTITYPROPERTY$ = entity.$KEYENTITYPROPERTY$,
+
+                //--------------------------------------
+                // Add other property mapping as needed
+                //--------------------------------------
+
+            };
+
+            return duplicate;
+        }
+
+        public $ENTITY$ UpdateEntity($ENTITY$ entity, $ENTITY$Data data)
+        {
+            entity.$KEYENTITYPROPERTY$ = data.$KEYDATAPROPERTY$;
+
+            return entity;
+        }
+    }
+}

@@ -1,0 +1,52 @@
+@model DFlow.WebApp.Features.Tenants.TenantViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    Func<dynamic, object> links =
+
+        @<div class="links">
+            <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary"><i class="fa fa-list" aria-hidden="true"></i> Índice</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id"><i class="fa fa-refresh" aria-hidden="true"></i> Refrescar</a>
+        </div>;
+
+}
+
+@section PageHeader{
+    <h2>@Model.Title</h2>
+    @links(Model)
+}
+
+@Html.Partial("AlertsPartial")
+
+<div class="box box-data-card">
+    <form asp-action="Edit">
+
+        <div class="box-header with-border">
+            <h3>@Model.Owner</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="RowVersion" />
+
+                @Html.Partial("_EditPartial", Model)
+
+            </div>
+        </div>
+
+        <div class="box-footer with-border">
+            @Html.Partial("_SaveButtonPartial")
+        </div>
+
+    </form>
+</div>
+
+@links(Model)
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

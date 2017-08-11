@@ -1,0 +1,48 @@
+@model DFlow.WebApp.Features.Tenants.TenantViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    Func<dynamic, object> links =
+
+        @<div class="links">
+            <a asp-action="Index" asp-all-route-data="@Model.LastIndexRouteDictionary"><i class="fa fa-list" aria-hidden="true"></i> Índice</a>
+        </div>;
+
+}
+
+@section PageHeader{
+    <h2>@Model.Title</h2>
+    @links(Model)
+}
+
+@Html.Partial("AlertsPartial")
+
+<h4 class="delete-confirmation" style="color:red">¿Realmente quiere eliminar este cliente?</h4>
+
+<div class="box box-data-card">
+    <form asp-action="Delete">
+
+        <div class="box-header with-border">
+            <h3>@Model.Owner</h3>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="RowVersion" />
+
+                @Html.Partial("_DisplayPartial", Model)
+
+            </div>
+        </div>
+
+        <div class="box-footer with-border">
+            @Html.Partial("_DeleteButtonPartial")
+        </div>
+
+    </form>
+</div>
+
+@links(Model)

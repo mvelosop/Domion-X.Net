@@ -1,0 +1,36 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace Domion.Web.Extensions
+{
+    public static class ModelStateDictionaryExtensions
+    {
+        /// <summary>
+        ///     Clears ModelStateDictionary and adds the validation results
+        /// </summary>
+        /// <param name="modelState">The ModelStateDictionary to reset</param>
+        /// <param name="validationResults">The ValidationResults to add</param>
+        public static void ResetModelErrors(this ModelStateDictionary modelState, IEnumerable<ValidationResult> validationResults)
+        {
+            modelState.Clear();
+
+            foreach (var item in validationResults)
+            {
+                if (item.MemberNames.Any())
+                {
+                    foreach (var member in item.MemberNames)
+                    {
+                        modelState.TryAddModelError(member, item.ErrorMessage);
+                    }
+                }
+                else
+                {
+                    modelState.TryAddModelError(string.Empty, item.ErrorMessage);
+                }
+            }
+
+        }
+    }
+}
