@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 // Taken from: https://github.com/aspnet/Mvc/blob/rel/1.1.3/test/Microsoft.AspNetCore.Mvc.ViewFeatures.Test/ViewFeatures/SessionStateTempDataProviderTest.cs
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-namespace Domion.WebApp.Tests.Helpers
+namespace Domion.Web.Tests.Helpers
 {
     public class TestSession : ISession
     {

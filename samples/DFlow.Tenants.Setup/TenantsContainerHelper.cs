@@ -26,7 +26,7 @@ namespace DFlow.Tenants.Setup
             builder.Register<TenantsDbContext>((c) => _dbHelper.CreateDbContext())
                 .InstancePerLifetimeScope();
 
-            RegisterCommonModuleTypes(builder, ModulePrefix);
+            RegisterCommonModuleTypes(builder, ModulePrefix, new[] { "DataHelper", "DataMapper", "Manager", "ManagerHelper", "Repository", "RepositoryHelper" });
         }
     }
 }

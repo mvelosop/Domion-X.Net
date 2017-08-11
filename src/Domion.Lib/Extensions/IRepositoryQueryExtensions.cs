@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Domion.Lib.Extensions
 {
@@ -21,11 +22,27 @@ namespace Domion.Lib.Extensions
         }
 
         /// <summary>
+        ///     Returns the first object that satisfies the condition or raises InvalidOperationException if none.
+        /// </summary>
+        public static async Task<T> FirstAsync<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
+        {
+            return await repo.Query(where).FirstAsync();
+        }
+
+        /// <summary>
         ///     Returns the first object that satisfies the condition or null if none.
         /// </summary>
         public static T FirstOrDefault<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
             return repo.Query(where).FirstOrDefault<T>();
+        }
+
+        /// <summary>
+        ///     Returns the first object that satisfies the condition or null if none.
+        /// </summary>
+        public static async Task<T> FirstOrDefaultAsync<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
+        {
+            return await repo.Query(where).FirstOrDefaultAsync<T>();
         }
 
         /// <summary>
@@ -52,11 +69,27 @@ namespace Domion.Lib.Extensions
         }
 
         /// <summary>
+        ///     Returns the single object that satisfies the condition or raises InvalidOperationException if none or more than one.
+        /// </summary>
+        public static async Task<T> SingleAsync<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
+        {
+            return await repo.Query(where).SingleAsync<T>();
+        }
+
+        /// <summary>
         ///     Returns the single object that satisfies the condition or null if none or raises InvalidOperationException if more than one.
         /// </summary>
         public static T SingleOrDefault<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
         {
             return repo.Query(where).SingleOrDefault<T>();
+        }
+
+        /// <summary>
+        ///     Returns the single object that satisfies the condition or null if none or raises InvalidOperationException if more than one.
+        /// </summary>
+        public static async Task<T> SingleOrDefaultAsync<T>(this IRepositoryQuery<T> repo, Expression<Func<T, bool>> where = null) where T : class
+        {
+            return await repo.Query(where).SingleOrDefaultAsync<T>();
         }
     }
 }

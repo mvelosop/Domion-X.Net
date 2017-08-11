@@ -1,12 +1,12 @@
-﻿using cloudscribe.Web.Common.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using cloudscribe.Web.Common.Extensions;
 using cloudscribe.Web.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 
-namespace Domion.WebApp.Alerts
+namespace Domion.Web.Alerts
 {
     /// <summary>
     ///     Extends cloudscribe's alerts management so it can be injected

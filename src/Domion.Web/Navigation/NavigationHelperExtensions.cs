@@ -1,12 +1,8 @@
 ﻿using System;
-using Microsoft.AspNetCore.Routing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 
-namespace Domion.WebApp.Navigation
+namespace Domion.Web.Navigation
 {
     public static class NavigationHelperExtensions
     {

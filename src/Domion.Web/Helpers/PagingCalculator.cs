@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domion.WebApp.Helpers
+namespace Domion.Web.Helpers
 {
     public class PagingCalculator
     {

@@ -6,13 +6,16 @@ using DFlow.Tenants.Setup;
 using Domion.Lib.Extensions;
 using Domion.Test.Extensions;
 using FluentAssertions;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using Nito.AsyncEx.Synchronous;
 using Xunit;
 
-namespace DFlow.Tenants.Lib.Tests
+namespace DFlow.Tenants.Lib.Tests.Tests
 {
     [Trait("Type", "Integration")]
     public class TenantRepository_IntegrationTests
@@ -20,13 +23,12 @@ namespace DFlow.Tenants.Lib.Tests
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=DFlow.Tenants.Lib.Tests;Integrated Security=SSPI;MultipleActiveResultSets=true";
 
         private static readonly IContainer Container;
-        private static readonly TenantsDatabaseHelper DbHelper;
 
         static TenantRepository_IntegrationTests()
         {
-            DbHelper = SetupDatabase(ConnectionString);
+            TenantsDatabaseHelper dbHelper = SetupDatabase(ConnectionString);
 
-            Container = SetupContainer(DbHelper);
+            Container = SetupContainer(dbHelper);
         }
 
         [Fact]
@@ -45,11 +47,11 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
 
-                errors = repo.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity);
 
                 repo.SaveChanges();
             });
@@ -67,7 +69,7 @@ namespace DFlow.Tenants.Lib.Tests
         [Fact]
         public void TryDelete_Fails_WhenConcurrencyConflict()
         {
-            IEnumerable<ValidationResult> errors = null;
+            List<ValidationResult> errors = null;
 
             // Arrange ---------------------------
 
@@ -84,7 +86,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -94,7 +96,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 errors.Should().BeEmpty();
 
@@ -103,13 +105,13 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 Tenant entity = repo.SingleOrDefault(e => e.Id == viewModel.Id);
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = repo.TryDelete(entity).ToList();
+                errors = repo.TryDelete(entity);
 
                 repo.SaveChanges();
             });
@@ -141,13 +143,13 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = repo.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity);
             });
 
             // Assert ----------------------------
@@ -171,15 +173,20 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
                 Tenant entity = mapper.CreateEntity(data);
 
-                errors = repo.TryInsert(entity).ToList();
+                errors = repo.TryInsert(entity);
 
                 repo.SaveChanges();
+
+                //int written = await repo.SaveChangesAsync();
+
+                //Console.WriteLine($"Se escribieron {written} objetos.");
+                //await task.ConfigureAwait(false);//.WaitAndUnwrapException();//.GetAwaiter().GetResult();
             });
 
             // Assert ----------------------------
@@ -213,7 +220,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             var viewModel = new Tenant();
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -223,7 +230,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 mapper.UpdateEntity(update2, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 errors.Should().BeEmpty();
 
@@ -232,7 +239,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             // Act -------------------------------
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -242,7 +249,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity.RowVersion = viewModel.RowVersion;
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
             });
 
             // Assert ----------------------------
@@ -273,7 +280,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -281,7 +288,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity = mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
             });
 
             // Assert ----------------------------
@@ -307,7 +314,7 @@ namespace DFlow.Tenants.Lib.Tests
 
             IEnumerable<ValidationResult> errors = null;
 
-            UsingRepository((scope, repo) =>
+            UsingAsyncContextRepository((scope, repo) =>
             {
                 var mapper = scope.Resolve<TenantDataMapper>();
 
@@ -315,7 +322,7 @@ namespace DFlow.Tenants.Lib.Tests
 
                 entity = mapper.UpdateEntity(update, entity);
 
-                errors = repo.TryUpdate(entity).ToList();
+                errors = repo.TryUpdate(entity);
 
                 repo.SaveChanges();
             });
@@ -352,34 +359,18 @@ namespace DFlow.Tenants.Lib.Tests
             return dbHelper;
         }
 
-        private void UpdateOnDifferentDbContext(TenantData data, TenantData update)
+        private void UsingAsyncContextRepository(Action<ILifetimeScope, TenantRepository> action)
         {
-            IEnumerable<ValidationResult> errors = null;
-
-            UsingRepository((scope, repo) =>
+            // This emulates the request thread to test async methods
+            AsyncContext.Run(() =>
             {
-                var mapper = scope.Resolve<TenantDataMapper>();
+                using (ILifetimeScope scope = Container.BeginLifetimeScope())
+                {
+                    var repo = scope.Resolve<TenantRepository>();
 
-                Tenant entity = repo.SingleOrDefault(e => e.Owner == data.Owner);
-
-                entity = mapper.UpdateEntity(update, entity);
-
-                errors = repo.TryUpdate(entity).ToList();
-
-                repo.SaveChanges();
+                    action.Invoke(scope, repo);
+                }
             });
-
-            errors.Should().BeEmpty();
-        }
-
-        private void UsingRepository(Action<ILifetimeScope, TenantRepository> action)
-        {
-            using (ILifetimeScope scope = Container.BeginLifetimeScope())
-            {
-                var repo = scope.Resolve<TenantRepository>();
-
-                action.Invoke(scope, repo);
-            }
         }
 
         private void UsingRepositoryHelper(Action<ILifetimeScope, TenantRepositoryHelper> action)

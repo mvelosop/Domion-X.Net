@@ -1,12 +1,9 @@
-﻿using cloudscribe.Web.Common.Extensions;
+﻿using System.Collections.Generic;
+using cloudscribe.Web.Common.Extensions;
 using cloudscribe.Web.Common.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Serilog;
-using System.Collections.Generic;
-using System;
 
-namespace Domion.WebApp.Helpers
+namespace Domion.Web.Helpers
 {
     public interface IViewAlerts
     {

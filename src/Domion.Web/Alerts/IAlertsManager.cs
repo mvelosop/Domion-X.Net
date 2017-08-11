@@ -1,4 +1,4 @@
-﻿namespace Domion.WebApp.Alerts
+﻿namespace Domion.Web.Alerts
 {
     public interface IAlertsManager
     {

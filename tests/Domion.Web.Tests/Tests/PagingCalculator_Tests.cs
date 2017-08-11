@@ -1,12 +1,10 @@
-using Domion.WebApp.Helpers;
-using FluentAssertions;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using Domion.Web.Helpers;
+using FluentAssertions;
 using Xunit;
-using Xunit.Extensions;
 
-namespace Domion.WebApp.Tests.Tests
+namespace Domion.Web.Tests.Tests
 {
     [Trait("Type", "Unit")]
     public class PagingCalculator_Tests

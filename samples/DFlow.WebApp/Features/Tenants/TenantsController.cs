@@ -1,11 +1,6 @@
 using cloudscribe.Web.Common.Extensions;
 using DFlow.Tenants.Core.Model;
 using DFlow.WebApp.Services;
-using Domion.WebApp.Extensions;
-using Domion.WebApp.Helpers;
-using Domion.WebApp.Logging;
-using Domion.WebApp.Navigation;
-using Domion.WebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
@@ -17,7 +12,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Domion.WebApp.Alerts;
+using Domion.Web.Alerts;
+using Domion.Web.Extensions;
+using Domion.Web.Helpers;
+using Domion.Web.Logging;
+using Domion.Web.Navigation;
+using Domion.Web.ViewModels;
 
 namespace DFlow.WebApp.Features.Tenants
 {
@@ -35,7 +35,7 @@ namespace DFlow.WebApp.Features.Tenants
 
         public const string DeleteTitle = "Eliminar Cliente";
 
-        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, intentelo de nuevo, por favor.";
+        public const string DeleteValidationAlert = @"No se pudo eliminar el cliente ""{0}"" por errores de validación, corríjalos e intente de nuevo, por favor.";
 
         public const string DetailsTitle = "Consultar Cliente";
 
@@ -307,10 +307,10 @@ namespace DFlow.WebApp.Features.Tenants
 
             var vm = new TenantIndexViewModel();
 
-            IQueryable<Tenant> query = await _appServices.Search(search);
+            IQueryable<Tenant> query = _appServices.Search(search);
 
             // ReSharper disable once PossibleMultipleEnumeration
-            var pager = new PagingCalculator(query.Count(), p, ps);
+            var pager = new PagingCalculator(await query.CountAsync(), p, ps);
 
             if (pager.OutOfRange)
             {
@@ -323,12 +323,12 @@ namespace DFlow.WebApp.Features.Tenants
             }
 
             // ReSharper disable once PossibleMultipleEnumeration
-            vm.Items = query
+            vm.Items = await query
                 .AsNoTracking()
                 .OrderBy(t => t.Owner)
                 .Skip(pager.Skip)
                 .Take(pager.Take)
-                .ToList();
+                .ToListAsync();
 
             vm.SetPaging(pager);
             vm.Title = IndexTitle;
@@ -358,16 +358,17 @@ namespace DFlow.WebApp.Features.Tenants
 
         private async Task<Tenant> FindTenantById(int? id)
         {
-            var entity = await _appServices.FindTenantById(id);
+            Task<Tenant> task = _appServices.FindTenantById(id);
 
-            if (entity == null)
-            {
-                _logger.LogWarning(EntityNotFoundLogMessage, id);
+            Tenant entity = await task;
 
-                _alerts.Warning(EntityNotFoundAlert, id);
-            }
+            if (entity != null) return entity;
+            
+            _logger.LogWarning(EntityNotFoundLogMessage, id);
 
-            return entity;
+            _alerts.Warning(EntityNotFoundAlert, id);
+
+            return null;
         }
 
         private void SetupViewModel(TenantViewModel vm, string title)
