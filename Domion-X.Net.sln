@@ -74,7 +74,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.Web.Tests", "tests\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DFlow.WebApp.Tests", "samples.tests\DFlow.WebApp.Tests\DFlow.WebApp.Tests.csproj", "{A6EDA0BE-98BA-411E-92BA-1831C35FFCFA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.DataTools", "src\Domion.DataTools\Domion.DataTools.csproj", "{D836E5B7-3674-41FF-B60A-39FF31D1C144}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domion.DataHelpers", "src\Domion.DataHelpers\Domion.DataHelpers.csproj", "{D836E5B7-3674-41FF-B60A-39FF31D1C144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
