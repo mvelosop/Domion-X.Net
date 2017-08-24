@@ -5,8 +5,16 @@
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
         <Version>0.2.0-beta-1</Version>
         <Authors>Miguel Veloso</Authors>
+        <Title>Domion - Web Application Layer Helpers</Title>
         <Company />
-        <Copyright>2017 - Miguel Veloso</Copyright>
+        <Copyright>(c) 2017 - Miguel Veloso</Copyright>
+        <PackageProjectUrl>http://www.coderepo.blog/domion/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/mvelosop/Domion-X.Net</RepositoryUrl>
+        <Description>Helper classes for developing .NET Core applications - Web Application layer</Description>
+        <PackageLicenseUrl>https://github.com/mvelosop/Domion-X.Net/blob/master/LICENSE.txt</PackageLicenseUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageTags>domion;web-application-layer</PackageTags>
+        <PackageReleaseNotes>First public release.</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
