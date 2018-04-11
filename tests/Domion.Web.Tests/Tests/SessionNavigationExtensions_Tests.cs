@@ -27,7 +27,7 @@ namespace Domion.Web.Tests.Tests
 
             RouteValueDictionary result = session.GetRouteValues(routeValues);
 
-            result.ShouldBeEquivalentTo(routeValues);
+            result.Should().BeEquivalentTo(routeValues);
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace Domion.Web.Tests.Tests
 
             RouteValueDictionary result = session.GetRouteValues(routeValues);
 
-            result.ShouldBeEquivalentTo(paramsValues);
+            result.Should().BeEquivalentTo(paramsValues);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Domion.Web.Tests.Tests
 
             RouteValueDictionary result = session.GetRouteValues(routeValues);
 
-            result.ShouldBeEquivalentTo(updatedRouteValues);
+            result.Should().BeEquivalentTo(updatedRouteValues);
         }
 
         [Fact]

@@ -37,7 +37,7 @@ namespace Domion.Web.Tests.Tests
             calculator.PageSize.Should().Be(expectedPageSize);
             calculator.Skip.Should().Be(expectedSkip);
             calculator.Take.Should().Be(expectedPageSize);
-            calculator.PagingValues.ShouldBeEquivalentTo(expectedValues);
+            calculator.PagingValues.Should().BeEquivalentTo(expectedValues);
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace Domion.Web.Tests.Tests
 
             // Assert ----------------------------
 
-            action.ShouldThrow<ArgumentOutOfRangeException>();
+            action.Should().Throw<ArgumentOutOfRangeException>();
         }
 
         public static IEnumerable<object[]> PagingData => new[]

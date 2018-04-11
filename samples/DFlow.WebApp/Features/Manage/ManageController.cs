@@ -306,13 +306,15 @@ namespace DFlow.WebApp.Features.Manage
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LinkLogin(string provider)
         {
+            throw new NotImplementedException("Not supported in ASP.NET Core 2 + ASP.NET Core Identity 1");
+
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
+            //await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
 
             // Request a redirect to the external login provider to link a login for the current user
-            var redirectUrl = Url.Action(nameof(LinkLoginCallback), "Manage");
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
-            return Challenge(properties, provider);
+            //var redirectUrl = Url.Action(nameof(LinkLoginCallback), "Manage");
+            //var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl, _userManager.GetUserId(User));
+            //return Challenge(properties, provider);
         }
 
         //

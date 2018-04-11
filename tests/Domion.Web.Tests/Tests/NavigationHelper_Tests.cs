@@ -70,7 +70,7 @@ namespace Domion.Web.Tests.Tests
 
             // Assert ----------------------------
 
-            urlValues.ShouldBeEquivalentTo(indexRouteValues);
+            urlValues.Should().BeEquivalentTo(indexRouteValues);
         }
 
         private HttpContext CreateHttpContext(IServiceProvider services)

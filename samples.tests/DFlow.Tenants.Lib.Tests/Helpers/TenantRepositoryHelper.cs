@@ -79,7 +79,7 @@ namespace DFlow.Tenants.Lib.Tests.Helpers
 
                     TenantData entityData = mapper.CreateData(entity);
 
-                    entityData.ShouldBeEquivalentTo(data);
+                    entityData.Should().BeEquivalentTo(data);
                 }
             }
         }

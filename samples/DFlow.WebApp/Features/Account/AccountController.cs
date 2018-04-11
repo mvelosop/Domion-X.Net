@@ -152,10 +152,12 @@ namespace DFlow.WebApp.Features.Account
         [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
+            throw new NotImplementedException("Not supported in ASP.NET Core 2 + ASP.NET Core Identity 1");
+
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { ReturnUrl = returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-            return Challenge(properties, provider);
+            //var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { ReturnUrl = returnUrl });
+            //var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            //return Challenge(properties, provider);
         }
 
         //

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net462</TargetFramework>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-        <Version>0.2.0-beta-1</Version>
+        <Version>0.3.0-beta-1</Version>
         <Authors>Miguel Veloso</Authors>
         <Title>Domion - Testing Helpers</Title>
         <Company />
@@ -18,11 +18,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentAssertions" Version="4.19.3" />
+      <PackageReference Include="FluentAssertions" Version="5.2.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)'=='net462'">
-        <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
     </ItemGroup>
 
 </Project>

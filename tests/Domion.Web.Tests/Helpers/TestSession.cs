@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 // Taken from: https://github.com/aspnet/Mvc/blob/rel/1.1.3/test/Microsoft.AspNetCore.Mvc.ViewFeatures.Test/ViewFeatures/SessionStateTempDataProviderTest.cs
@@ -24,12 +25,12 @@ namespace Domion.Web.Tests.Helpers
             _innerDictionary.Clear();
         }
 
-        public Task CommitAsync()
+        public Task CommitAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             return Task.FromResult(0);
         }
 
-        public Task LoadAsync()
+        public Task LoadAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             return Task.FromResult(0);
         }

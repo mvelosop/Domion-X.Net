@@ -78,7 +78,7 @@ namespace DFlow.Budget.Lib.Tests.Helpers
 
                     BudgetClassData entityData = mapper.CreateData(entity);
 
-                    entityData.ShouldBeEquivalentTo(data);
+                    entityData.Should().BeEquivalentTo(data);
                 }
             }
         }
